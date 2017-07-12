@@ -10,118 +10,118 @@ Format:
 
 ```json
 {
-	"header": {
-		"version": 1,
-		"context_id": "5E26F302-A051-40FB-9E8F-50411AB9C38D",
-		"count": 4
-	},
-	"drawings": [{
-		"points": [{
-			"force": 1,
-			"isPredictive": false,
-			"previous": {
-				"y": 184.5,
-				"x": 248
-			},
-			"location": {
-				"y": 184.5,
-				"x": 248
-			}
-		}, {
-			"force": 1,
-			"isPredictive": false,
-			"previous": {
-				"y": 184.5,
-				"x": 248
-			},
-			"location": {
-				"y": 184,
-				"x": 234
-			}
-		}],
-		"count": 2,
-		"tool": {
-			"force": 8,
-			"name": "pen",
-			"version": 1,
-			"lineWidth": 16
-		},
-		"version": 1,
-		"size": [760, 966],
-		"smoothing": 8,
-		"drawing_id": "1DB6A8BA-E2D4-48BC-A1E7-D9EE2E51204B"
-	}, {
-		"points": [{
-			"force": 1,
-			"isPredictive": false,
-			"previous": {
-				"y": 233,
-				"x": 254.5
-			},
-			"location": {
-				"y": 233,
-				"x": 254.5
-			}
-		}, {
-			"force": 1,
-			"isPredictive": false,
-			"previous": {
-				"y": 233,
-				"x": 254.5
-			},
-			"location": {
-				"y": 233.5,
-				"x": 254.5
-			}
-		}],
-		"count": 2,
-		"tool": {
-			"force": 8,
-			"name": "pen",
-			"version": 1,
-			"lineWidth": 16
-		},
-		"version": 1,
-		"size": [760, 966],
-		"smoothing": 8,
-		"drawing_id": "EA4261F2-BDB4-482D-8430-EE5430269023",
+  "header": {
+    "version": 1,
+    "context_id": "5E26F302-A051-40FB-9E8F-50411AB9C38D",
+    "count": 4
+  },
+  "drawings": [{
+    "points": [{
+      "force": 1,
+      "isPredictive": false,
+      "previous": {
+        "y": 184.5,
+        "x": 248
+      },
+      "location": {
+        "y": 184.5,
+        "x": 248
+      }
+    }, {
+      "force": 1,
+      "isPredictive": false,
+      "previous": {
+        "y": 184.5,
+        "x": 248
+      },
+      "location": {
+        "y": 184,
+        "x": 234
+      }
+    }],
+    "count": 2,
+    "tool": {
+      "force": 8,
+      "name": "pen",
+      "version": 1,
+      "lineWidth": 16
+    },
+    "version": 1,
+    "size": [760, 966],
+    "smoothing": 8,
+    "drawing_id": "1DB6A8BA-E2D4-48BC-A1E7-D9EE2E51204B"
+  }, {
+    "points": [{
+      "force": 1,
+      "isPredictive": false,
+      "previous": {
+        "y": 233,
+        "x": 254.5
+      },
+      "location": {
+        "y": 233,
+        "x": 254.5
+      }
+    }, {
+      "force": 1,
+      "isPredictive": false,
+      "previous": {
+        "y": 233,
+        "x": 254.5
+      },
+      "location": {
+        "y": 233.5,
+        "x": 254.5
+      }
+    }],
+    "count": 2,
+    "tool": {
+      "force": 8,
+      "name": "pen",
+      "version": 1,
+      "lineWidth": 16
+    },
+    "version": 1,
+    "size": [760, 966],
+    "smoothing": 8,
+    "drawing_id": "EA4261F2-BDB4-482D-8430-EE5430269023",
     "isCulled": false
-	}, {
-		"points": [{
-			"force": 1,
-			"isPredictive": false,
-			"previous": {
-				"y": 235,
-				"x": 297
-			},
-			"location": {
-				"y": 235,
-				"x": 297
-			}
-		}, {
-			"force": 1,
-			"isPredictive": false,
-			"previous": {
-				"y": 235,
-				"x": 297
-			},
-			"location": {
-				"y": 235.5,
-				"x": 297
-			}
-		}],
-		"count": 2,
-		"tool": {
-			"force": 8,
-			"name": "pen",
-			"version": 1,
-			"lineWidth": 16
-		},
-		"version": 1,
-		"size": [760, 966],
-		"smoothing": 8,
-		"drawing_id": "C29AE3F8-B309-4709-9293-2A6A8A34216B"
-	}]
+  }, {
+    "points": [{
+      "force": 1,
+      "isPredictive": false,
+      "previous": {
+        "y": 235,
+        "x": 297
+      },
+      "location": {
+        "y": 235,
+        "x": 297
+      }
+    }, {
+      "force": 1,
+      "isPredictive": false,
+      "previous": {
+        "y": 235,
+        "x": 297
+      },
+      "location": {
+        "y": 235.5,
+        "x": 297
+      }
+    }],
+    "count": 2,
+    "tool": {
+      "force": 8,
+      "name": "pen",
+      "version": 1,
+      "lineWidth": 16
+    },
+    "version": 1,
+    "size": [760, 966],
+    "smoothing": 8,
+    "drawing_id": "C29AE3F8-B309-4709-9293-2A6A8A34216B"
+  }]
 }
 ```
 

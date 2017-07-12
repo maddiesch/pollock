@@ -48,14 +48,15 @@ internal final class Drawing : Serializable {
 
     func serialize() throws -> [String : Any] {
         return [
-            "drawing_id": self.id,
+            "drawingID": self.id,
             "version": 1,
             "tool": try self.tool.serialize(),
             "size": [self.size.width, self.size.height],
             "count": self.points.count,
             "points": try self.points.map({ try $0.serialize() }),
             "smoothing": self.smoothing,
-            "isCulled": self.isCulled
+            "isCulled": self.isCulled,
+            "metadata": [:]
         ]
     }
 

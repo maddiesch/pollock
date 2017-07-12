@@ -12,7 +12,7 @@ Format:
 {
   "header": {
     "version": 1,
-    "context_id": "5E26F302-A051-40FB-9E8F-50411AB9C38D",
+    "contextID": "5E26F302-A051-40FB-9E8F-50411AB9C38D",
     "count": 4
   },
   "drawings": [{
@@ -49,7 +49,7 @@ Format:
     "version": 1,
     "size": [760, 966],
     "smoothing": 8,
-    "drawing_id": "1DB6A8BA-E2D4-48BC-A1E7-D9EE2E51204B"
+    "drawingID": "1DB6A8BA-E2D4-48BC-A1E7-D9EE2E51204B"
   }, {
     "points": [{
       "force": 1,
@@ -84,8 +84,9 @@ Format:
     "version": 1,
     "size": [760, 966],
     "smoothing": 8,
-    "drawing_id": "EA4261F2-BDB4-482D-8430-EE5430269023",
-    "isCulled": false
+    "drawingID": "EA4261F2-BDB4-482D-8430-EE5430269023",
+    "isCulled": false,
+    "metadata": {}
   }, {
     "points": [{
       "force": 1,
@@ -120,7 +121,8 @@ Format:
     "version": 1,
     "size": [760, 966],
     "smoothing": 8,
-    "drawing_id": "C29AE3F8-B309-4709-9293-2A6A8A34216B"
+    "drawingID": "C29AE3F8-B309-4709-9293-2A6A8A34216B",
+    "metadata": {}
   }]
 }
 ```
@@ -133,7 +135,7 @@ The document header.
 
 - `version`: The version number of the json structure.
 
-- `context_id`: A v4 UUID of the drawing context. Can also be used as an ID for the drawing itself.
+- `contextID`: A v4 UUID of the drawing context. Can also be used as an ID for the drawing itself.
 
 - `count`: The total number of `drawings` in the file
 
@@ -147,7 +149,7 @@ The actual drawing object that is contained in the `drawings` array.
 
 ###### Keys
 
-- `drawing_id`: A v4 UUID.
+- `drawingID`: A v4 UUID.
 
 - `version`: The version of the JSON structure.
 

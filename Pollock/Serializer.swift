@@ -31,7 +31,7 @@ struct Serializer {
         return [
             "count": drawingsCount,
             "version": 1,
-            "context_id": context.id
+            "contextID": context.id
         ]
     }
 }

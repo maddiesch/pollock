@@ -13,7 +13,7 @@ import UIKit
 public final class DrawingView : UIView {
     internal var currentDrawing: Drawing?
 
-    internal var renderer = CreateRenderer()
+    public private(set) var renderer = CreateRenderer()
 
     private var lastForce: CGFloat? = nil
 
@@ -123,10 +123,5 @@ public final class DrawingView : UIView {
             print("Failed to draw")
             print(error)
         }
-    }
-
-    @objc(serializeUsingCompression:error:)
-    public func serialize(usingCompression compress: Bool = true) throws -> Data {
-        return try Serializer.serialize(context: self.renderer.context, compress: compress)
     }
 }

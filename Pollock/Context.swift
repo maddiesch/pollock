@@ -8,11 +8,12 @@
 
 import Foundation
 
-internal final class Context {
-    let id: String
+internal final class Context : NSObject {
+    let header: Header
 
-    init() {
-        self.id = UUID().uuidString
+    override init() {
+        self.header = Header()
+        super.init()
     }
 
     private var drawings: [Drawing] = []
@@ -27,5 +28,23 @@ internal final class Context {
 
     func clear() {
         self.drawings.removeAll()
+    }
+
+    // MARK: - Serialization
+    func serialize() throws -> [String : Any] {
+        let header = try self.header.serialize()
+        let drawings = try self.drawings.map { try $0.serialize() }
+        return [
+            "header": header,
+            "drawings": drawings
+        ]
+    }
+
+    init(_ payload: [String : Any]) throws {
+        self.header = try Header.load(payload["header"])
+        guard let drawings = payload["drawings"] as? [[String: Any]] else {
+            throw SerializerError("Missing drawings")
+        }
+        self.drawings = try drawings.map { try Drawing($0) }
     }
 }

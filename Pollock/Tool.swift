@@ -10,13 +10,9 @@ import Foundation
 
 @objc(POLTool)
 open class Tool : NSObject, Serializable {
-    open var lineWidth: CGFloat {
-        return 0.0
-    }
+    open var lineWidth: CGFloat = 0.0
 
-    open var forceSensitivity: CGFloat {
-        return 0.0
-    }
+    open var forceSensitivity: CGFloat = 0.0
 
     open func calculateLineWidth(forForce force: CGFloat) -> CGFloat {
         assert(self.forceSensitivity > 0.0, "Can't have a force forceSensitivity of 0")
@@ -27,7 +23,7 @@ open class Tool : NSObject, Serializable {
         return "tool"
     }
 
-    open var version = 1
+    open fileprivate(set) var version: PollockVersion = PollockCurrentVersion
 
     public func serialize() throws -> [String : Any] {
         return [
@@ -36,6 +32,29 @@ open class Tool : NSObject, Serializable {
             "lineWidth": self.lineWidth,
             "force": self.forceSensitivity
         ]
+    }
+
+    public override init() {
+        super.init()
+    }
+
+    public required init(_ payload: [String : Any]) throws {
+        fatalError("Can't un-serialize a generic tool")
+    }
+}
+
+internal func LoadTool(_ object: Any?) throws -> Tool {
+    guard let payload = object as? [String: Any] else {
+        throw SerializerError("Unexpected tool type payload")
+    }
+    guard let name = payload["name"] as? String else {
+        throw SerializerError("Missing tool name")
+    }
+    switch name {
+    case "pen":
+        return try PenTool(payload)
+    default:
+        throw SerializerError("Unsupported tool type \(name)")
     }
 }
 
@@ -47,11 +66,18 @@ public final class PenTool : Tool {
         return "pen"
     }
 
-    public override var lineWidth: CGFloat {
-        return 16.0
-    }
+    public override init() {
+        super.init()
 
-    public override var forceSensitivity: CGFloat {
-        return 8.0
+        self.version = PollockCurrentVersion
+        self.lineWidth = 16.0
+        self.forceSensitivity = 8.0
+    }
+    
+    public required init(_ payload: [String : Any]) throws {
+        super.init()
+        self.version = try Serializer.validateVersion(payload["version"], "PenTool")
+        self.lineWidth = payload["lineWidth"] as? CGFloat ?? 16.0
+        self.forceSensitivity = payload["force"] as? CGFloat ?? 8.0
     }
 }

@@ -27,6 +27,8 @@
 		948EB3AE1EB2EFDA008600CE /* Serializable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 948EB3AD1EB2EFDA008600CE /* Serializable.swift */; };
 		94A7D9D21F0EFA7F00BD9C2B /* Geometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94A7D9D11F0EFA7F00BD9C2B /* Geometry.swift */; };
 		94A7D9D41F0F0A6C00BD9C2B /* Smoothing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94A7D9D31F0F0A6C00BD9C2B /* Smoothing.swift */; };
+		94CA185B1F16D02600E379C2 /* Version.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94CA185A1F16D02600E379C2 /* Version.swift */; };
+		94CA185D1F16D0AC00E379C2 /* Header.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94CA185C1F16D0AC00E379C2 /* Header.swift */; };
 		94D30C691EC55240009D32F6 /* Context.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94D30C681EC55240009D32F6 /* Context.swift */; };
 		94D30C6B1EC55410009D32F6 /* Serializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94D30C6A1EC55410009D32F6 /* Serializer.swift */; };
 		94D30C6D1EC557AE009D32F6 /* Tool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94D30C6C1EC557AE009D32F6 /* Tool.swift */; };
@@ -91,6 +93,8 @@
 		948EB3AD1EB2EFDA008600CE /* Serializable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Serializable.swift; sourceTree = "<group>"; };
 		94A7D9D11F0EFA7F00BD9C2B /* Geometry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Geometry.swift; sourceTree = "<group>"; };
 		94A7D9D31F0F0A6C00BD9C2B /* Smoothing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Smoothing.swift; sourceTree = "<group>"; };
+		94CA185A1F16D02600E379C2 /* Version.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Version.swift; sourceTree = "<group>"; };
+		94CA185C1F16D0AC00E379C2 /* Header.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Header.swift; sourceTree = "<group>"; };
 		94D30C681EC55240009D32F6 /* Context.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Context.swift; sourceTree = "<group>"; };
 		94D30C6A1EC55410009D32F6 /* Serializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Serializer.swift; sourceTree = "<group>"; };
 		94D30C6C1EC557AE009D32F6 /* Tool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tool.swift; sourceTree = "<group>"; };
@@ -177,6 +181,8 @@
 				94D30C6A1EC55410009D32F6 /* Serializer.swift */,
 				94A7D9D11F0EFA7F00BD9C2B /* Geometry.swift */,
 				94A7D9D31F0F0A6C00BD9C2B /* Smoothing.swift */,
+				94CA185A1F16D02600E379C2 /* Version.swift */,
+				94CA185C1F16D0AC00E379C2 /* Header.swift */,
 				94D30C701EC57C9A009D32F6 /* Renderer */,
 				942033B91EB2CDD600A458F8 /* Supporting Files */,
 			);
@@ -388,10 +394,12 @@
 				942033E11EB2D66900A458F8 /* Drawing.swift in Sources */,
 				94A7D9D21F0EFA7F00BD9C2B /* Geometry.swift in Sources */,
 				942033DD1EB2CF9B00A458F8 /* DrawingView.swift in Sources */,
+				94CA185B1F16D02600E379C2 /* Version.swift in Sources */,
 				94D30C6D1EC557AE009D32F6 /* Tool.swift in Sources */,
 				94A7D9D41F0F0A6C00BD9C2B /* Smoothing.swift in Sources */,
 				94D30C6B1EC55410009D32F6 /* Serializer.swift in Sources */,
 				94D30C691EC55240009D32F6 /* Context.swift in Sources */,
+				94CA185D1F16D0AC00E379C2 /* Header.swift in Sources */,
 				9407F1EE1EC4E99300568034 /* Compressor.swift in Sources */,
 				94D30C6F1EC57AF0009D32F6 /* Renderer.swift in Sources */,
 				942033E31EB2D67F00A458F8 /* Point.swift in Sources */,

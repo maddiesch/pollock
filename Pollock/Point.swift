@@ -29,10 +29,17 @@ internal struct Point : Serializable {
 
     func serialize() throws -> [String : Any] {
         return [
-            "previous": ["x": self.previous.x, "y": self.previous.y],
-            "location": ["x": self.location.x, "y": self.location.y],
+            "previous": try self.previous.serialize(),
+            "location": try self.location.serialize(),
             "force": self.force,
             "isPredictive": self.isPredictive
         ]
+    }
+
+    init(_ payload: [String : Any]) throws {
+        self.previous = try CGPoint.load(payload["previous"])
+        self.location = try CGPoint.load(payload["location"])
+        self.force = payload["force"] as? CGFloat ?? 1.0
+        self.isPredictive = payload["isPredictive"] as? Bool ?? false
     }
 }

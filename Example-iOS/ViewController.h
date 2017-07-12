@@ -17,5 +17,7 @@
 
 - (IBAction)saveDrawingsAction:(id)sender;
 
+- (IBAction)loadDrawingAction:(id)sender;
+
 @end
 

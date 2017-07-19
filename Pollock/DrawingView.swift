@@ -19,8 +19,12 @@ public final class DrawingView : UIView {
 
     public var currentTool: Tool = PenTool()
 
+    private var canvas: Canvas {
+        return self.renderer.project.currentCanvas
+    }
+
     public func clearDrawings() {
-        self.renderer.context.clear()
+        self.canvas.clear()
         self.setNeedsDisplay()
     }
 
@@ -40,7 +44,7 @@ public final class DrawingView : UIView {
     public override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         let drawing = Drawing(size: self.bounds.size, tool: self.currentTool)
         self.currentDrawing = drawing
-        self.renderer.context.addDrawing(drawing)
+        self.canvas.addDrawing(drawing)
         self.process(touches, forEvent: event)
     }
 

@@ -122,6 +122,7 @@ final class Compressor {
 }
 
 public extension Data {
+    /// Check if the returned data has a zipped header
     public var isZip: Bool {
         do {
             try self.validateZipHeader()
@@ -131,6 +132,9 @@ public extension Data {
         }
     }
 
+    /// Compresses the data.  Will add the Zlib header and Adler-32 checksum
+    ///
+    /// - Returns: The compressed data
     func zip() throws -> Data {
         var result = Data(bytes: [0x78, 0x5e])
         do {
@@ -146,7 +150,11 @@ public extension Data {
         return result
     }
 
-    func unzip(skipChecksumValidate: Bool = true) throws -> Data {
+    /// Called on compressed data.
+    ///
+    /// - Parameter skipChecksumValidate: Pass true if the checksum shouldn't be validated.
+    /// - Returns: The uncompressed data
+    func unzip(skipChecksumValidate: Bool = false) throws -> Data {
         try self.validateZipHeader()
 
         // Header

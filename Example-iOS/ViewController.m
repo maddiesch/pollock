@@ -58,6 +58,7 @@
 }
 
 - (void)loadDrawingAction:(id)sender {
+//    NSString *path = @"/Users/skylar/Desktop/test-out.zlib";
     NSString *path = [[NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) firstObject] stringByAppendingPathComponent:@"drawing.zlib"];
     NSData *data = [NSData dataWithContentsOfFile:path];
     if (!data) {

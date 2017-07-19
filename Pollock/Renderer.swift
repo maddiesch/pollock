@@ -15,7 +15,13 @@ internal func CreateRenderer() -> Renderer {
 
 @objc(POLRenderer)
 public class Renderer : NSObject {
-    var context: Context = Context()
+    var project = Project()
+
+    var currentCanvas: Canvas {
+        get {
+            return self.project.currentCanvas
+        }
+    }
 
     func draw(inContext ctx: CGContext, forRect rect: CGRect) throws {
         fatalError("Must Override")
@@ -23,14 +29,14 @@ public class Renderer : NSObject {
 
     @objc(serializeWithCompression:error:)
     public func serialize(compressOutput compress: Bool) throws -> Data {
-        return try Serializer.serialize(context: self.context, compress: compress)
+        return try Serializer.serialize(project: self.project, compress: compress)
     }
 
     @objc(loadSerializedData:error:)
     @discardableResult
     public func load(serializedData data: Data) throws -> AnyObject {
-        let context = try Serializer.unserialize(data: data)
-        self.context = context
-        return context
+        let project = try Serializer.unserialize(data: data)
+        self.project = project
+        return project
     }
 }

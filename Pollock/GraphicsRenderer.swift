@@ -16,7 +16,7 @@ internal class GraphicsRenderer : Renderer {
         ctx.setLineCap(.round)
         defer { ctx.restoreGState() }
 
-        for drawing in self.context.allDrawings {
+        for drawing in self.project.currentCanvas.allDrawings {
             drawing.draw(inContext: ctx)
         }
     }

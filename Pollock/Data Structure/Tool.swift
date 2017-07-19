@@ -30,7 +30,8 @@ open class Tool : NSObject, Serializable {
             "name": self.name,
             "version": self.version,
             "lineWidth": self.lineWidth,
-            "force": self.forceSensitivity
+            "force": self.forceSensitivity,
+            "_type": "tool"
         ]
     }
 

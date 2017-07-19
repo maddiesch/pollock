@@ -9,12 +9,14 @@
 import Foundation
 
 internal struct Point : Serializable {
+    let version: PollockVersion
     let location: CGPoint
     let previous: CGPoint
     let force: CGFloat
     let isPredictive: Bool
 
     init(location: CGPoint, previous: CGPoint, force: CGFloat, predictive: Bool) {
+        self.version = PollockCurrentVersion
         self.location = location
         self.previous = previous
         self.force = force
@@ -29,14 +31,17 @@ internal struct Point : Serializable {
 
     func serialize() throws -> [String : Any] {
         return [
+            "version": self.version,
             "previous": try self.previous.serialize(),
             "location": try self.location.serialize(),
             "force": self.force,
-            "isPredictive": self.isPredictive
+            "isPredictive": self.isPredictive,
+            "_type": "point"
         ]
     }
 
     init(_ payload: [String : Any]) throws {
+        self.version = try Serializer.validateVersion(payload["version"], "Point")
         self.previous = try CGPoint.load(payload["previous"])
         self.location = try CGPoint.load(payload["location"])
         self.force = payload["force"] as? CGFloat ?? 1.0

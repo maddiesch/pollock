@@ -15,7 +15,8 @@ internal struct Header : Serializable {
     func serialize() throws -> [String: Any] {
         return [
             "version": self.version,
-            "contextID": self.id.uuidString,
+            "projectID": self.id.uuidString,
+            "_type": "header"
         ]
     }
 
@@ -26,6 +27,6 @@ internal struct Header : Serializable {
 
     init(_ payload: [String: Any]) throws {
         self.version = try Serializer.validateVersion(payload["version"], "Context Header")
-        self.id = try Serializer.decodeUUID(payload["contextID"])
+        self.id = try Serializer.decodeUUID(payload["projectID"])
     }
 }

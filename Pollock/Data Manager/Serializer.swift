@@ -9,8 +9,8 @@
 import Foundation
 
 struct Serializer {
-    static func serialize(context: Context, compress: Bool) throws -> Data {
-        let output = try context.serialize()
+    static func serialize(project: Project, compress: Bool) throws -> Data {
+        let output = try project.serialize()
         let data = try JSONSerialization.data(withJSONObject: output, options: [])
         if compress {
             return try data.zip()
@@ -18,17 +18,17 @@ struct Serializer {
         return data
     }
 
-    static func unserialize(data: Data) throws -> Context {
+    static func unserialize(data: Data) throws -> Project {
         let raw = try self.createRawData(data)
         guard let json = try JSONSerialization.jsonObject(with: raw, options: []) as? [String: Any] else {
             throw SerializerError("JSON format invalid")
         }
-        return try Context(json)
+        return try Project(json)
     }
 
     private static func createRawData(_ data: Data) throws -> Data {
         if data.isZip {
-            return try data.unzip()
+            return try data.unzip(skipChecksumValidate: false)
         } else {
             return data
         }

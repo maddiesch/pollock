@@ -60,7 +60,8 @@ internal final class Drawing : Serializable {
             "points": try self.points.map({ try $0.serialize() }),
             "smoothing": self.smoothing,
             "isCulled": self.isCulled,
-            "metadata": self.metadata
+            "metadata": self.metadata,
+            "_type": "drawing"
         ]
     }
 

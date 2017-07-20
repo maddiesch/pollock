@@ -9,12 +9,12 @@
 import Foundation
 import QuartzCore
 
-internal func CreateRenderer() -> Renderer {
-    return GraphicsRenderer()
-}
-
 @objc(POLRenderer)
 public class Renderer : NSObject {
+    public class func createRenderer() -> Renderer {
+        return GraphicsRenderer()
+    }
+
     var project = Project()
 
     var currentCanvas: Canvas {
@@ -38,5 +38,13 @@ public class Renderer : NSObject {
         let project = try Serializer.unserialize(data: data)
         self.project = project
         return project
+    }
+
+    @objc(loadProject:error:)
+    public func load(project: AnyObject) throws {
+        guard let proj = project as? Project else {
+            throw ProjectError(.invalidProject, "Passed non-project object")
+        }
+        self.project = proj
     }
 }

@@ -13,7 +13,7 @@ import UIKit
 public final class DrawingView : UIView {
     internal var currentDrawing: Drawing?
 
-    public private(set) var renderer = CreateRenderer()
+    public private(set) var renderer = Renderer.createRenderer()
 
     private var lastForce: CGFloat? = nil
 

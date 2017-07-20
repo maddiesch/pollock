@@ -99,6 +99,7 @@ internal struct ProjectError : CustomNSError {
     internal enum Code : Int {
         case generic        = 0
         case existingCanvas = 1
+        case invalidProject = 2
 
         var localizedDescription: String {
             switch self {
@@ -106,6 +107,8 @@ internal struct ProjectError : CustomNSError {
                 return NSLocalizedString("An unknown error occured", comment: "ProjectError Code generic")
             case .existingCanvas:
                 return NSLocalizedString("Project already contains a canvas for that index", comment: "ProjectError Code existingCanvas")
+            case .invalidProject:
+                return NSLocalizedString("The Project isn't valid", comment: "ProjectError Code invalidProject")
             }
         }
     }

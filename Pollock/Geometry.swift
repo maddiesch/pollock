@@ -28,3 +28,18 @@ func CreateMinimumBoundingRect(forPoints points: [CGPoint], padding: CGFloat) ->
     let rect = CGRect(x: minX, y: minY, width: maxX - minX, height: maxY - minY)
     return PadRect(rect, ammount: padding)
 }
+
+func ScaleFactor(toSize: CGSize, fromSize: CGSize) -> CGPoint {
+    guard !toSize.isEmpty && !fromSize.isEmpty else {
+        return CGPoint(x: 1.0, y: 1.0)
+    }
+    let xFactor = toSize.width / fromSize.width
+    let yFactor = toSize.height / fromSize.height
+    return CGPoint(x: xFactor, y: yFactor)
+}
+
+extension CGSize {
+    var isEmpty: Bool {
+        return self.width == 0.0 || self.height == 0.0
+    }
+}

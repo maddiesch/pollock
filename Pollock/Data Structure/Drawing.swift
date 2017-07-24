@@ -13,12 +13,13 @@ import UIKit
 internal final class Drawing : Serializable {
     private var points: [Point] = []
     private var predictive: [Point] = []
-    private let size: CGSize
     private let id: UUID
     private let smoothing: Int
     private let version: PollockVersion
     private var metadata: [String: Any] = [:]
     private var isCulled: Bool = false
+
+    let size: CGSize
 
     let tool: Tool
 

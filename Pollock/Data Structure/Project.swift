@@ -8,7 +8,7 @@
 
 import Foundation
 
-internal final class Project : NSObject, Serializable {
+public final class Project : NSObject, Serializable {
     let header: Header
 
     override init() {
@@ -35,7 +35,7 @@ internal final class Project : NSObject, Serializable {
 
     fileprivate var canvases: Set<Canvas> = []
 
-    func serialize() throws -> [String : Any] {
+    public func serialize() throws -> [String : Any] {
         let header = try self.header.serialize()
         let canvases = try self.canvases.sorted { $0.index < $1.index }.map { try $0.serialize() }
         return [
@@ -45,7 +45,7 @@ internal final class Project : NSObject, Serializable {
         ]
     }
 
-    init(_ payload: [String : Any]) throws {
+    public init(_ payload: [String : Any]) throws {
         self.header = try Header.load(payload["header"])
         guard let canvasesHashes = payload["canvases"] as? [[String: Any]] else {
             throw SerializerError("Missing canvases")
@@ -63,7 +63,7 @@ extension Project {
         self.canvases.insert(canvas)
     }
 
-    func setActiveCanvas(withIndex index: Int) throws {
+    public func setActiveCanvas(withIndex index: Int) throws {
         if let canvas = self.canvas(withIndex: index) {
             self._currentCanvas = canvas
         } else {

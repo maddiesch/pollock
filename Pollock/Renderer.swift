@@ -15,7 +15,7 @@ public class Renderer : NSObject {
         return GraphicsRenderer()
     }
 
-    var project = Project()
+    public var project = Project()
 
     var currentCanvas: Canvas {
         get {
@@ -23,7 +23,7 @@ public class Renderer : NSObject {
         }
     }
 
-    func draw(inContext ctx: CGContext, forRect rect: CGRect) throws {
+    public func draw(inContext ctx: CGContext, forRect rect: CGRect) throws {
         fatalError("Must Override")
     }
 

@@ -11,6 +11,10 @@ import Foundation
 internal final class Canvas : Serializable, Hashable {
     let index: Int
 
+    var size: CGSize {
+        return self.drawings.first?.size ?? CGSize.zero
+    }
+
     init(atIndex index: Int) {
         self.index = index
     }

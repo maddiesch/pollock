@@ -10,9 +10,17 @@ import Foundation
 
 @objc(POLTool)
 open class Tool : NSObject, Serializable {
-    open var lineWidth: CGFloat = 0.0
+    open var lineWidth: CGFloat = 8.0 {
+        didSet {
+            self.toolValuesChanged("lineWidth")
+        }
+    }
 
-    open var forceSensitivity: CGFloat = 0.0
+    open var forceSensitivity: CGFloat = 1.0 {
+        didSet {
+            self.toolValuesChanged("forceSensitivity")
+        }
+    }
 
     open func calculateLineWidth(forForce force: CGFloat) -> CGFloat {
         assert(self.forceSensitivity > 0.0, "Can't have a force forceSensitivity of 0")
@@ -42,6 +50,14 @@ open class Tool : NSObject, Serializable {
     public required init(_ payload: [String : Any]) throws {
         fatalError("Can't un-serialize a generic tool")
     }
+
+    public func toolValuesChanged(_ value: String) {
+        let info = [kToolValueChangedName: value]
+        let notification = Notification(name: .toolValueChanged, object: self, userInfo: info)
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(notification)
+        }
+    }
 }
 
 internal func LoadTool(_ object: Any?) throws -> Tool {
@@ -60,7 +76,6 @@ internal func LoadTool(_ object: Any?) throws -> Tool {
 }
 
 
-
 @objc(POLPenTool)
 public final class PenTool : Tool {
     public override var name: String {
@@ -72,7 +87,7 @@ public final class PenTool : Tool {
 
         self.version = PollockCurrentVersion
         self.lineWidth = 16.0
-        self.forceSensitivity = 8.0
+        self.forceSensitivity = 1.0
     }
     
     public required init(_ payload: [String : Any]) throws {
@@ -81,4 +96,68 @@ public final class PenTool : Tool {
         self.lineWidth = payload["lineWidth"] as? CGFloat ?? 16.0
         self.forceSensitivity = payload["force"] as? CGFloat ?? 8.0
     }
+}
+
+@objc(POLHighlighterTool)
+public final class HighlighterTool : Tool {
+    public override var name: String {
+        return "highlighter"
+    }
+
+    public override init() {
+        super.init()
+
+        self.version = PollockCurrentVersion
+        self.lineWidth = 16.0
+        self.forceSensitivity = 1.0
+    }
+
+    public required init(_ payload: [String : Any]) throws {
+        super.init()
+        self.version = try Serializer.validateVersion(payload["version"], "HighlighterTool")
+        self.lineWidth = payload["lineWidth"] as? CGFloat ?? 16.0
+        self.forceSensitivity = payload["force"] as? CGFloat ?? 1.0
+    }
+}
+
+@objc(POLEraserTool)
+public final class EraserTool : Tool {
+    public override var name: String {
+        return "eraser"
+    }
+
+    public override init() {
+        super.init()
+
+        self.version = PollockCurrentVersion
+    }
+
+    public required init(_ payload: [String : Any]) throws {
+        super.init()
+        self.version = try Serializer.validateVersion(payload["version"], "EraserTool")
+    }
+}
+
+@objc(POLTextTool)
+public final class TextTool : Tool {
+    public override var name: String {
+        return "text"
+    }
+
+    public override init() {
+        super.init()
+
+        self.version = PollockCurrentVersion
+    }
+
+    public required init(_ payload: [String : Any]) throws {
+        super.init()
+        self.version = try Serializer.validateVersion(payload["version"], "TextTool")
+    }
+}
+
+public let kToolValueChangedName = "name"
+
+public extension Notification.Name {
+    static let toolValueChanged = Notification.Name(rawValue: "PollockToolChangedValueNotification")
 }

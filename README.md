@@ -20,12 +20,12 @@ Format:
               "force": 1,
               "version": 1,
               "previous": {
-                "y": 186,
-                "x": 276.5
+                "y": 144,
+                "x": 193.5
               },
               "location": {
-                "y": 186,
-                "x": 276.5
+                "y": 144,
+                "x": 193.5
               },
               "isPredictive": false,
               "_type": "point"
@@ -34,12 +34,12 @@ Format:
               "force": 1,
               "version": 1,
               "previous": {
-                "y": 186,
-                "x": 276.5
+                "y": 224.5,
+                "x": 191
               },
               "location": {
-                "y": 186,
-                "x": 276.5
+                "y": 225,
+                "x": 191
               },
               "isPredictive": false,
               "_type": "point"
@@ -47,10 +47,17 @@ Format:
           ],
           "isCulled": false,
           "metadata": {},
+          "color": {
+            "name": "black",
+            "green": 0,
+            "red": 0,
+            "blue": 0,
+            "alpha": 1
+          },
           "_type": "drawing",
           "count": 2,
           "tool": {
-            "force": 8,
+            "force": 1,
             "name": "pen",
             "version": 1,
             "lineWidth": 16,
@@ -61,70 +68,26 @@ Format:
             "height": 1054,
             "width": 826
           },
-          "smoothing": 8,
-          "drawingID": "A167E04F-2CB0-42D6-87F6-E1A437B64E55"
-        },
-        {
-          "points": [
-            {
-              "force": 1,
-              "version": 1,
-              "previous": {
-                "y": 184.5,
-                "x": 350
-              },
-              "location": {
-                "y": 184.5,
-                "x": 350
-              },
-              "isPredictive": false,
-              "_type": "point"
-            },
-            {
-              "force": 1,
-              "version": 1,
-              "previous": {
-                "y": 184.5,
-                "x": 350
-              },
-              "location": {
-                "y": 184.5,
-                "x": 350
-              },
-              "isPredictive": false,
-              "_type": "point"
+          "smoothing": {
+            "name": "catmull-rom",
+            "parameters": {
+              "granularity": 8
             }
-          ],
-          "isCulled": false,
-          "metadata": {},
-          "_type": "drawing",
-          "count": 2,
-          "tool": {
-            "force": 8,
-            "name": "pen",
-            "version": 1,
-            "lineWidth": 16,
-            "_type": "tool"
           },
-          "version": 1,
-          "size": {
-            "height": 1054,
-            "width": 826
-          },
-          "smoothing": 8,
-          "drawingID": "404DCEFC-67F8-48BE-92EB-C187386583F3"
+          "drawingID": "655948C7-8D55-457F-8189-B6B4FA594FC4"
         }
       ],
       "index": 0
     }
   ],
   "header": {
-    "projectID": "38F83390-9E0F-432D-A438-3CFB861B8F57",
     "version": 1,
-    "_type": "header"
+    "_type": "header",
+    "projectID": "37364725-79C0-4DAB-B61B-213DCEB192D1"
   },
   "_type": "project"
 }
+
 ```
 
 ### Project

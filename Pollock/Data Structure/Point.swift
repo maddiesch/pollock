@@ -23,6 +23,11 @@ internal struct Point : Serializable {
         self.isPredictive = predictive
     }
 
+    func isValidMovement(fromPoint point: Point) -> Bool {
+        let distance = self.location.distance(fromPoint: point.location)
+        return distance >= 2.0
+    }
+
     func draw(inContext ctx: CGContext, forDrawing drawing: Drawing) {
         ctx.move(to: self.previous)
         ctx.addLine(to: self.location)

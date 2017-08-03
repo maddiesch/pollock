@@ -49,11 +49,13 @@ public final class DrawingView : UIView {
     }
 
     public override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.currentDrawing?.cullExtraneous()
         self.currentDrawing = nil
         self.process(touches, forEvent: event)
     }
 
     public override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.currentDrawing?.cullExtraneous()
         self.currentDrawing = nil
         self.process(touches, forEvent: event)
     }
@@ -120,7 +122,7 @@ public final class DrawingView : UIView {
         }
         do {
             let start = CFAbsoluteTimeGetCurrent()
-            try self.renderer.draw(inContext: ctx, forRect: rect)
+            try self.renderer.draw(inContext: ctx, forRect: self.bounds)
             let end = CFAbsoluteTimeGetCurrent()
             print("time: \((end - start) * 1000.0)")
         } catch {

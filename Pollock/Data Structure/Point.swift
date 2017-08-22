@@ -9,34 +9,32 @@
 import Foundation
 
 internal struct Point : Serializable {
-    let version: PollockVersion
-    let location: CGPoint
-    let previous: CGPoint
+    let location: Location
+    let previous: Location
     let force: CGFloat
     let isPredictive: Bool
 
-    init(location: CGPoint, previous: CGPoint, force: CGFloat, predictive: Bool) {
-        self.version = PollockCurrentVersion
+    init(location: Location, previous: Location, force: CGFloat, predictive: Bool) {
         self.location = location
         self.previous = previous
         self.force = force
         self.isPredictive = predictive
     }
 
-    func isValidMovement(fromPoint point: Point) -> Bool {
-        let distance = self.location.distance(fromPoint: point.location)
-        return distance >= 2.0
+    func isValidMovement(fromPoint point: Point, withSize size: CGSize) -> Bool {
+        return self.location.distanceFromLocation(point.location, withSize: size) >= 2.0
     }
 
-    func draw(inContext ctx: CGContext, forDrawing drawing: Drawing) {
-        ctx.move(to: self.previous)
-        ctx.addLine(to: self.location)
+    func draw(inContext ctx: CGContext, withSize size: CGSize, forDrawing drawing: Drawing) {
+        let previous = self.previous.point(forSize: size)
+        let location = self.location.point(forSize: size)
+        ctx.move(to: previous)
+        ctx.addLine(to: location)
         ctx.strokePath()
     }
 
     func serialize() throws -> [String : Any] {
         return [
-            "version": self.version,
             "previous": try self.previous.serialize(),
             "location": try self.location.serialize(),
             "force": self.force,
@@ -46,9 +44,8 @@ internal struct Point : Serializable {
     }
 
     init(_ payload: [String : Any]) throws {
-        self.version = try Serializer.validateVersion(payload["version"], "Point")
-        self.previous = try CGPoint.load(payload["previous"])
-        self.location = try CGPoint.load(payload["location"])
+        self.previous = try Location.load(payload["previous"])
+        self.location = try Location.load(payload["location"])
         self.force = payload["force"] as? CGFloat ?? 1.0
         self.isPredictive = payload["isPredictive"] as? Bool ?? false
     }

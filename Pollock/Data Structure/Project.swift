@@ -53,6 +53,15 @@ public final class Project : NSObject, Serializable {
         let canvases = try canvasesHashes.map { try Canvas($0) }
         self.canvases = Set(canvases)
     }
+
+    func performOcclusionCulling() throws {
+        for canvas in self.canvases {
+            let start = canvas.allDrawings.filter { !$0.isCulled }.count
+            try canvas.performOcclusionCulling()
+            let end = canvas.allDrawings.filter { !$0.isCulled }.count
+            print("Canvas \(canvas.index) culling pass: (\(start - end))")
+        }
+    }
 }
 
 extension Project {

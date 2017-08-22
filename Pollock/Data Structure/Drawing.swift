@@ -18,28 +18,30 @@ internal final class Drawing : Serializable {
     private let id: UUID
     private let version: PollockVersion
     private var metadata: [String: Any] = [:]
-    private var isCulled: Bool = false
     private var color: Color
-    private var smoothing: Smoothing
+    internal var isCulled: Bool = false
 
-    let size: CGSize
+    public let isSmoothingEnabled: Bool
 
     let tool: Tool
 
-    init(size: CGSize, tool: Tool) {
+    init(tool: Tool, isSmoothingEnabled: Bool = true) {
         self.version = PollockCurrentVersion
-        self.size = size
         self.tool = tool
         self.id = UUID()
-        self.smoothing = CatmullRomSmoothing()
         self.color = Color.Name.black.color
+        self.isSmoothingEnabled = isSmoothingEnabled
     }
 
     func prune() {
         self.predictive.removeAll()
     }
 
-    func cullExtraneous() {
+    func cullExtraneous(forSize size: CGSize) {
+        if self.tool is EraserTool {
+            self.cullErasePoints()
+            return
+        }
         let count = self.points.count
         guard count >= 3 else {
             return
@@ -54,7 +56,7 @@ internal final class Drawing : Serializable {
                     culled.append(point)
                     continue
                 }
-                let distance = point.location.distance(fromPoint: p1.location)
+                let distance = point.location.distanceFromLocation(p1.location, withSize: size)
                 if distance >= Drawing.threshold {
                     let new = Point(location: point.location, previous: p1.location, force: point.force, predictive: point.isPredictive)
                     culled.append(new)
@@ -67,6 +69,18 @@ internal final class Drawing : Serializable {
         self.points = culled
     }
 
+    private func cullErasePoints() {
+        guard self.points.count >= 2 else {
+            return
+        }
+        let first = self.points.first!
+        let last = self.points.last!
+        self.points = [
+            Point(location: first.location, previous: first.location, force: 1.0, predictive: false),
+            Point(location: last.location, previous: first.location, force: 1.0, predictive: false)
+        ]
+    }
+
     func add(point: Point) {
         if point.isPredictive {
             self.predictive.append(point)
@@ -75,14 +89,41 @@ internal final class Drawing : Serializable {
         }
     }
 
-    func draw(inContext ctx: CGContext) {
-        ctx.setLineCap(.round)
-        ctx.setStrokeColor(self.color.uiColor.cgColor)
-        ctx.setLineWidth(self.tool.calculateLineWidth(forForce: 1.0))
-        self.drawSmoothPoints(self.points, ctx)
-        for point in self.predictive {
-            point.draw(inContext: ctx, forDrawing: self)
+    func lastPreviousPointForPartialRender(forSize size: CGSize) -> CGPoint? {
+        guard let last = self.points.last else {
+            return nil
         }
+        return last.previous.point(forSize: size)
+    }
+
+    func createPath(forSize size: CGSize) -> CGPath? {
+        return self.createPath(self.points, size)
+    }
+
+    func createPath(_ points: Array<Point>, _ size: CGSize) -> CGPath? {
+        guard points.count > 0 else {
+            return nil
+        }
+        let rawPoints = points.map { RawPoint(location: $0.location.point(forSize: size), previous: $0.previous.point(forSize: size)) }
+        let smoothing = self.isSmoothingEnabled && self.tool.isSmoothingSupported
+        return CreateQuadCurvePath(rawPoints, !smoothing)
+    }
+
+    func draw(inContext ctx: CGContext, withSize size: CGSize) -> Bool {
+        if self.isCulled {
+            return false
+        }
+        ctx.saveGState()
+        defer { ctx.restoreGState() }
+        ctx.setStrokeColor(self.color.uiColor.cgColor)
+        self.tool.configureContextForDrawing(ctx)
+        if let path = self.createPath(self.points, size) {
+            self.tool.performDrawingInContext(ctx, path: path)
+        }
+        for point in self.predictive {
+            point.draw(inContext: ctx, withSize: size, forDrawing: self)
+        }
+        return true
     }
 
     func serialize() throws -> [String : Any] {
@@ -90,13 +131,11 @@ internal final class Drawing : Serializable {
             "drawingID": self.id.uuidString,
             "version": self.version,
             "tool": try self.tool.serialize(),
-            "size": try self.size.serialize(),
-            "count": self.points.count,
             "points": try self.points.map({ try $0.serialize() }),
-            "smoothing": try self.smoothing.serialize(),
             "isCulled": self.isCulled,
             "metadata": self.metadata,
             "color": try self.color.serialize(),
+            "isSmoothingEnabled": self.isSmoothingEnabled,
             "_type": "drawing"
         ]
     }
@@ -104,9 +143,7 @@ internal final class Drawing : Serializable {
     init(_ payload: [String : Any]) throws {
         self.version = try Serializer.validateVersion(payload["version"], "Drawing")
         self.id = try Serializer.decodeUUID(payload["drawingID"])
-        self.size = try CGSize.load(payload["size"])
         self.tool = try LoadTool(payload["tool"])
-        self.smoothing = try DecodeSmoothingAlgo(payload["smoothing"])
         self.isCulled = payload["isCulled"] as? Bool ?? false
         self.metadata = payload["metadata"] as? [String: Any] ?? [:]
         guard let points = payload["points"] as? [[String: Any]] else {
@@ -114,23 +151,7 @@ internal final class Drawing : Serializable {
         }
         self.points = try points.map { try Point($0) }
         self.color = try Color(payload["color"] as? [String: Any] ?? [:])
-    }
-
-    private func drawSmoothPoints(_ points: [Point], _ ctx: CGContext) {
-        guard points.count > 0 else {
-            return
-        }
-
-        let path = CGMutablePath()
-        path.move(to: points[0].previous)
-
-        for point in points {
-            path.addLine(to: point.location)
-        }
-
-        let smoothed = self.smoothing.smoothPath(path)
-        ctx.addPath(smoothed)
-        ctx.strokePath()
+        self.isSmoothingEnabled = payload["isSmoothingEnabled"] as? Bool ?? true
     }
 }
 

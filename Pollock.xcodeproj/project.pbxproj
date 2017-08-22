@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		94060D931F3397A200703402 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94060D921F3397A200703402 /* String.swift */; };
-		94060D951F33980D00703402 /* CatmullRom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94060D941F33980D00703402 /* CatmullRom.swift */; };
 		94060D971F339B5900703402 /* CGPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94060D961F339B5900703402 /* CGPath.swift */; };
 		94060D991F33A01A00703402 /* CGPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94060D981F33A01A00703402 /* CGPoint.swift */; };
 		9407F1EE1EC4E99300568034 /* Compressor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9407F1ED1EC4E99300568034 /* Compressor.swift */; };
@@ -16,6 +15,7 @@
 		9407F1FF1EC4F89F00568034 /* CompressorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9407F1FE1EC4F89F00568034 /* CompressorTests.swift */; };
 		9407F2021EC4FAFE00568034 /* decompress-test.txt in Resources */ = {isa = PBXBuildFile; fileRef = 9407F2001EC4FAFE00568034 /* decompress-test.txt */; };
 		9407F2061EC503A500568034 /* decompress-test.txt.zlib in Resources */ = {isa = PBXBuildFile; fileRef = 9407F2051EC503A500568034 /* decompress-test.txt.zlib */; };
+		9411A69B1F4CD7D30009FE86 /* CGRect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9411A69A1F4CD7D30009FE86 /* CGRect.swift */; };
 		942033B31EB2CDAE00A458F8 /* Pollock.h in Headers */ = {isa = PBXBuildFile; fileRef = 942033B11EB2CDAE00A458F8 /* Pollock.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		942033C21EB2CDF900A458F8 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 942033C11EB2CDF900A458F8 /* main.m */; };
 		942033C51EB2CDF900A458F8 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 942033C41EB2CDF900A458F8 /* AppDelegate.m */; };
@@ -32,7 +32,6 @@
 		949D00241F312DF800AEF991 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 949D00231F312DF800AEF991 /* Color.swift */; };
 		94A46B9C1F200E2900A0EE0B /* Project.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94A46B9B1F200E2900A0EE0B /* Project.swift */; };
 		94A7D9D21F0EFA7F00BD9C2B /* Geometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94A7D9D11F0EFA7F00BD9C2B /* Geometry.swift */; };
-		94A7D9D41F0F0A6C00BD9C2B /* Smoothing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94A7D9D31F0F0A6C00BD9C2B /* Smoothing.swift */; };
 		94CA185B1F16D02600E379C2 /* Version.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94CA185A1F16D02600E379C2 /* Version.swift */; };
 		94CA185D1F16D0AC00E379C2 /* Header.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94CA185C1F16D0AC00E379C2 /* Header.swift */; };
 		94D30C691EC55240009D32F6 /* Canvas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94D30C681EC55240009D32F6 /* Canvas.swift */; };
@@ -40,6 +39,9 @@
 		94D30C6D1EC557AE009D32F6 /* Tool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94D30C6C1EC557AE009D32F6 /* Tool.swift */; };
 		94D30C6F1EC57AF0009D32F6 /* Renderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94D30C6E1EC57AF0009D32F6 /* Renderer.swift */; };
 		94D30C741EC57CD2009D32F6 /* GraphicsRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94D30C731EC57CD2009D32F6 /* GraphicsRenderer.swift */; };
+		94D6F61F1F4C90D0008F25FF /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94D6F61E1F4C90D0008F25FF /* Location.swift */; };
+		94D6F6211F4C981E008F25FF /* CGSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94D6F6201F4C981E008F25FF /* CGSize.swift */; };
+		94E5C2DF1F4C9D86000CC2B2 /* CreateQuadCurvePath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94E5C2DE1F4C9D86000CC2B2 /* CreateQuadCurvePath.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -75,7 +77,6 @@
 
 /* Begin PBXFileReference section */
 		94060D921F3397A200703402 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
-		94060D941F33980D00703402 /* CatmullRom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatmullRom.swift; sourceTree = "<group>"; };
 		94060D961F339B5900703402 /* CGPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGPath.swift; sourceTree = "<group>"; };
 		94060D981F33A01A00703402 /* CGPoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGPoint.swift; sourceTree = "<group>"; };
 		9407F1ED1EC4E99300568034 /* Compressor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Compressor.swift; sourceTree = "<group>"; };
@@ -84,6 +85,7 @@
 		9407F1FE1EC4F89F00568034 /* CompressorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompressorTests.swift; sourceTree = "<group>"; };
 		9407F2001EC4FAFE00568034 /* decompress-test.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "decompress-test.txt"; sourceTree = "<group>"; };
 		9407F2051EC503A500568034 /* decompress-test.txt.zlib */ = {isa = PBXFileReference; lastKnownFileType = text; path = "decompress-test.txt.zlib"; sourceTree = "<group>"; };
+		9411A69A1F4CD7D30009FE86 /* CGRect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGRect.swift; sourceTree = "<group>"; };
 		942033AE1EB2CDAE00A458F8 /* Pollock.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pollock.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		942033B11EB2CDAE00A458F8 /* Pollock.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Pollock.h; sourceTree = "<group>"; };
 		942033B21EB2CDAE00A458F8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -105,7 +107,6 @@
 		94A46B9B1F200E2900A0EE0B /* Project.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Project.swift; sourceTree = "<group>"; };
 		94A46B9F1F2017BD00A0EE0B /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		94A7D9D11F0EFA7F00BD9C2B /* Geometry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Geometry.swift; sourceTree = "<group>"; };
-		94A7D9D31F0F0A6C00BD9C2B /* Smoothing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Smoothing.swift; sourceTree = "<group>"; };
 		94CA185A1F16D02600E379C2 /* Version.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Version.swift; sourceTree = "<group>"; };
 		94CA185C1F16D0AC00E379C2 /* Header.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Header.swift; sourceTree = "<group>"; };
 		94D30C681EC55240009D32F6 /* Canvas.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Canvas.swift; sourceTree = "<group>"; };
@@ -113,6 +114,9 @@
 		94D30C6C1EC557AE009D32F6 /* Tool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tool.swift; sourceTree = "<group>"; };
 		94D30C6E1EC57AF0009D32F6 /* Renderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Renderer.swift; sourceTree = "<group>"; };
 		94D30C731EC57CD2009D32F6 /* GraphicsRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphicsRenderer.swift; sourceTree = "<group>"; };
+		94D6F61E1F4C90D0008F25FF /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
+		94D6F6201F4C981E008F25FF /* CGSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGSize.swift; sourceTree = "<group>"; };
+		94E5C2DE1F4C9D86000CC2B2 /* CreateQuadCurvePath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateQuadCurvePath.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -148,6 +152,9 @@
 				94060D921F3397A200703402 /* String.swift */,
 				94060D961F339B5900703402 /* CGPath.swift */,
 				94060D981F33A01A00703402 /* CGPoint.swift */,
+				94D6F6201F4C981E008F25FF /* CGSize.swift */,
+				9411A69A1F4CD7D30009FE86 /* CGRect.swift */,
+				94E5C2DE1F4C9D86000CC2B2 /* CreateQuadCurvePath.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -260,8 +267,7 @@
 				94CA185A1F16D02600E379C2 /* Version.swift */,
 				94CA185C1F16D0AC00E379C2 /* Header.swift */,
 				949D00231F312DF800AEF991 /* Color.swift */,
-				94A7D9D31F0F0A6C00BD9C2B /* Smoothing.swift */,
-				94060D941F33980D00703402 /* CatmullRom.swift */,
+				94D6F61E1F4C90D0008F25FF /* Location.swift */,
 			);
 			path = "Data Structure";
 			sourceTree = "<group>";
@@ -433,21 +439,23 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				94D6F6211F4C981E008F25FF /* CGSize.swift in Sources */,
+				9411A69B1F4CD7D30009FE86 /* CGRect.swift in Sources */,
 				948EB3AE1EB2EFDA008600CE /* Serializable.swift in Sources */,
 				94D30C741EC57CD2009D32F6 /* GraphicsRenderer.swift in Sources */,
 				942033E11EB2D66900A458F8 /* Drawing.swift in Sources */,
-				94060D951F33980D00703402 /* CatmullRom.swift in Sources */,
 				94A7D9D21F0EFA7F00BD9C2B /* Geometry.swift in Sources */,
 				942033DD1EB2CF9B00A458F8 /* DrawingView.swift in Sources */,
 				949D00241F312DF800AEF991 /* Color.swift in Sources */,
 				94CA185B1F16D02600E379C2 /* Version.swift in Sources */,
 				94060D991F33A01A00703402 /* CGPoint.swift in Sources */,
 				94D30C6D1EC557AE009D32F6 /* Tool.swift in Sources */,
-				94A7D9D41F0F0A6C00BD9C2B /* Smoothing.swift in Sources */,
 				94A46B9C1F200E2900A0EE0B /* Project.swift in Sources */,
 				94D30C6B1EC55410009D32F6 /* Serializer.swift in Sources */,
+				94D6F61F1F4C90D0008F25FF /* Location.swift in Sources */,
 				94D30C691EC55240009D32F6 /* Canvas.swift in Sources */,
 				94CA185D1F16D0AC00E379C2 /* Header.swift in Sources */,
+				94E5C2DF1F4C9D86000CC2B2 /* CreateQuadCurvePath.swift in Sources */,
 				9407F1EE1EC4E99300568034 /* Compressor.swift in Sources */,
 				94060D971F339B5900703402 /* CGPath.swift in Sources */,
 				94060D931F3397A200703402 /* String.swift in Sources */,

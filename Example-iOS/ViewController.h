@@ -19,5 +19,9 @@
 
 - (IBAction)loadDrawingAction:(id)sender;
 
+- (IBAction)toggleSmoothingAction:(id)sender;
+
+- (IBAction)toolSelectValueAction:(UISegmentedControl *)sender;
+
 @end
 

@@ -19,6 +19,8 @@
 }
 
 - (IBAction)saveDrawingsAction:(id)sender {
+    [self.drawingView.renderer performOcclusionCullingWithError:NULL];
+
     NSLog(@"====================================");
     {
         NSString *path = @"/Users/skylar/Desktop/drawing-output.json";
@@ -70,6 +72,34 @@
         NSLog(@"Load Error: %@",error);
     }
     [self.drawingView setNeedsDisplay];
+}
+
+- (IBAction)toggleSmoothingAction:(id)sender {
+    [self.drawingView setIsSmoothingEnabled:!self.drawingView.isSmoothingEnabled];
+    if (self.drawingView.isSmoothingEnabled) {
+        NSLog(@"Smoothing Enabled");
+    } else {
+        NSLog(@"Smoothing Disabled");
+    }
+}
+
+- (void)toolSelectValueAction:(UISegmentedControl *)sender {
+    switch (sender.selectedSegmentIndex) {
+        case 0: {
+            self.drawingView.currentTool = [[POLPenTool alloc] init];
+            break;
+        }
+        case 1: {
+            self.drawingView.currentTool = [[POLHighlighterTool alloc] init];
+            break;
+        }
+        case 2: {
+            self.drawingView.currentTool = [[POLEraserTool alloc] init];
+            break;
+        }
+    }
+
+    NSLog(@"Current Tool: %@",self.drawingView.currentTool);
 }
 
 @end

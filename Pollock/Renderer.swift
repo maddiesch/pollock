@@ -47,4 +47,9 @@ public class Renderer : NSObject {
         }
         self.project = proj
     }
+
+    @objc(performOcclusionCullingWithError:)
+    public func performOcclusionCulling() throws {
+        try self.project.performOcclusionCulling()
+    }
 }

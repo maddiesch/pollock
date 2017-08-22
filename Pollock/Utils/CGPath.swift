@@ -41,4 +41,9 @@ internal extension CGPath {
         }
         return points
     }
+
+    func boundingBoxForCullingWithLineWidth(_ width: CGFloat) -> CGRect {
+        let offset = ceil(width / 2.0) + 2.0
+        return self.boundingBox.insetBy(dx: -offset, dy: -offset)
+    }
 }

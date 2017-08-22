@@ -7,38 +7,44 @@
 //
 
 import Foundation
+import QuartzCore
+import UIKit
 
 @objc(POLTool)
-open class Tool : NSObject, Serializable {
-    open var lineWidth: CGFloat = 8.0 {
+public class Tool : NSObject, Serializable {
+    public var lineWidth: CGFloat = 8.0 {
         didSet {
             self.toolValuesChanged("lineWidth")
         }
     }
 
-    open var forceSensitivity: CGFloat = 1.0 {
+    public var forceSensitivity: CGFloat = 1.0 {
         didSet {
             self.toolValuesChanged("forceSensitivity")
         }
     }
 
-    open func calculateLineWidth(forForce force: CGFloat) -> CGFloat {
+    public func calculateLineWidth(forForce force: CGFloat) -> CGFloat {
         assert(self.forceSensitivity > 0.0, "Can't have a force forceSensitivity of 0")
         return self.lineWidth * (force / self.forceSensitivity)
     }
 
-    open var name: String {
+    public var name: String {
         return "tool"
     }
 
-    open fileprivate(set) var version: PollockVersion = PollockCurrentVersion
+    public fileprivate(set) var version: PollockVersion = PollockCurrentVersion
+
+    public var isSmoothingSupported: Bool {
+        return true
+    }
 
     public func serialize() throws -> [String : Any] {
         return [
             "name": self.name,
             "version": self.version,
             "lineWidth": self.lineWidth,
-            "force": self.forceSensitivity,
+            "forceSensitivity": self.forceSensitivity,
             "_type": "tool"
         ]
     }
@@ -58,6 +64,16 @@ open class Tool : NSObject, Serializable {
             NotificationCenter.default.post(notification)
         }
     }
+
+    public func configureContextForDrawing(_ ctx: CGContext) {
+        ctx.setLineWidth(self.calculateLineWidth(forForce: 1.0))
+        ctx.setBlendMode(.normal)
+    }
+
+    public func performDrawingInContext(_ ctx: CGContext, path: CGPath) {
+        ctx.addPath(path)
+        ctx.strokePath()
+    }
 }
 
 internal func LoadTool(_ object: Any?) throws -> Tool {
@@ -70,6 +86,12 @@ internal func LoadTool(_ object: Any?) throws -> Tool {
     switch name {
     case "pen":
         return try PenTool(payload)
+    case "eraser":
+        return try EraserTool(payload)
+    case "text":
+        return try TextTool(payload)
+    case "highlighter":
+        return try HighlighterTool(payload)
     default:
         throw SerializerError("Unsupported tool type \(name)")
     }
@@ -94,7 +116,7 @@ public final class PenTool : Tool {
         super.init()
         self.version = try Serializer.validateVersion(payload["version"], "PenTool")
         self.lineWidth = payload["lineWidth"] as? CGFloat ?? 16.0
-        self.forceSensitivity = payload["force"] as? CGFloat ?? 8.0
+        self.forceSensitivity = payload["forceSensitivity"] as? CGFloat ?? 8.0
     }
 }
 
@@ -116,7 +138,7 @@ public final class HighlighterTool : Tool {
         super.init()
         self.version = try Serializer.validateVersion(payload["version"], "HighlighterTool")
         self.lineWidth = payload["lineWidth"] as? CGFloat ?? 16.0
-        self.forceSensitivity = payload["force"] as? CGFloat ?? 1.0
+        self.forceSensitivity = payload["forceSensitivity"] as? CGFloat ?? 1.0
     }
 }
 
@@ -124,6 +146,10 @@ public final class HighlighterTool : Tool {
 public final class EraserTool : Tool {
     public override var name: String {
         return "eraser"
+    }
+
+    public override var isSmoothingSupported: Bool {
+        return false
     }
 
     public override init() {
@@ -136,12 +162,33 @@ public final class EraserTool : Tool {
         super.init()
         self.version = try Serializer.validateVersion(payload["version"], "EraserTool")
     }
+
+    public override func performDrawingInContext(_ ctx: CGContext, path: CGPath) {
+        let rect = EraserTool.eraseRect(path)
+        if rect.isEmpty {
+            return
+        }
+        ctx.setFillColor(UIColor.clear.cgColor)
+        ctx.clear(rect)
+    }
+
+    internal static func eraseRect(_ path: CGPath) -> CGRect {
+        let points = path.getPoints()
+        guard points.count >= 2 else {
+            return CGRect.null
+        }
+        return CGRect(points.first!, points.last!)
+    }
 }
 
 @objc(POLTextTool)
 public final class TextTool : Tool {
     public override var name: String {
         return "text"
+    }
+
+    public override var isSmoothingSupported: Bool {
+        return false
     }
 
     public override init() {

@@ -22,39 +22,3 @@ extension Serializable {
         return try Self(payload)
     }
 }
-
-// MARK: - Built in Types
-extension CGSize : Serializable {
-    public init(_ payload: [String : Any]) throws {
-        guard let width = payload["width"] as? CGFloat else {
-            throw SerializerError("Size missing width")
-        }
-        guard let height = payload["height"] as? CGFloat else {
-            throw SerializerError("Size missing height")
-        }
-        self.init(width: width, height: height)
-    }
-
-    public func serialize() throws -> [String : Any] {
-        return [
-            "width": self.width,
-            "height": self.height
-        ]
-    }
-}
-
-extension CGPoint : Serializable {
-    public init(_ payload: [String : Any]) throws {
-        guard let x = payload["x"] as? CGFloat else {
-            throw SerializerError("Size missing width")
-        }
-        guard let y = payload["y"] as? CGFloat else {
-            throw SerializerError("Size missing height")
-        }
-        self.init(x: x, y: y)
-    }
-
-    public func serialize() throws -> [String : Any] {
-        return ["x": self.x, "y": self.y]
-    }
-}

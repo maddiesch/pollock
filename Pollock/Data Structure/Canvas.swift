@@ -11,10 +11,6 @@ import Foundation
 internal final class Canvas : Serializable, Hashable {
     let index: Int
 
-    var size: CGSize {
-        return self.drawings.first?.size ?? CGSize.zero
-    }
-
     init(atIndex index: Int) {
         self.index = index
     }
@@ -64,5 +60,36 @@ internal final class Canvas : Serializable, Hashable {
 
     var hashValue: Int {
         return self.index
+    }
+
+    func performOcclusionCulling() throws {
+        let size = CGSize(width: 1000.0, height: 1000.0)
+        var eraseRects: Array<CGRect> = []
+        for drawing in self.drawings.reversed() {
+            switch drawing.tool {
+            case is EraserTool:
+                guard let path = drawing.createPath(forSize: size) else {
+                    continue;
+                }
+                let rect = EraserTool.eraseRect(path)
+                if !rect.isEmpty {
+                    eraseRects.append(rect)
+                }
+            case is TextTool:
+                break;
+            default:
+                guard let path = drawing.createPath(forSize: size) else {
+                    continue;
+                }
+                drawing.isCulled = false
+                let rect = path.boundingBoxForCullingWithLineWidth(drawing.tool.calculateLineWidth(forForce: 1.0))
+                for erase in eraseRects {
+                    if erase.contains(rect) {
+                        drawing.isCulled = true
+                        break;
+                    }
+                }
+            }
+        }
     }
 }

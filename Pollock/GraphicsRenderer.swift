@@ -14,12 +14,18 @@ internal class GraphicsRenderer : Renderer {
     override func draw(inContext ctx: CGContext, forRect rect: CGRect) throws {
         ctx.saveGState()
         ctx.setLineCap(.round)
-        let scale = ScaleFactor(toSize: rect.size, fromSize: self.project.currentCanvas.size)
-        ctx.scaleBy(x: scale.x, y: scale.y)
+        ctx.setLineJoin(.round)
+        ctx.setMiterLimit(0.0)
         defer { ctx.restoreGState() }
 
+        var performed = 0
+        var count = 0
         for drawing in self.project.currentCanvas.allDrawings {
-            drawing.draw(inContext: ctx)
+            count += 1
+            if drawing.draw(inContext: ctx, withSize: rect.size) {
+                performed += 1
+            }
         }
+        print("RENDER: \(performed) of \(count)")
     }
 }

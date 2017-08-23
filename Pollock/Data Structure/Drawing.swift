@@ -116,7 +116,7 @@ internal final class Drawing : Serializable {
         ctx.saveGState()
         defer { ctx.restoreGState() }
         ctx.setStrokeColor(self.color.uiColor.cgColor)
-        self.tool.configureContextForDrawing(ctx)
+        self.tool.configureContextForDrawing(ctx, size)
         if let path = self.createPath(self.points, size) {
             self.tool.performDrawingInContext(ctx, path: path)
         }

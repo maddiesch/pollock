@@ -9,6 +9,11 @@
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
+    <customFonts key="customFonts">
+        <array key="Courier.ttc">
+            <string>Courier</string>
+        </array>
+    </customFonts>
     <scenes>
         <!--View Controller-->
         <scene sceneID="tne-QT-ifu">
@@ -56,7 +61,7 @@
                                 </subviews>
                             </stackView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wyg-ew-cW1" customClass="POLDrawingView">
-                                <rect key="frame" x="0.0" y="94" width="375" height="573"/>
+                                <rect key="frame" x="0.0" y="94" width="375" height="542.5"/>
                                 <color key="backgroundColor" red="0.87755789974619292" green="0.87755789974619292" blue="0.87755789974619292" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                             </view>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="3Jz-XI-z7p">
@@ -70,6 +75,12 @@
                                     <action selector="toolSelectValueAction:" destination="BYZ-38-t0r" eventType="valueChanged" id="zac-zb-MvT"/>
                                 </connections>
                             </segmentedControl>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="I4A-P0-Zh8">
+                                <rect key="frame" x="16" y="647" width="343" height="12"/>
+                                <fontDescription key="fontDescription" name="Courier" family="Courier" pointSize="12"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
@@ -77,15 +88,19 @@
                             <constraint firstItem="wyg-ew-cW1" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="8DB-Eq-5Cj"/>
                             <constraint firstItem="U13-my-aTG" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="CK9-xV-xvy"/>
                             <constraint firstItem="wyg-ew-cW1" firstAttribute="top" secondItem="3Jz-XI-z7p" secondAttribute="bottom" constant="8" id="JKc-vI-HBH"/>
-                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="wyg-ew-cW1" secondAttribute="bottom" id="R9y-S0-sm7"/>
+                            <constraint firstItem="I4A-P0-Zh8" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="LfH-wY-GUK"/>
                             <constraint firstItem="3Jz-XI-z7p" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="Vmq-gB-5mO"/>
+                            <constraint firstItem="I4A-P0-Zh8" firstAttribute="top" secondItem="wyg-ew-cW1" secondAttribute="bottom" constant="10.5" id="dDU-MS-pmX"/>
                             <constraint firstItem="3Jz-XI-z7p" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailingMargin" id="igh-pg-n3P"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="I4A-P0-Zh8" secondAttribute="bottom" constant="8" id="m8i-BF-d7l"/>
+                            <constraint firstItem="I4A-P0-Zh8" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailingMargin" id="qJb-Mz-DWZ"/>
                             <constraint firstItem="3Jz-XI-z7p" firstAttribute="top" secondItem="3Kt-B0-bop" secondAttribute="bottom" constant="8" id="src-j6-gLH"/>
                             <constraint firstItem="U13-my-aTG" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="vCE-UR-AWw"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="drawingView" destination="wyg-ew-cW1" id="q2w-yh-oCE"/>
+                        <outlet property="statusLabel" destination="I4A-P0-Zh8" id="QYa-YD-1ZI"/>
                         <outlet property="view" destination="8bC-Xf-vdC" id="T4B-Gm-T4S"/>
                     </connections>
                 </viewController>

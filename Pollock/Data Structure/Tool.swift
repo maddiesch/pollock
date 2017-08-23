@@ -12,11 +12,17 @@ import UIKit
 
 @objc(POLTool)
 public class Tool : NSObject, Serializable {
-    public var lineWidth: CGFloat = 8.0 {
-        didSet {
+    @objc
+    public var lineWidth: CGFloat {
+        get {
+            return self._lineWidth
+        }
+        set {
+            self._lineWidth = newValue.clamp(0.0 ... 1.0)
             self.toolValuesChanged("lineWidth")
         }
     }
+    private var _lineWidth: CGFloat = 0.02
 
     public var forceSensitivity: CGFloat = 1.0 {
         didSet {
@@ -24,11 +30,14 @@ public class Tool : NSObject, Serializable {
         }
     }
 
-    public func calculateLineWidth(forForce force: CGFloat) -> CGFloat {
-        assert(self.forceSensitivity > 0.0, "Can't have a force forceSensitivity of 0")
-        return self.lineWidth * (force / self.forceSensitivity)
+    public func calculateLineWidth(forSize size: CGSize) -> CGFloat {
+        if size.isEmpty {
+            return 1.0;
+        }
+        return size.height * self.lineWidth;
     }
 
+    @objc
     public var name: String {
         return "tool"
     }
@@ -65,14 +74,21 @@ public class Tool : NSObject, Serializable {
         }
     }
 
-    public func configureContextForDrawing(_ ctx: CGContext) {
-        ctx.setLineWidth(self.calculateLineWidth(forForce: 1.0))
+    public func configureContextForDrawing(_ ctx: CGContext, _ size: CGSize) {
+        ctx.setLineWidth(self.calculateLineWidth(forSize: size))
         ctx.setBlendMode(.normal)
     }
 
     public func performDrawingInContext(_ ctx: CGContext, path: CGPath) {
         ctx.addPath(path)
         ctx.strokePath()
+
+        // This code will draw the culling box as a red stroke around the value
+//        let rect = path.boundingBoxForCullingWithLineWidth(self.lineWidth)
+//        ctx.setLineWidth(1.0)
+//        ctx.addRect(rect)
+//        ctx.setStrokeColor(UIColor.red.cgColor)
+//        ctx.strokePath()
     }
 }
 
@@ -108,7 +124,7 @@ public final class PenTool : Tool {
         super.init()
 
         self.version = PollockCurrentVersion
-        self.lineWidth = 16.0
+        self.lineWidth = 0.01
         self.forceSensitivity = 1.0
     }
     
@@ -130,7 +146,7 @@ public final class HighlighterTool : Tool {
         super.init()
 
         self.version = PollockCurrentVersion
-        self.lineWidth = 16.0
+        self.lineWidth = 0.01
         self.forceSensitivity = 1.0
     }
 

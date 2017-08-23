@@ -13,6 +13,8 @@
 
 @property (nonatomic, weak) IBOutlet POLDrawingView *drawingView;
 
+@property (nonatomic, weak) IBOutlet UILabel *statusLabel;
+
 - (IBAction)clearAllDrawingsAction:(id)sender;
 
 - (IBAction)saveDrawingsAction:(id)sender;

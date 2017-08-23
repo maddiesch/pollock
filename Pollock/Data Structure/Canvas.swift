@@ -72,6 +72,12 @@ internal final class Canvas : Serializable, Hashable {
                     continue;
                 }
                 let rect = EraserTool.eraseRect(path)
+                for erase in eraseRects {
+                    if erase.contains(rect) {
+                        drawing.isCulled = true
+                        break;
+                    }
+                }
                 if !rect.isEmpty {
                     eraseRects.append(rect)
                 }
@@ -82,7 +88,7 @@ internal final class Canvas : Serializable, Hashable {
                     continue;
                 }
                 drawing.isCulled = false
-                let rect = path.boundingBoxForCullingWithLineWidth(drawing.tool.calculateLineWidth(forForce: 1.0))
+                let rect = path.boundingBoxForCullingWithLineWidth(drawing.tool.calculateLineWidth(forSize: size))
                 for erase in eraseRects {
                     if erase.contains(rect) {
                         drawing.isCulled = true

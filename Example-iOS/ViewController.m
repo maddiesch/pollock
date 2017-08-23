@@ -14,6 +14,19 @@
 
 @implementation ViewController
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+
+    self.drawingView.layer.borderColor = [[UIColor blackColor] CGColor];
+    self.drawingView.layer.borderWidth = 1.0;
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+
+    [self updateStateLabel];
+}
+
 - (IBAction)clearAllDrawingsAction:(id)sender {
     [self.drawingView clearDrawings];
 }
@@ -55,6 +68,8 @@
 
         if (![data writeToFile:path atomically:YES]) {
             NSLog(@"Failed to save test file");
+        } else {
+            NSLog(@"SAVED: %@",path);
         }
     }
 }
@@ -76,11 +91,7 @@
 
 - (IBAction)toggleSmoothingAction:(id)sender {
     [self.drawingView setIsSmoothingEnabled:!self.drawingView.isSmoothingEnabled];
-    if (self.drawingView.isSmoothingEnabled) {
-        NSLog(@"Smoothing Enabled");
-    } else {
-        NSLog(@"Smoothing Disabled");
-    }
+    [self updateStateLabel];
 }
 
 - (void)toolSelectValueAction:(UISegmentedControl *)sender {
@@ -98,8 +109,11 @@
             break;
         }
     }
+    [self updateStateLabel];
+}
 
-    NSLog(@"Current Tool: %@",self.drawingView.currentTool);
+- (void)updateStateLabel {
+    self.statusLabel.text = [NSString stringWithFormat:@"t:%@ <%f> s:%d",NSStringFromClass(self.drawingView.currentTool.class),self.drawingView.currentTool.lineWidth,self.drawingView.isSmoothingEnabled];
 }
 
 @end

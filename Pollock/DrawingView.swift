@@ -31,6 +31,10 @@ public final class DrawingView : UIView {
         return self.renderer.project.currentCanvas
     }
 
+    private var isErasing: Bool {
+        return self.currentTool is EraserTool
+    }
+
     @objc
     public func clearDrawings() {
         self.canvas.clear()
@@ -117,7 +121,7 @@ public final class DrawingView : UIView {
             }
         }
 
-        return CreateMinimumBoundingRect(forPoints: points, padding: self.currentTool.lineWidth + 4.0)
+        return CreateMinimumBoundingRect(forPoints: points, padding: self.currentTool.calculateLineWidth(forSize: self.bounds.size))
     }
 
     private final func handle(_ touch: UITouch, predictive: Bool) -> (CGPoint, CGPoint) {
@@ -143,6 +147,11 @@ public final class DrawingView : UIView {
         }
         do {
             try self.renderer.draw(inContext: ctx, forRect: self.bounds)
+
+            // Use this to draw the render rect in orange
+//            ctx.setStrokeColor(UIColor.orange.cgColor)
+//            ctx.setLineWidth(1.0)
+//            ctx.stroke(rect)
         } catch {
             print("Failed to draw")
             print(error)

@@ -18,14 +18,8 @@ internal class GraphicsRenderer : Renderer {
         ctx.setMiterLimit(0.0)
         defer { ctx.restoreGState() }
 
-        var performed = 0
-        var count = 0
         for drawing in self.project.currentCanvas.allDrawings {
-            count += 1
-            if drawing.draw(inContext: ctx, withSize: rect.size) {
-                performed += 1
-            }
+            _ = drawing.draw(inContext: ctx, withSize: rect.size)
         }
-        print("RENDER: \(performed) of \(count)")
     }
 }

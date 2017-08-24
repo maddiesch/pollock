@@ -43,3 +43,8 @@ extension CGSize {
         return self.width == 0.0 || self.height == 0.0
     }
 }
+
+public func PercentOfRange(_ range: ClosedRange<CGFloat>, _ value: CGFloat) -> CGFloat {
+    let raw = (value - range.lowerBound) / (range.upperBound - range.lowerBound)
+    return min(max(0.0, raw), 1.0)
+}

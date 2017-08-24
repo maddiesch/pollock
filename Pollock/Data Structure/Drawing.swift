@@ -25,6 +25,10 @@ internal final class Drawing : Serializable {
 
     let tool: Tool
 
+    internal var allPoints: [Point] {
+        return self.points
+    }
+
     init(tool: Tool, isSmoothingEnabled: Bool = true) {
         self.version = PollockCurrentVersion
         self.tool = tool

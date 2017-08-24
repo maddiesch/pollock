@@ -35,6 +35,8 @@ public final class DrawingView : UIView {
         return self.currentTool is EraserTool
     }
 
+    private var lastRenderRect: CGRect?
+
     @objc
     public func clearDrawings() {
         self.canvas.clear()
@@ -121,7 +123,15 @@ public final class DrawingView : UIView {
             }
         }
 
+        if self.isErasing {
+            return self.eraseRenderRect()
+        }
+
         return CreateMinimumBoundingRect(forPoints: points, padding: self.currentTool.calculateLineWidth(forSize: self.bounds.size))
+    }
+
+    private func eraseRenderRect() -> CGRect {
+        return self.bounds
     }
 
     private final func handle(_ touch: UITouch, predictive: Bool) -> (CGPoint, CGPoint) {
@@ -148,13 +158,71 @@ public final class DrawingView : UIView {
         do {
             try self.renderer.draw(inContext: ctx, forRect: self.bounds)
 
+            if self.isErasing {
+                if let drawing = self.currentDrawing {
+                    ctx.saveGState()
+                    self.drawEraseInterface(ctx, EraserTool.eraseRect(drawing, self.bounds.size))
+                    ctx.restoreGState()
+                }
+            }
+
             // Use this to draw the render rect in orange
 //            ctx.setStrokeColor(UIColor.orange.cgColor)
 //            ctx.setLineWidth(1.0)
 //            ctx.stroke(rect)
+
+            if !rect.equalTo(self.bounds) {
+                self.lastRenderRect = rect
+            } else {
+                self.lastRenderRect = nil
+            }
         } catch {
             print("Failed to draw")
             print(error)
         }
+    }
+
+    private func drawEraseInterface(_ ctx: CGContext, _ rect: CGRect) {
+        UIColor(red: 0.1, green: 0.1, blue: 0.1, alpha: 1.0).set()
+        let path = UIBezierPath(rect: rect.integral)
+        path.lineWidth = 1.0
+        path.stroke()
+
+        let padding: CGFloat = 2.0
+        let size: CGFloat = 15.0
+        let wProgress = PercentOfRange((20.0 ... 80.0), rect.width)
+        let hProgress = PercentOfRange((20.0 ... 80.0), rect.height)
+        let progress = min(wProgress, hProgress)
+        self.tintColor.withAlphaComponent(progress).set()
+
+        /** Horizontal **/
+        // Top Left
+        UIBezierPath(rect: CGRect(x: rect.minX - padding, y: rect.minY - padding, width: size, height: (padding * 2.0))).fill()
+        // Top Right
+        UIBezierPath(rect: CGRect(x: rect.maxX - (size - padding), y: rect.minY - padding, width: size, height: (padding * 2.0))).fill()
+        // Bottom Left
+        UIBezierPath(rect: CGRect(x: rect.minX - padding, y: rect.maxY - padding, width: size, height: (padding * 2.0))).fill()
+        // Bottom Right
+        UIBezierPath(rect: CGRect(x: rect.maxX - (size - padding), y: rect.maxY - padding, width: size, height: (padding * 2.0))).fill()
+
+        /** Vertical **/
+        // Top Left
+        UIBezierPath(rect: CGRect(x: rect.minX - padding, y: rect.minY - padding, width: (padding * 2.0), height: size)).fill()
+        // Top Right
+        UIBezierPath(rect: CGRect(x: rect.maxX - padding, y: rect.minY - padding, width: (padding * 2.0), height: size)).fill()
+        // Bottom Left
+        UIBezierPath(rect: CGRect(x: rect.minX - padding, y: rect.maxY - size, width: (padding * 2.0), height: size)).fill()
+        // Bottom Right
+        UIBezierPath(rect: CGRect(x: rect.maxX - padding, y: rect.maxY - size, width: (padding * 2.0), height: size)).fill()
+
+        /** Horizontal Mid **/
+        self.tintColor.withAlphaComponent(PercentOfRange((60.0 ... 120.0), rect.width)).set()
+        UIBezierPath(rect: CGRect(x: rect.midX - (size / 2.0), y: rect.minY - padding, width: size, height: (padding * 2.0))).fill()
+        UIBezierPath(rect: CGRect(x: rect.midX - (size / 2.0), y: rect.maxY - padding, width: size, height: (padding * 2.0))).fill()
+
+        /** Vertical Mid **/
+        self.tintColor.withAlphaComponent(PercentOfRange((60.0 ... 120.0), rect.height)).set()
+        UIBezierPath(rect: CGRect(x: rect.minX - padding, y: rect.midY - (size / 2.0), width: (padding * 2.0), height: size)).fill()
+        UIBezierPath(rect: CGRect(x: rect.maxX - padding, y: rect.midY - (size / 2.0), width: (padding * 2.0), height: size)).fill()
     }
 }

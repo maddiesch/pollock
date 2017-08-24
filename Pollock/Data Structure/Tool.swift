@@ -31,10 +31,7 @@ public class Tool : NSObject, Serializable {
     }
 
     public func calculateLineWidth(forSize size: CGSize) -> CGFloat {
-        if size.isEmpty {
-            return 1.0;
-        }
-        return size.height * self.lineWidth;
+        return max(1.0, size.height * self.lineWidth);
     }
 
     @objc
@@ -194,6 +191,16 @@ public final class EraserTool : Tool {
             return CGRect.null
         }
         return CGRect(points.first!, points.last!)
+    }
+
+    internal static func eraseRect(_ drawing: Drawing, _ size: CGSize) -> CGRect {
+        let points = drawing.allPoints
+        guard points.count >= 2 else {
+            return CGRect.null
+        }
+        let p1 = points.first!.location.point(forSize: size)
+        let p2 = points.last!.location.point(forSize: size)
+        return CGRect(p1, p2).integral
     }
 }
 

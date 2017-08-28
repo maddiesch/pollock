@@ -18,6 +18,14 @@ public final class DrawingView : UIView {
 
     private var lastForce: CGFloat? = nil
 
+    public var isEnabled: Bool = true {
+        didSet {
+            self.setNeedsDisplay()
+            self.isHidden = !self.isEnabled
+            self.isUserInteractionEnabled = self.isEnabled
+        }
+    }
+
     @objc
     public var currentTool: Tool = {
         let tool = PenTool()
@@ -63,13 +71,19 @@ public final class DrawingView : UIView {
 
     // MARK: - Touch Tracking
     public override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        let drawing = Drawing(tool: self.currentTool, isSmoothingEnabled: self.isSmoothingEnabled)
+        guard self.isEnabled else {
+            return
+        }
+        let drawing = Drawing(tool: self.currentTool.duplicate(), isSmoothingEnabled: self.isSmoothingEnabled)
         self.currentDrawing = drawing
         self.canvas.addDrawing(drawing)
         self.process(touches, forEvent: event)
     }
 
     public override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard self.isEnabled else {
+            return
+        }
         self.currentDrawing?.cullExtraneous(forSize: self.bounds.size)
         self.currentDrawing = nil
         self.process(touches, forEvent: event)
@@ -77,14 +91,22 @@ public final class DrawingView : UIView {
     }
 
     public override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard self.isEnabled else {
+            return
+        }
         self.currentDrawing?.cullExtraneous(forSize: self.bounds.size)
         self.currentDrawing = nil
         self.process(touches, forEvent: event)
     }
 
     public override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard self.isEnabled else {
+            return
+        }
         self.process(touches, forEvent: event)
     }
+
+
 
     // MARK: - Touch Processing
     private final func process(_ touches: Set<UITouch>, forEvent event: UIEvent?) {
@@ -151,6 +173,9 @@ public final class DrawingView : UIView {
     }
 
     public override func draw(_ rect: CGRect) {
+        guard self.isEnabled else {
+            return
+        }
         guard let ctx = UIGraphicsGetCurrentContext() else {
             print("Don't have a current context.  WTF!")
             return
@@ -201,7 +226,7 @@ public final class DrawingView : UIView {
         // Top Right
         UIBezierPath(rect: CGRect(x: rect.maxX - (size - padding), y: rect.minY - padding, width: size, height: (padding * 2.0))).fill()
         // Bottom Left
-        UIBezierPath(rect: CGRect(x: rect.minX - padding, y: rect.maxY - padding, width: size, height: (padding * 2.0))).fill()
+        UIBezierPath(rect: CGRect(x: rect.minX - padding, y: rect.maxY - padding, width: size, height: (padding *  2.0))).fill()
         // Bottom Right
         UIBezierPath(rect: CGRect(x: rect.maxX - (size - padding), y: rect.maxY - padding, width: size, height: (padding * 2.0))).fill()
 

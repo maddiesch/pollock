@@ -10,8 +10,12 @@ import Foundation
 import QuartzCore
 import UIKit
 
+protocol Duplicating {
+    func duplicate() -> Self
+}
+
 @objc(POLTool)
-public class Tool : NSObject, Serializable {
+public class Tool : NSObject, Serializable, Duplicating {
     @objc
     public var lineWidth: CGFloat {
         get {
@@ -86,6 +90,15 @@ public class Tool : NSObject, Serializable {
 //        ctx.addRect(rect)
 //        ctx.setStrokeColor(UIColor.red.cgColor)
 //        ctx.strokePath()
+    }
+
+    public func duplicate() -> Self {
+        do {
+            let dup = try self.serialize()
+            return try type(of: self).init(dup)
+        } catch {
+            return self
+        }
     }
 }
 

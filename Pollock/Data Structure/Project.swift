@@ -54,7 +54,7 @@ public final class Project : NSObject, Serializable {
         self.canvases = Set(canvases)
     }
 
-    func performOcclusionCulling() throws {
+    public func performOcclusionCulling() throws {
         for canvas in self.canvases {
             let start = canvas.allDrawings.filter { !$0.isCulled }.count
             try canvas.performOcclusionCulling()

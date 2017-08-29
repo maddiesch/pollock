@@ -9,12 +9,23 @@
 import Foundation
 import UIKit
 
+@objc(POLDrawingProvider)
+public protocol DrawingProvider {
+    func rendererForDrawingView(_ drawingView: DrawingView) -> Renderer
+}
+
 @objc(POLDrawingView)
 public final class DrawingView : UIView {
     internal var currentDrawing: Drawing?
 
+    public weak var drawingProvider: DrawingProvider?
+
     @objc
-    public private(set) var renderer = Renderer.createRenderer()
+    public private(set) var renderer: Renderer = Renderer.createRenderer() {
+        didSet {
+            self.setNeedsDisplay()
+        }
+    }
 
     private var lastForce: CGFloat? = nil
 
@@ -69,6 +80,23 @@ public final class DrawingView : UIView {
         self.layer.needsDisplayOnBoundsChange = true
     }
 
+    public init(_ provider: DrawingProvider) {
+        super.init(frame: CGRect(x: 0.0, y: 0.0, width: 320.0, height:320.0))
+
+        self.drawingProvider = provider
+        self.renderer = provider.rendererForDrawingView(self)
+
+        self.backgroundColor = UIColor.clear
+        self.isOpaque = false
+
+        self.layer.needsDisplayOnBoundsChange = true
+    }
+
+    // MARK: - State
+    public func updateRenderer() {
+        self.renderer = self.drawingProvider?.rendererForDrawingView(self) ?? Renderer.createRenderer()
+    }
+
     // MARK: - Touch Tracking
     public override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard self.isEnabled else {
@@ -105,8 +133,6 @@ public final class DrawingView : UIView {
         }
         self.process(touches, forEvent: event)
     }
-
-
 
     // MARK: - Touch Processing
     private final func process(_ touches: Set<UITouch>, forEvent event: UIEvent?) {

@@ -12,10 +12,18 @@ import QuartzCore
 @objc(POLRenderer)
 public class Renderer : NSObject {
     public class func createRenderer() -> Renderer {
-        return GraphicsRenderer()
+        return GraphicsRenderer(1)
     }
 
     public var project = Project()
+
+    public override init() {
+        fatalError("Use Renderer.createRenderer()")
+    }
+
+    internal init(_ val: Int) {
+        super.init()
+    }
 
     var currentCanvas: Canvas {
         get {

@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct Color : Serializable {
+public struct Color : Equatable, Serializable {
     /// Named colors support
     public let name: Name?
 
@@ -101,7 +101,7 @@ public struct Color : Serializable {
             }
         }
 
-        var color: Color {
+        public var color: Color {
             switch self {
             case .orange:
                 return Color(255.0, 127.5, 0.0, 1.0, self)
@@ -125,5 +125,9 @@ public struct Color : Serializable {
 
     init(_ name: Name) {
         self = name.color
+    }
+
+    public static func ==(lhs: Color, rhs: Color) -> Bool {
+        return lhs.red == rhs.red && lhs.green == rhs.green && lhs.blue == rhs.blue && lhs.alpha == rhs.alpha
     }
 }

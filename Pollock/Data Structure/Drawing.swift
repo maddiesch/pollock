@@ -29,11 +29,11 @@ internal final class Drawing : Serializable {
         return self.points
     }
 
-    init(tool: Tool, isSmoothingEnabled: Bool = true) {
+    init(tool: Tool, color: Color, isSmoothingEnabled: Bool = true) {
         self.version = PollockCurrentVersion
         self.tool = tool
         self.id = UUID()
-        self.color = Color.Name.black.color
+        self.color = color
         self.isSmoothingEnabled = isSmoothingEnabled
     }
 

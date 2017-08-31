@@ -38,10 +38,9 @@ public final class DrawingView : UIView {
     }
 
     @objc
-    public var currentTool: Tool = {
-        let tool = PenTool()
-        return tool
-    }()
+    public var currentTool: Tool = PenTool()
+
+    public var color: Color = Color.Name.black.color
 
     @objc
     public var isSmoothingEnabled: Bool = true
@@ -102,7 +101,7 @@ public final class DrawingView : UIView {
         guard self.isEnabled else {
             return
         }
-        let drawing = Drawing(tool: self.currentTool.duplicate(), isSmoothingEnabled: self.isSmoothingEnabled)
+        let drawing = Drawing(tool: self.currentTool.duplicate(), color: self.color, isSmoothingEnabled: self.isSmoothingEnabled)
         self.currentDrawing = drawing
         self.canvas.addDrawing(drawing)
         self.process(touches, forEvent: event)

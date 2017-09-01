@@ -122,11 +122,11 @@ internal struct ProjectError : CustomNSError {
         var localizedDescription: String {
             switch self {
             case .generic:
-                return NSLocalizedString("An unknown error occured", comment: "ProjectError Code generic")
+                return Localized("pollock.error.project-unknown")
             case .existingCanvas:
-                return NSLocalizedString("Project already contains a canvas for that index", comment: "ProjectError Code existingCanvas")
+                return Localized("pollock.error.project-existing-canvas")
             case .invalidProject:
-                return NSLocalizedString("The Project isn't valid", comment: "ProjectError Code invalidProject")
+                return Localized("pollock.error.project-invalid")
             }
         }
     }
@@ -153,7 +153,7 @@ internal struct ProjectError : CustomNSError {
     public var errorUserInfo: [String : Any] {
         return [
             NSLocalizedDescriptionKey: self.code.localizedDescription,
-            NSLocalizedFailureReasonErrorKey: self.message ?? NSLocalizedString("An unknown failure occurred", comment: "ProjectError default failure reason")
+            NSLocalizedFailureReasonErrorKey: self.message ?? Localized("pollock.error.generic-message")
         ]
     }
 }

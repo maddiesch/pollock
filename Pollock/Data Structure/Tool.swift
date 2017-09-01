@@ -100,6 +100,14 @@ public class Tool : NSObject, Serializable, Duplicating {
             return self
         }
     }
+
+    public var localizedUndoName: String {
+        fatalError("Must override")
+    }
+
+    public var localizedName: String {
+        fatalError("Must override")
+    }
 }
 
 internal func LoadTool(_ object: Any?) throws -> Tool {
@@ -144,6 +152,14 @@ public final class PenTool : Tool {
         self.lineWidth = payload["lineWidth"] as? CGFloat ?? 16.0
         self.forceSensitivity = payload["forceSensitivity"] as? CGFloat ?? 8.0
     }
+
+    public override var localizedUndoName: String {
+        return Localized("pollock.tool.undo-name-pen")
+    }
+
+    public override var localizedName: String {
+        return Localized("pollock.tool.name-pen")
+    }
 }
 
 @objc(POLHighlighterTool)
@@ -165,6 +181,14 @@ public final class HighlighterTool : Tool {
         self.version = try Serializer.validateVersion(payload["version"], "HighlighterTool")
         self.lineWidth = payload["lineWidth"] as? CGFloat ?? 16.0
         self.forceSensitivity = payload["forceSensitivity"] as? CGFloat ?? 1.0
+    }
+
+    public override var localizedUndoName: String {
+        return Localized("pollock.tool.undo-name-high")
+    }
+
+    public override var localizedName: String {
+        return Localized("pollock.tool.name-high")
     }
 }
 
@@ -215,6 +239,14 @@ public final class EraserTool : Tool {
         let p2 = points.last!.location.point(forSize: size)
         return CGRect(p1, p2).integral
     }
+
+    public override var localizedUndoName: String {
+        return Localized("pollock.tool.undo-name-erase")
+    }
+
+    public override var localizedName: String {
+        return Localized("pollock.tool.name-erase")
+    }
 }
 
 @objc(POLTextTool)
@@ -236,6 +268,14 @@ public final class TextTool : Tool {
     public required init(_ payload: [String : Any]) throws {
         super.init()
         self.version = try Serializer.validateVersion(payload["version"], "TextTool")
+    }
+
+    public override var localizedUndoName: String {
+        return Localized("pollock.tool.undo-name-text")
+    }
+
+    public override var localizedName: String {
+        return Localized("pollock.tool.name-text")
     }
 }
 

@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct Color : Equatable, Serializable {
+public struct Color : Equatable, Serializable, Codable {
     /// Named colors support
     public let name: Name?
 
@@ -58,7 +58,7 @@ public struct Color : Equatable, Serializable {
         }
     }
 
-    public enum Name : String {
+    public enum Name : String, Codable {
         case red    = "red"
         case green  = "green"
         case blue   = "blue"

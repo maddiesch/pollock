@@ -1,0 +1,54 @@
+/**
+ *  Localization.strings
+ *  Pollock
+ *
+ *  Created by Skylar Schipper on 9/1/17.
+ *  Copyright © 2017 Skylar Schipper. All rights reserved.
+ */
+
+/**
+ *  Tool names
+ */
+
+/* Pen */
+"pollock.tool.name-pen" = "Pen";
+
+/* Highlighter */
+"pollock.tool.name-high" = "Highlighter";
+
+/* Erase */
+"pollock.tool.name-erase" = "Erase";
+
+/* Text */
+"pollock.tool.name-text" = "Text";
+
+/**
+ *  Tool undo names
+ */
+
+/* Undo Pen */
+"pollock.tool.undo-name-pen" = "Undo Pen";
+
+/* Undo Highlighter */
+"pollock.tool.undo-name-high" = "Undo Highlighter";
+
+/* Undo Erase */
+"pollock.tool.undo-name-erase" = "Undo Erase";
+
+/* Undo Text */
+"pollock.tool.undo-name-text" = "Undo Text";
+
+/**
+ *  Errors
+ */
+/* Generic error message */
+"pollock.error.generic-message" = "An unknown failure occurred.";
+
+/* Generic Project Error Description */
+"pollock.error.project-unknown" = "An unknown error occured";
+
+/* Project duplicate canvas error description */
+"pollock.error.project-existing-canvas" = "Project already contains a canvas for that index";
+
+/* Project contains invalid data */
+"pollock.error.project-invalid" = "The Project isn't valid";

@@ -51,7 +51,7 @@ public final class DrawingView : UIView {
     @objc
     public var isSmoothingEnabled: Bool = true
 
-    private var canvas: Canvas {
+    fileprivate var canvas: Canvas {
         if let canvasID = self.canvasID {
             return self.renderer.project.canvas(atIndex: canvasID)
         } else {
@@ -74,19 +74,13 @@ public final class DrawingView : UIView {
     public override init(frame: CGRect) {
         super.init(frame: frame)
 
-        self.backgroundColor = UIColor.clear
-        self.isOpaque = false
-
-        self.layer.needsDisplayOnBoundsChange = true
+        self.finishSetupForInitialization()
     }
     
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
 
-        self.backgroundColor = UIColor.clear
-        self.isOpaque = false
-
-        self.layer.needsDisplayOnBoundsChange = true
+        self.finishSetupForInitialization()
     }
 
     public init(_ provider: DrawingProvider) {
@@ -95,10 +89,20 @@ public final class DrawingView : UIView {
         self.drawingProvider = provider
         self.renderer = provider.rendererForDrawingView(self)
 
+        self.finishSetupForInitialization()
+    }
+
+    private func finishSetupForInitialization() {
         self.backgroundColor = UIColor.clear
         self.isOpaque = false
 
         self.layer.needsDisplayOnBoundsChange = true
+
+        NotificationCenter.default.addObserver(self, selector: #selector(canvasDidUndoNotification), name: .canvasDidUndo, object: nil)
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
 
     // MARK: - State
@@ -173,15 +177,16 @@ public final class DrawingView : UIView {
             points.append(contentsOf: [l, p])
         }
         self.currentDrawing?.prune()
-        if let predictive = event.predictedTouches(for: touch) {
-            for pre in predictive {
-                let (l, p) = self.handle(pre, predictive: true)
-                points.append(contentsOf: [l, p])
-            }
-        }
 
         if self.isErasing {
             return self.eraseRenderRect()
+        } else {
+            if let predictive = event.predictedTouches(for: touch) {
+                for pre in predictive {
+                    let (l, p) = self.handle(pre, predictive: true)
+                    points.append(contentsOf: [l, p])
+                }
+            }
         }
 
         return CreateMinimumBoundingRect(forPoints: points, padding: self.currentTool.calculateLineWidth(forSize: self.bounds.size))
@@ -284,5 +289,28 @@ public final class DrawingView : UIView {
         self.tintColor.withAlphaComponent(PercentOfRange((60.0 ... 120.0), rect.height)).set()
         UIBezierPath(rect: CGRect(x: rect.minX - padding, y: rect.midY - (size / 2.0), width: (padding * 2.0), height: size)).fill()
         UIBezierPath(rect: CGRect(x: rect.maxX - padding, y: rect.midY - (size / 2.0), width: (padding * 2.0), height: size)).fill()
+    }
+
+    @objc private func canvasDidUndoNotification(_ notif: Notification) {
+        guard let updated = notif.object as? Canvas else {
+            return
+        }
+        if updated == self.canvas {
+            self.setNeedsDisplay()
+        }
+    }
+}
+
+public extension DrawingView {
+    public func localizedNextUndoName() -> String {
+        return self.canvas.localizedNextUndoName()
+    }
+
+    public var canUndo: Bool {
+        return self.canvas.canUndo
+    }
+
+    public func undo() throws -> String {
+        return try self.canvas.undo()
     }
 }

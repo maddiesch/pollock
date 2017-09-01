@@ -71,6 +71,7 @@ internal final class Canvas : Serializable, Hashable {
                 guard let path = drawing.createPath(forSize: size) else {
                     continue;
                 }
+                drawing.isCulled = false
                 let rect = EraserTool.eraseRect(path)
                 for erase in eraseRects {
                     if erase.contains(rect) {
@@ -98,4 +99,37 @@ internal final class Canvas : Serializable, Hashable {
             }
         }
     }
+
+    internal func localizedNextUndoName() -> String {
+        if let drawing = self.drawings.last {
+            return drawing.tool.localizedUndoName
+        }
+        return Localized("pollock.undo-name.none")
+    }
+
+    internal var canUndo: Bool {
+        return self.drawings.count >= 1
+    }
+
+    internal func undo() throws -> String {
+        guard self.drawings.count >= 1 else {
+            return Localized("pollock.undo-name.none")
+        }
+
+        let drawing = self.drawings.removeLast()
+        try self.performOcclusionCulling()
+
+        do {
+            let notification = Notification(name: .canvasDidUndo, object: self, userInfo: [NSLocalizedDescriptionKey: drawing.tool.localizedUndoName])
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(notification)
+            }
+        }
+
+        return drawing.tool.localizedUndoName
+    }
+}
+
+public extension Notification.Name {
+    static let canvasDidUndo = Notification.Name(rawValue: "Pollock.CanvasDidUndoNotification")
 }

@@ -37,6 +37,12 @@ public final class DrawingView : UIView {
         }
     }
 
+    public var canvasID: Int? {
+        didSet {
+            self.setNeedsDisplay()
+        }
+    }
+
     @objc
     public var currentTool: Tool = PenTool()
 
@@ -46,7 +52,11 @@ public final class DrawingView : UIView {
     public var isSmoothingEnabled: Bool = true
 
     private var canvas: Canvas {
-        return self.renderer.project.currentCanvas
+        if let canvasID = self.canvasID {
+            return self.renderer.project.canvas(atIndex: canvasID)
+        } else {
+            return self.renderer.project.currentCanvas
+        }
     }
 
     private var isErasing: Bool {
@@ -206,7 +216,7 @@ public final class DrawingView : UIView {
             return
         }
         do {
-            try self.renderer.draw(inContext: ctx, forRect: self.bounds)
+            try self.renderer.draw(inContext: ctx, canvasID: self.canvasID, forRect: self.bounds)
 
             if self.isErasing {
                 if let drawing = self.currentDrawing {

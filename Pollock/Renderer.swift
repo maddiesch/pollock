@@ -31,7 +31,7 @@ public class Renderer : NSObject {
         }
     }
 
-    public func draw(inContext ctx: CGContext, forRect rect: CGRect) throws {
+    public func draw(inContext ctx: CGContext, canvasID: Int?, forRect rect: CGRect) throws {
         fatalError("Must Override")
     }
 

@@ -86,6 +86,15 @@ extension Project {
         return self.canvas(withIndex: index) != nil
     }
 
+    func canvas(atIndex at: Int) -> Canvas {
+        if let canvas = self.canvas(withIndex: at) {
+            return canvas
+        }
+        let canvas = Canvas(atIndex: at)
+        try? self.addCanvas(canvas)
+        return canvas
+    }
+
     func canvas(withIndex index: Int) -> Canvas? {
         for canvas in self.canvases {
             if canvas.index == index {

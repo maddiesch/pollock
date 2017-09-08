@@ -11,7 +11,7 @@ import QuartzCore
 import UIKit
 
 internal class GraphicsRenderer : Renderer {
-    override func draw(inContext ctx: CGContext, canvasID: Int?, forRect rect: CGRect, backgroundRenderer bg: BackgroundRenderer?) throws {
+    override func draw(inContext ctx: CGContext, canvasID: Int?, forRect rect: CGRect, settings: RenderSettings?, backgroundRenderer bg: BackgroundRenderer?) throws {
         ctx.saveGState()
         ctx.setLineCap(.round)
         ctx.setLineJoin(.round)
@@ -26,8 +26,10 @@ internal class GraphicsRenderer : Renderer {
             }
         }()
 
+        let finalSettings = settings ?? RenderSettings.defaultSettings()
+
         for drawing in canvase.allDrawings {
-            _ = try drawing.draw(inContext: ctx, withSize: rect.size, backgroundRenderer: bg)
+            _ = try drawing.draw(inContext: ctx, withSize: rect.size, settings: finalSettings, backgroundRenderer: bg)
         }
     }
 }

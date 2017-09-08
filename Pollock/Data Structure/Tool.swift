@@ -75,21 +75,23 @@ public class Tool : NSObject, Serializable, Duplicating {
         }
     }
 
-    public func configureContextForDrawing(_ ctx: CGContext, _ size: CGSize) throws {
+    public func configureContextForDrawing(_ settings: RenderSettings, _ ctx: CGContext, _ size: CGSize) throws {
         ctx.setLineWidth(self.calculateLineWidth(forSize: size))
         ctx.setBlendMode(.normal)
     }
 
-    public func performDrawingInContext(_ ctx: CGContext, path: CGPath, backgroundRenderer bg: BackgroundRenderer?) throws {
+    public func performDrawingInContext(_ settings: RenderSettings, _ ctx: CGContext, path: CGPath, size: CGSize, backgroundRenderer bg: BackgroundRenderer?) throws {
         ctx.addPath(path)
         ctx.strokePath()
 
-        // This code will draw the culling box as a red stroke around the value
-//        let rect = path.boundingBoxForCullingWithLineWidth(self.lineWidth)
-//        ctx.setLineWidth(1.0)
-//        ctx.addRect(rect)
-//        ctx.setStrokeColor(UIColor.red.cgColor)
-//        ctx.strokePath()
+        if let color = settings.cullingBoxColor {
+            let width = self.calculateLineWidth(forSize: size)
+            let rect = path.boundingBoxForCullingWithLineWidth(width)
+            ctx.setLineWidth(1.0)
+            ctx.addRect(rect)
+            ctx.setStrokeColor(color)
+            ctx.strokePath()
+        }
     }
 
     public func duplicate() -> Self {
@@ -191,9 +193,16 @@ public final class HighlighterTool : Tool {
         return Localized("pollock.tool.name-high")
     }
 
-    public override func configureContextForDrawing(_ ctx: CGContext, _ size: CGSize) throws {
+    public override func configureContextForDrawing(_ settings: RenderSettings, _ ctx: CGContext, _ size: CGSize) throws {
         ctx.setLineWidth(self.calculateLineWidth(forSize: size))
-        ctx.setBlendMode(.multiply)
+
+        switch settings.highlightStyle {
+        case .alpha:
+            ctx.setBlendMode(.normal)
+            ctx.setAlpha(0.6)
+        case .normal:
+            ctx.setBlendMode(.multiply)
+        }
     }
 }
 
@@ -218,7 +227,7 @@ public final class EraserTool : Tool {
         self.version = try Serializer.validateVersion(payload["version"], "EraserTool")
     }
 
-    public override func performDrawingInContext(_ ctx: CGContext, path: CGPath, backgroundRenderer bg: BackgroundRenderer?) throws {
+    public override func performDrawingInContext(_ settings: RenderSettings, _ ctx: CGContext, path: CGPath, size: CGSize, backgroundRenderer bg: BackgroundRenderer?) throws {
         let rect = EraserTool.eraseRect(path)
         if rect.isEmpty {
             return

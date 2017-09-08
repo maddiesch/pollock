@@ -48,6 +48,12 @@ public final class DrawingView : UIView {
 
     public var color: Color = Color.Name.black.color
 
+    public var settings: RenderSettings? {
+        didSet {
+            self.setNeedsDisplay()
+        }
+    }
+
     @objc
     public var isSmoothingEnabled: Bool = true
 
@@ -221,7 +227,7 @@ public final class DrawingView : UIView {
             return
         }
         do {
-            try self.renderer.draw(inContext: ctx, canvasID: self.canvasID, forRect: self.bounds, backgroundRenderer: nil)
+            try self.renderer.draw(inContext: ctx, canvasID: self.canvasID, forRect: self.bounds, settings: self.settings, backgroundRenderer: nil)
 
             if self.isErasing {
                 if let drawing = self.currentDrawing {
@@ -231,10 +237,11 @@ public final class DrawingView : UIView {
                 }
             }
 
-            // Use this to draw the render rect in orange
-//            ctx.setStrokeColor(UIColor.orange.cgColor)
-//            ctx.setLineWidth(1.0)
-//            ctx.stroke(rect)
+            if let color = self.settings?.renderBoxColor {
+                ctx.setStrokeColor(color)
+                ctx.setLineWidth(1.0)
+                ctx.stroke(rect)
+            }
 
             if !rect.equalTo(self.bounds) {
                 self.lastRenderRect = rect

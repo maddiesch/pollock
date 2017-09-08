@@ -113,16 +113,16 @@ internal final class Drawing : Serializable {
         return CreateQuadCurvePath(rawPoints, !smoothing)
     }
 
-    func draw(inContext ctx: CGContext, withSize size: CGSize) -> Bool {
+    func draw(inContext ctx: CGContext, withSize size: CGSize, backgroundRenderer bg: BackgroundRenderer?) throws -> Bool {
         if self.isCulled {
             return false
         }
         ctx.saveGState()
         defer { ctx.restoreGState() }
         ctx.setStrokeColor(self.color.uiColor.cgColor)
-        self.tool.configureContextForDrawing(ctx, size)
+        try self.tool.configureContextForDrawing(ctx, size)
         if let path = self.createPath(self.points, size) {
-            self.tool.performDrawingInContext(ctx, path: path)
+            try self.tool.performDrawingInContext(ctx, path: path, backgroundRenderer: bg)
         }
         for point in self.predictive {
             point.draw(inContext: ctx, withSize: size, forDrawing: self)

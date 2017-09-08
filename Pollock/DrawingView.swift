@@ -221,7 +221,7 @@ public final class DrawingView : UIView {
             return
         }
         do {
-            try self.renderer.draw(inContext: ctx, canvasID: self.canvasID, forRect: self.bounds)
+            try self.renderer.draw(inContext: ctx, canvasID: self.canvasID, forRect: self.bounds, backgroundRenderer: nil)
 
             if self.isErasing {
                 if let drawing = self.currentDrawing {

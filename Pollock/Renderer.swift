@@ -31,7 +31,7 @@ public class Renderer : NSObject {
         }
     }
 
-    public func draw(inContext ctx: CGContext, canvasID: Int?, forRect rect: CGRect) throws {
+    public func draw(inContext ctx: CGContext, canvasID: Int?, forRect rect: CGRect, backgroundRenderer bg: BackgroundRenderer?) throws {
         fatalError("Must Override")
     }
 
@@ -60,4 +60,9 @@ public class Renderer : NSObject {
     public func performOcclusionCulling() throws {
         try self.project.performOcclusionCulling()
     }
+}
+
+@objc(POLBackgroundRenderer)
+public protocol BackgroundRenderer {
+    func drawBackground(inContext ctx: CGContext, withRect rect: CGRect) throws
 }

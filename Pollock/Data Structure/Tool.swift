@@ -75,12 +75,12 @@ public class Tool : NSObject, Serializable, Duplicating {
         }
     }
 
-    public func configureContextForDrawing(_ ctx: CGContext, _ size: CGSize) {
+    public func configureContextForDrawing(_ ctx: CGContext, _ size: CGSize) throws {
         ctx.setLineWidth(self.calculateLineWidth(forSize: size))
         ctx.setBlendMode(.normal)
     }
 
-    public func performDrawingInContext(_ ctx: CGContext, path: CGPath) {
+    public func performDrawingInContext(_ ctx: CGContext, path: CGPath, backgroundRenderer bg: BackgroundRenderer?) throws {
         ctx.addPath(path)
         ctx.strokePath()
 
@@ -190,6 +190,11 @@ public final class HighlighterTool : Tool {
     public override var localizedName: String {
         return Localized("pollock.tool.name-high")
     }
+
+    public override func configureContextForDrawing(_ ctx: CGContext, _ size: CGSize) throws {
+        ctx.setLineWidth(self.calculateLineWidth(forSize: size))
+        ctx.setBlendMode(.multiply)
+    }
 }
 
 @objc(POLEraserTool)
@@ -213,13 +218,17 @@ public final class EraserTool : Tool {
         self.version = try Serializer.validateVersion(payload["version"], "EraserTool")
     }
 
-    public override func performDrawingInContext(_ ctx: CGContext, path: CGPath) {
+    public override func performDrawingInContext(_ ctx: CGContext, path: CGPath, backgroundRenderer bg: BackgroundRenderer?) throws {
         let rect = EraserTool.eraseRect(path)
         if rect.isEmpty {
             return
         }
-        ctx.setFillColor(UIColor.clear.cgColor)
-        ctx.clear(rect)
+        if let background = bg {
+            try background.drawBackground(inContext: ctx, withRect: rect)
+        } else {
+            ctx.setFillColor(UIColor.clear.cgColor)
+            ctx.clear(rect)
+        }
     }
 
     internal static func eraseRect(_ path: CGPath) -> CGRect {

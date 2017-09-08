@@ -11,11 +11,11 @@ import QuartzCore
 import UIKit
 
 internal class GraphicsRenderer : Renderer {
-    override func draw(inContext ctx: CGContext, canvasID: Int?, forRect rect: CGRect) throws {
+    override func draw(inContext ctx: CGContext, canvasID: Int?, forRect rect: CGRect, backgroundRenderer bg: BackgroundRenderer?) throws {
         ctx.saveGState()
         ctx.setLineCap(.round)
         ctx.setLineJoin(.round)
-        ctx.setMiterLimit(0.0)
+        ctx.setMiterLimit(2.0)
         defer { ctx.restoreGState() }
 
         let canvase: Canvas = {
@@ -27,7 +27,7 @@ internal class GraphicsRenderer : Renderer {
         }()
 
         for drawing in canvase.allDrawings {
-            _ = drawing.draw(inContext: ctx, withSize: rect.size)
+            _ = try drawing.draw(inContext: ctx, withSize: rect.size, backgroundRenderer: bg)
         }
     }
 }

@@ -38,6 +38,11 @@
 		94C7A40C1F6317760081559D /* RenderSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94C7A40B1F6317760081559D /* RenderSettings.swift */; };
 		94CA185B1F16D02600E379C2 /* Version.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94CA185A1F16D02600E379C2 /* Version.swift */; };
 		94CA185D1F16D0AC00E379C2 /* Header.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94CA185C1F16D0AC00E379C2 /* Header.swift */; };
+		94D26B3B1F63380C000F3FFD /* PenTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94D26B3A1F63380C000F3FFD /* PenTool.swift */; };
+		94D26B3D1F633850000F3FFD /* HighlighterTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94D26B3C1F633850000F3FFD /* HighlighterTool.swift */; };
+		94D26B3F1F63386D000F3FFD /* EraserTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94D26B3E1F63386D000F3FFD /* EraserTool.swift */; };
+		94D26B411F633881000F3FFD /* TextTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94D26B401F633881000F3FFD /* TextTool.swift */; };
+		94D26B431F633A93000F3FFD /* TextContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94D26B421F633A93000F3FFD /* TextContent.swift */; };
 		94D30C691EC55240009D32F6 /* Canvas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94D30C681EC55240009D32F6 /* Canvas.swift */; };
 		94D30C6B1EC55410009D32F6 /* Serializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94D30C6A1EC55410009D32F6 /* Serializer.swift */; };
 		94D30C6D1EC557AE009D32F6 /* Tool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94D30C6C1EC557AE009D32F6 /* Tool.swift */; };
@@ -117,6 +122,11 @@
 		94C7A40B1F6317760081559D /* RenderSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderSettings.swift; sourceTree = "<group>"; };
 		94CA185A1F16D02600E379C2 /* Version.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Version.swift; sourceTree = "<group>"; };
 		94CA185C1F16D0AC00E379C2 /* Header.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Header.swift; sourceTree = "<group>"; };
+		94D26B3A1F63380C000F3FFD /* PenTool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PenTool.swift; sourceTree = "<group>"; };
+		94D26B3C1F633850000F3FFD /* HighlighterTool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HighlighterTool.swift; sourceTree = "<group>"; };
+		94D26B3E1F63386D000F3FFD /* EraserTool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EraserTool.swift; sourceTree = "<group>"; };
+		94D26B401F633881000F3FFD /* TextTool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextTool.swift; sourceTree = "<group>"; };
+		94D26B421F633A93000F3FFD /* TextContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextContent.swift; sourceTree = "<group>"; };
 		94D30C681EC55240009D32F6 /* Canvas.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Canvas.swift; sourceTree = "<group>"; };
 		94D30C6A1EC55410009D32F6 /* Serializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Serializer.swift; sourceTree = "<group>"; };
 		94D30C6C1EC557AE009D32F6 /* Tool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tool.swift; sourceTree = "<group>"; };
@@ -274,14 +284,27 @@
 				94D30C681EC55240009D32F6 /* Canvas.swift */,
 				942033E01EB2D66900A458F8 /* Drawing.swift */,
 				942033E21EB2D67F00A458F8 /* Point.swift */,
-				94D30C6C1EC557AE009D32F6 /* Tool.swift */,
 				94CA185A1F16D02600E379C2 /* Version.swift */,
 				94CA185C1F16D0AC00E379C2 /* Header.swift */,
 				949D00231F312DF800AEF991 /* Color.swift */,
 				94D6F61E1F4C90D0008F25FF /* Location.swift */,
 				94C7A40B1F6317760081559D /* RenderSettings.swift */,
+				94D26B421F633A93000F3FFD /* TextContent.swift */,
+				94D26B371F6337F1000F3FFD /* Tools */,
 			);
 			path = "Data Structure";
+			sourceTree = "<group>";
+		};
+		94D26B371F6337F1000F3FFD /* Tools */ = {
+			isa = PBXGroup;
+			children = (
+				94D30C6C1EC557AE009D32F6 /* Tool.swift */,
+				94D26B3A1F63380C000F3FFD /* PenTool.swift */,
+				94D26B3C1F633850000F3FFD /* HighlighterTool.swift */,
+				94D26B3E1F63386D000F3FFD /* EraserTool.swift */,
+				94D26B401F633881000F3FFD /* TextTool.swift */,
+			);
+			path = Tools;
 			sourceTree = "<group>";
 		};
 		94D30C701EC57C9A009D32F6 /* Renderer */ = {
@@ -452,6 +475,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				94D26B431F633A93000F3FFD /* TextContent.swift in Sources */,
 				94D6F6211F4C981E008F25FF /* CGSize.swift in Sources */,
 				940BFEF01F5A0DB000672230 /* Localized.swift in Sources */,
 				9411A69B1F4CD7D30009FE86 /* CGRect.swift in Sources */,
@@ -463,16 +487,20 @@
 				949D00241F312DF800AEF991 /* Color.swift in Sources */,
 				94CA185B1F16D02600E379C2 /* Version.swift in Sources */,
 				94060D991F33A01A00703402 /* CGPoint.swift in Sources */,
+				94D26B3F1F63386D000F3FFD /* EraserTool.swift in Sources */,
 				94D30C6D1EC557AE009D32F6 /* Tool.swift in Sources */,
 				945BAF3B1F4DFAF400E7EB34 /* Comparable.swift in Sources */,
 				94A46B9C1F200E2900A0EE0B /* Project.swift in Sources */,
+				94D26B3D1F633850000F3FFD /* HighlighterTool.swift in Sources */,
 				94D30C6B1EC55410009D32F6 /* Serializer.swift in Sources */,
 				94D6F61F1F4C90D0008F25FF /* Location.swift in Sources */,
 				94D30C691EC55240009D32F6 /* Canvas.swift in Sources */,
 				94CA185D1F16D0AC00E379C2 /* Header.swift in Sources */,
 				94E5C2DF1F4C9D86000CC2B2 /* CreateQuadCurvePath.swift in Sources */,
+				94D26B411F633881000F3FFD /* TextTool.swift in Sources */,
 				9407F1EE1EC4E99300568034 /* Compressor.swift in Sources */,
 				94C7A40C1F6317760081559D /* RenderSettings.swift in Sources */,
+				94D26B3B1F63380C000F3FFD /* PenTool.swift in Sources */,
 				94060D971F339B5900703402 /* CGPath.swift in Sources */,
 				94060D931F3397A200703402 /* String.swift in Sources */,
 				94D30C6F1EC57AF0009D32F6 /* Renderer.swift in Sources */,

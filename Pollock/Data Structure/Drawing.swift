@@ -17,9 +17,9 @@ internal final class Drawing : Serializable {
     private var predictive: [Point] = []
     private let id: UUID
     private let version: PollockVersion
-    private var metadata: [String: Any] = [:]
     private var color: Color
     internal var isCulled: Bool = false
+    internal private(set) var metadata: [String: Any] = [:]
 
     public let isSmoothingEnabled: Bool
 
@@ -122,7 +122,7 @@ internal final class Drawing : Serializable {
         ctx.setStrokeColor(self.color.uiColor.cgColor)
         try self.tool.configureContextForDrawing(settings, ctx, size)
         if let path = self.createPath(self.points, size) {
-            try self.tool.performDrawingInContext(settings, ctx, path: path, size: size, backgroundRenderer: bg)
+            try self.tool.performDrawingInContext(settings, ctx, path: path, size: size, drawing: self, backgroundRenderer: bg)
         }
         if self.tool is PenTool {
             for point in self.predictive {

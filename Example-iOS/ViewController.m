@@ -107,6 +107,10 @@
         case 2: {
             self.drawingView.currentTool = [[POLEraserTool alloc] init];
             break;
+        case 3: {
+            self.drawingView.currentTool = [[POLTextTool alloc] init];
+            break;
+        }
         }
     }
     [self updateStateLabel];

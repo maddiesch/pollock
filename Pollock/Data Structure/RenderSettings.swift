@@ -7,7 +7,7 @@
 //
 
 import Foundation
-
+import UIKit
 
 /// Settings used to configure the rendering.
 /// These are not persisted into the saved project.
@@ -27,6 +27,8 @@ public struct RenderSettings {
 
     /// If a color value is specified, this will render a box around the rect that will be drawn. (Only for the DrawingView)
     public let renderBoxColor: CGColor?
+
+    internal let eraserFillColor: CGColor = UIColor.clear.cgColor
 
     public static func defaultSettings(highlightStyle: HighlightStyle = .normal, cullingBoxColor: CGColor? = nil, renderBoxColor: CGColor? = nil) -> RenderSettings {
         return RenderSettings(highlightStyle: highlightStyle, cullingBoxColor: cullingBoxColor, renderBoxColor: renderBoxColor)

@@ -42,9 +42,10 @@ public final class TextTool : Tool {
             return
         }
         guard let content = drawing.metadata[TextContent.key] as? TextContent else {
-
+            return
         }
         print(location)
         print(drawing.metadata)
+        print(content)
     }
 }

@@ -17,6 +17,7 @@
 		9407F2061EC503A500568034 /* decompress-test.txt.zlib in Resources */ = {isa = PBXBuildFile; fileRef = 9407F2051EC503A500568034 /* decompress-test.txt.zlib */; };
 		940BFEF01F5A0DB000672230 /* Localized.swift in Sources */ = {isa = PBXBuildFile; fileRef = 940BFEEF1F5A0DB000672230 /* Localized.swift */; };
 		9411A69B1F4CD7D30009FE86 /* CGRect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9411A69A1F4CD7D30009FE86 /* CGRect.swift */; };
+		94142F431F68975B00D82A83 /* TextDrawingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94142F421F68975B00D82A83 /* TextDrawingView.swift */; };
 		9417DDEC1F5A115500C8F9FA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9417DDEE1F5A115500C8F9FA /* Localizable.strings */; };
 		942033B31EB2CDAE00A458F8 /* Pollock.h in Headers */ = {isa = PBXBuildFile; fileRef = 942033B11EB2CDAE00A458F8 /* Pollock.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		942033C21EB2CDF900A458F8 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 942033C11EB2CDF900A458F8 /* main.m */; };
@@ -96,6 +97,7 @@
 		9407F2051EC503A500568034 /* decompress-test.txt.zlib */ = {isa = PBXFileReference; lastKnownFileType = text; path = "decompress-test.txt.zlib"; sourceTree = "<group>"; };
 		940BFEEF1F5A0DB000672230 /* Localized.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Localized.swift; sourceTree = "<group>"; };
 		9411A69A1F4CD7D30009FE86 /* CGRect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGRect.swift; sourceTree = "<group>"; };
+		94142F421F68975B00D82A83 /* TextDrawingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextDrawingView.swift; sourceTree = "<group>"; };
 		9417DDEF1F5A115900C8F9FA /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
 		942033AE1EB2CDAE00A458F8 /* Pollock.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pollock.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		942033B11EB2CDAE00A458F8 /* Pollock.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Pollock.h; sourceTree = "<group>"; };
@@ -198,6 +200,15 @@
 			name = "Test Files";
 			sourceTree = "<group>";
 		};
+		94142F411F68974900D82A83 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				942033DC1EB2CF9B00A458F8 /* DrawingView.swift */,
+				94142F421F68975B00D82A83 /* TextDrawingView.swift */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
 		942033A41EB2CDAE00A458F8 = {
 			isa = PBXGroup;
 			children = (
@@ -222,7 +233,7 @@
 		942033B01EB2CDAE00A458F8 /* Pollock */ = {
 			isa = PBXGroup;
 			children = (
-				942033DC1EB2CF9B00A458F8 /* DrawingView.swift */,
+				94142F411F68974900D82A83 /* UI */,
 				94A46B9E1F20101900A0EE0B /* Data Structure */,
 				94A46B9D1F20100300A0EE0B /* Data Manager */,
 				94A7D9D11F0EFA7F00BD9C2B /* Geometry.swift */,
@@ -491,6 +502,7 @@
 				94D30C6D1EC557AE009D32F6 /* Tool.swift in Sources */,
 				945BAF3B1F4DFAF400E7EB34 /* Comparable.swift in Sources */,
 				94A46B9C1F200E2900A0EE0B /* Project.swift in Sources */,
+				94142F431F68975B00D82A83 /* TextDrawingView.swift in Sources */,
 				94D26B3D1F633850000F3FFD /* HighlighterTool.swift in Sources */,
 				94D30C6B1EC55410009D32F6 /* Serializer.swift in Sources */,
 				94D6F61F1F4C90D0008F25FF /* Location.swift in Sources */,

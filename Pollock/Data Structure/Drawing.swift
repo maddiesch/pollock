@@ -42,10 +42,39 @@ internal final class Drawing : Serializable {
     }
 
     func cullExtraneous(forSize size: CGSize) {
-        if self.tool is EraserTool {
+        switch self.tool {
+        case is EraserTool:
             self.cullErasePoints()
+        case is TextTool:
+            self.cullTextPoints()
+        default:
+            self.cullPoints(size)
+        }
+    }
+
+    private func cullErasePoints() {
+        guard self.points.count >= 2 else {
             return
         }
+        let first = self.points.first!
+        let last = self.points.last!
+        self.points = [
+            Point(location: first.location, previous: first.location, force: 1.0, predictive: false),
+            Point(location: last.location, previous: first.location, force: 1.0, predictive: false)
+        ]
+    }
+
+    private func cullTextPoints() {
+        guard self.points.count >= 1 else {
+            return
+        }
+        let point = self.points.last!
+        self.points = [
+            Point(location: point.location, previous: point.location, force: 1.0, predictive: false)
+        ]
+    }
+
+    private func cullPoints(_ size: CGSize) {
         let count = self.points.count
         guard count >= 3 else {
             return
@@ -71,18 +100,6 @@ internal final class Drawing : Serializable {
             print("Pollock: Culled \(count - culled.count) points")
         #endif
         self.points = culled
-    }
-
-    private func cullErasePoints() {
-        guard self.points.count >= 2 else {
-            return
-        }
-        let first = self.points.first!
-        let last = self.points.last!
-        self.points = [
-            Point(location: first.location, previous: first.location, force: 1.0, predictive: false),
-            Point(location: last.location, previous: first.location, force: 1.0, predictive: false)
-        ]
     }
 
     func add(point: Point) {

@@ -44,7 +44,11 @@ public final class DrawingView : UIView {
     }
 
     @objc
-    public var currentTool: Tool = PenTool()
+    public var currentTool: Tool = PenTool() {
+        didSet {
+            self.endTextEditing(false)
+        }
+    }
 
     public var color: Color = Color.Name.black.color
 
@@ -128,22 +132,11 @@ public final class DrawingView : UIView {
     }
 
     public override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard self.isEnabled else {
-            return
-        }
-        self.currentDrawing?.cullExtraneous(forSize: self.bounds.size)
-        self.currentDrawing = nil
-        self.process(touches, forEvent: event)
-        self.setNeedsDisplay()
+        self.handleTouchesCompleted(touches, with: event)
     }
 
     public override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard self.isEnabled else {
-            return
-        }
-        self.currentDrawing?.cullExtraneous(forSize: self.bounds.size)
-        self.currentDrawing = nil
-        self.process(touches, forEvent: event)
+        self.handleTouchesCompleted(touches, with: event)
     }
 
     public override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -151,6 +144,22 @@ public final class DrawingView : UIView {
             return
         }
         self.process(touches, forEvent: event)
+    }
+
+    private func handleTouchesCompleted(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard self.isEnabled else {
+            return
+        }
+        if let drawing = self.currentDrawing {
+            drawing.cullExtraneous(forSize: self.bounds.size)
+            print(drawing.tool)
+            if drawing.tool is TextTool {
+                self.beginEditingTextForDrawing(drawing)
+            }
+        }
+        self.currentDrawing = nil
+        self.process(touches, forEvent: event)
+        self.setNeedsDisplay()
     }
 
     // MARK: - Touch Processing
@@ -306,6 +315,32 @@ public final class DrawingView : UIView {
             self.setNeedsDisplay()
         }
     }
+
+    // MARK: - Text Editing
+    private func beginEditingTextForDrawing(_ drawing: Drawing) {
+        if let view = self.textView {
+            view.removeFromSuperview()
+        }
+
+        let view = TextDrawingView(drawing)
+        self.addSubview(view)
+        do {
+            try view.beginEditing()
+            self.textView = view
+        } catch {
+            view.removeFromSuperview()
+        }
+    }
+
+    public func endTextEditing(_ animated: Bool) {
+        if let view = self.textView {
+            try? view.endEditing()
+            view.removeFromSuperview()
+        }
+        self.textView = nil
+    }
+
+    private var textView: TextDrawingView? = nil
 }
 
 public extension DrawingView {

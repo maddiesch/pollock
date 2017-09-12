@@ -26,6 +26,6 @@ public final class TextContent : NSObject, Serializable {
     }
 
     public init(_ payload: [String : Any]) throws {
-        <#code#>
+
     }
 }

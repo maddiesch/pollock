@@ -9,15 +9,15 @@
 import Foundation
 import UIKit
 
-internal class TextDrawingView : UIView {
-    let drawing: Drawing
+internal class TextDrawingView : UIView, UITextFieldDelegate {
+    let text: Text
 
-    init(_ drawing: Drawing) {
-        self.drawing = drawing
+    init(_ text: Text) {
+        self.text = text
         self.centerConstraint = CenterConstraint(nil, nil)
         super.init(frame: CGRect(x: 0.0, y: 0.0, width: 50.0, height: 24.0))
         self.translatesAutoresizingMaskIntoConstraints = false
-        self.backgroundColor = UIColor.orange
+        self.backgroundColor = UIColor(white: 0.6, alpha: 0.3)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -39,31 +39,113 @@ internal class TextDrawingView : UIView {
     }
 
     override var intrinsicContentSize: CGSize {
-        return CGSize(width: 50.0, height: 24.0)
+        let size = self.textField.intrinsicContentSize
+        return CGSize(width: max(50.0, size.width), height: size.height)
     }
+
+    lazy var textField: UITextField = {
+        let field = UITextField(frame: self.bounds)
+        field.translatesAutoresizingMaskIntoConstraints = false
+        field.returnKeyType = .done
+        field.delegate = self
+
+        field.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
+
+        self.addSubview(field)
+        self.addConstraints([
+            NSLayoutConstraint(item: field, attribute: .left, relatedBy: .equal, toItem: self, attribute: .left, multiplier: 1.0, constant: 0.0),
+            NSLayoutConstraint(item: field, attribute: .right, relatedBy: .equal, toItem: self, attribute: .right, multiplier: 1.0, constant: 0.0),
+            NSLayoutConstraint(item: field, attribute: .top, relatedBy: .equal, toItem: self, attribute: .top, multiplier: 1.0, constant: 0.0),
+            NSLayoutConstraint(item: field, attribute: .bottom, relatedBy: .equal, toItem: self, attribute: .bottom, multiplier: 1.0, constant: 0.0),
+            ])
+        return field
+    }()
 
     // MARK: - State
     func beginEditing() throws {
-        try self.updateLocation()
+        self.updateLocation()
+
+        self.textField.font = self.text.fontForSize(self.superview?.bounds.size ?? CGSize.zero)
+        self.textField.text = self.text.value
+        self.textField.textColor = self.text.color.uiColor
+
+        self.setupInputAccessoryView()
+
+        self.textField.becomeFirstResponder()
+
+        self.invalidateIntrinsicContentSize()
+        self.superview?.setNeedsLayout()
+    }
+
+    private func setupInputAccessoryView() {
+        let toolbar = self.drawingView?.textDrawingToolbarViewDelegate?.createToolbarView()
+        if let bar = toolbar {
+            bar.doneButton.addTarget(self, action: #selector(doneButtonAction), for: .touchUpInside)
+            bar.fontButton.addTarget(self, action: #selector(fontPickerButtonAction), for: .touchUpInside)
+            bar.deleteButton.addTarget(self, action: #selector(deleteButtonAction), for: .touchUpInside)
+            bar.fontSizeSlider.addTarget(self, action: #selector(fontSizeSliderValueChanged), for: .valueChanged)
+            bar.fontSize = Float(self.text.fontSize)
+            bar.fontName = self.text.font.rawValue
+        }
+        self.textField.inputAccessoryView = toolbar
     }
 
     func endEditing() throws {
-        print("End Editing")
+        self.textField.resignFirstResponder()
+        self.text.value = self.textField.text ?? ""
     }
 
-    private func updateLocation() throws {
-        guard let location = drawing.allPoints.last?.location else {
-            throw TextDrawingViewError.noLocation
-        }
+    private func updateLocation() {
+        let location = self.text.location
         self.centerConstraint = CenterConstraint(
-            NSLayoutConstraint(item: self, attribute: .centerX, relatedBy: .equal, toItem: self.superview, attribute: .right, multiplier: location.xOffset, constant: 0.0),
-            NSLayoutConstraint(item: self, attribute: .centerY, relatedBy: .equal, toItem: self.superview, attribute: .bottom, multiplier: location.yOffset, constant: 0.0)
+            NSLayoutConstraint(item: self, attribute: .left, relatedBy: .equal, toItem: self.superview, attribute: .right, multiplier: location.xOffset, constant: 0.0),
+            NSLayoutConstraint(item: self, attribute: .top , relatedBy: .equal, toItem: self.superview, attribute: .bottom, multiplier: location.yOffset, constant: 0.0)
         )
+    }
+
+    @objc private func textFieldDidChange(_ textField: UITextField) {
+        self.invalidateIntrinsicContentSize()
+        self.superview?.setNeedsLayout()
+    }
+
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        self.drawingView?.textViewShouldEndEditing(self, false)
+        return false
+    }
+
+    @objc private func doneButtonAction(_ sender: UIButton) {
+        self.drawingView?.textViewShouldEndEditing(self, false)
+    }
+
+    @objc private func deleteButtonAction(_ sender: UIButton) {
+        self.drawingView?.textViewShouldEndEditing(self, true)
+    }
+
+    @objc private func fontPickerButtonAction(_ sender: UIButton) {
+        switch self.text.font {
+        case .arial:
+            self.text.font = .tnr
+        case .tnr:
+            self.text.font = .arial
+        }
+        self.textField.font = self.text.fontForSize(self.superview?.bounds.size ?? CGSize.zero)
+        let notif = Notification(name: .textDrawingFontDidChange, object: self.text.font, userInfo: nil)
+        NotificationCenter.default.post(notif)
+    }
+
+    @objc private func fontSizeSliderValueChanged(_ sender: UISlider) {
+        self.text.fontSize = CGFloat(sender.value)
+        self.textField.font = self.text.fontForSize(self.superview?.bounds.size ?? CGSize.zero)
+        self.invalidateIntrinsicContentSize()
+        self.updateLocation()
+        let notif = Notification(name: .textDrawingFontSizeDidChange, object: sender.value, userInfo: nil)
+        NotificationCenter.default.post(notif)
     }
 }
 
 internal enum TextDrawingViewError : Error {
     case noLocation
+    case noMetadata
 }
 
 fileprivate struct CenterConstraint {
@@ -85,4 +167,21 @@ fileprivate struct CenterConstraint {
         }
         return con
     }
+}
+
+fileprivate extension UIView {
+    fileprivate func firstViewController() -> UIViewController? {
+        if let responder = self.next as? UIViewController {
+            return responder
+        }
+        if let responder = self.next as? UIView {
+            return responder.firstViewController()
+        }
+        return nil
+    }
+}
+
+public extension Notification.Name {
+    static let textDrawingFontSizeDidChange = Notification.Name("PollockTextDrawingFontSizeDidChangeNotificaiton")
+    static let textDrawingFontDidChange = Notification.Name("PollockTextDrawingFontDidChangeNotificaiton")
 }

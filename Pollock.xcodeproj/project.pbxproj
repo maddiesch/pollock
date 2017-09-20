@@ -33,6 +33,7 @@
 		942033E31EB2D67F00A458F8 /* Point.swift in Sources */ = {isa = PBXBuildFile; fileRef = 942033E21EB2D67F00A458F8 /* Point.swift */; };
 		945BAF3B1F4DFAF400E7EB34 /* Comparable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 945BAF3A1F4DFAF400E7EB34 /* Comparable.swift */; };
 		948EB3AE1EB2EFDA008600CE /* Serializable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 948EB3AD1EB2EFDA008600CE /* Serializable.swift */; };
+		9497105B1F70801C008393DA /* TextDrawingToolbarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9497105A1F70801C008393DA /* TextDrawingToolbarView.swift */; };
 		949D00241F312DF800AEF991 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 949D00231F312DF800AEF991 /* Color.swift */; };
 		94A46B9C1F200E2900A0EE0B /* Project.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94A46B9B1F200E2900A0EE0B /* Project.swift */; };
 		94A7D9D21F0EFA7F00BD9C2B /* Geometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94A7D9D11F0EFA7F00BD9C2B /* Geometry.swift */; };
@@ -42,8 +43,6 @@
 		94D26B3B1F63380C000F3FFD /* PenTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94D26B3A1F63380C000F3FFD /* PenTool.swift */; };
 		94D26B3D1F633850000F3FFD /* HighlighterTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94D26B3C1F633850000F3FFD /* HighlighterTool.swift */; };
 		94D26B3F1F63386D000F3FFD /* EraserTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94D26B3E1F63386D000F3FFD /* EraserTool.swift */; };
-		94D26B411F633881000F3FFD /* TextTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94D26B401F633881000F3FFD /* TextTool.swift */; };
-		94D26B431F633A93000F3FFD /* TextContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94D26B421F633A93000F3FFD /* TextContent.swift */; };
 		94D30C691EC55240009D32F6 /* Canvas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94D30C681EC55240009D32F6 /* Canvas.swift */; };
 		94D30C6B1EC55410009D32F6 /* Serializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94D30C6A1EC55410009D32F6 /* Serializer.swift */; };
 		94D30C6D1EC557AE009D32F6 /* Tool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94D30C6C1EC557AE009D32F6 /* Tool.swift */; };
@@ -52,6 +51,7 @@
 		94D6F61F1F4C90D0008F25FF /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94D6F61E1F4C90D0008F25FF /* Location.swift */; };
 		94D6F6211F4C981E008F25FF /* CGSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94D6F6201F4C981E008F25FF /* CGSize.swift */; };
 		94E5C2DF1F4C9D86000CC2B2 /* CreateQuadCurvePath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94E5C2DE1F4C9D86000CC2B2 /* CreateQuadCurvePath.swift */; };
+		94FD5BE01F71CF3B0023E6FB /* Text.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94FD5BDF1F71CF3B0023E6FB /* Text.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -117,6 +117,7 @@
 		942033E21EB2D67F00A458F8 /* Point.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Point.swift; sourceTree = "<group>"; };
 		945BAF3A1F4DFAF400E7EB34 /* Comparable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comparable.swift; sourceTree = "<group>"; };
 		948EB3AD1EB2EFDA008600CE /* Serializable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Serializable.swift; sourceTree = "<group>"; };
+		9497105A1F70801C008393DA /* TextDrawingToolbarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextDrawingToolbarView.swift; sourceTree = "<group>"; };
 		949D00231F312DF800AEF991 /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
 		94A46B9B1F200E2900A0EE0B /* Project.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Project.swift; sourceTree = "<group>"; };
 		94A46B9F1F2017BD00A0EE0B /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
@@ -127,8 +128,6 @@
 		94D26B3A1F63380C000F3FFD /* PenTool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PenTool.swift; sourceTree = "<group>"; };
 		94D26B3C1F633850000F3FFD /* HighlighterTool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HighlighterTool.swift; sourceTree = "<group>"; };
 		94D26B3E1F63386D000F3FFD /* EraserTool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EraserTool.swift; sourceTree = "<group>"; };
-		94D26B401F633881000F3FFD /* TextTool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextTool.swift; sourceTree = "<group>"; };
-		94D26B421F633A93000F3FFD /* TextContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextContent.swift; sourceTree = "<group>"; };
 		94D30C681EC55240009D32F6 /* Canvas.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Canvas.swift; sourceTree = "<group>"; };
 		94D30C6A1EC55410009D32F6 /* Serializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Serializer.swift; sourceTree = "<group>"; };
 		94D30C6C1EC557AE009D32F6 /* Tool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tool.swift; sourceTree = "<group>"; };
@@ -137,6 +136,7 @@
 		94D6F61E1F4C90D0008F25FF /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
 		94D6F6201F4C981E008F25FF /* CGSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGSize.swift; sourceTree = "<group>"; };
 		94E5C2DE1F4C9D86000CC2B2 /* CreateQuadCurvePath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateQuadCurvePath.swift; sourceTree = "<group>"; };
+		94FD5BDF1F71CF3B0023E6FB /* Text.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Text.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -205,6 +205,7 @@
 			children = (
 				942033DC1EB2CF9B00A458F8 /* DrawingView.swift */,
 				94142F421F68975B00D82A83 /* TextDrawingView.swift */,
+				9497105A1F70801C008393DA /* TextDrawingToolbarView.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -294,13 +295,13 @@
 				94A46B9B1F200E2900A0EE0B /* Project.swift */,
 				94D30C681EC55240009D32F6 /* Canvas.swift */,
 				942033E01EB2D66900A458F8 /* Drawing.swift */,
+				94FD5BDF1F71CF3B0023E6FB /* Text.swift */,
 				942033E21EB2D67F00A458F8 /* Point.swift */,
 				94CA185A1F16D02600E379C2 /* Version.swift */,
 				94CA185C1F16D0AC00E379C2 /* Header.swift */,
 				949D00231F312DF800AEF991 /* Color.swift */,
 				94D6F61E1F4C90D0008F25FF /* Location.swift */,
 				94C7A40B1F6317760081559D /* RenderSettings.swift */,
-				94D26B421F633A93000F3FFD /* TextContent.swift */,
 				94D26B371F6337F1000F3FFD /* Tools */,
 			);
 			path = "Data Structure";
@@ -313,7 +314,6 @@
 				94D26B3A1F63380C000F3FFD /* PenTool.swift */,
 				94D26B3C1F633850000F3FFD /* HighlighterTool.swift */,
 				94D26B3E1F63386D000F3FFD /* EraserTool.swift */,
-				94D26B401F633881000F3FFD /* TextTool.swift */,
 			);
 			path = Tools;
 			sourceTree = "<group>";
@@ -408,7 +408,7 @@
 				TargetAttributes = {
 					9407F1F21EC4F86400568034 = {
 						CreatedOnToolsVersion = 8.3.2;
-						LastSwiftMigration = 0830;
+						LastSwiftMigration = 0900;
 						ProvisioningStyle = Automatic;
 					};
 					942033AD1EB2CDAE00A458F8 = {
@@ -486,7 +486,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				94D26B431F633A93000F3FFD /* TextContent.swift in Sources */,
 				94D6F6211F4C981E008F25FF /* CGSize.swift in Sources */,
 				940BFEF01F5A0DB000672230 /* Localized.swift in Sources */,
 				9411A69B1F4CD7D30009FE86 /* CGRect.swift in Sources */,
@@ -508,14 +507,15 @@
 				94D6F61F1F4C90D0008F25FF /* Location.swift in Sources */,
 				94D30C691EC55240009D32F6 /* Canvas.swift in Sources */,
 				94CA185D1F16D0AC00E379C2 /* Header.swift in Sources */,
+				9497105B1F70801C008393DA /* TextDrawingToolbarView.swift in Sources */,
 				94E5C2DF1F4C9D86000CC2B2 /* CreateQuadCurvePath.swift in Sources */,
-				94D26B411F633881000F3FFD /* TextTool.swift in Sources */,
 				9407F1EE1EC4E99300568034 /* Compressor.swift in Sources */,
 				94C7A40C1F6317760081559D /* RenderSettings.swift in Sources */,
 				94D26B3B1F63380C000F3FFD /* PenTool.swift in Sources */,
 				94060D971F339B5900703402 /* CGPath.swift in Sources */,
 				94060D931F3397A200703402 /* String.swift in Sources */,
 				94D30C6F1EC57AF0009D32F6 /* Renderer.swift in Sources */,
+				94FD5BE01F71CF3B0023E6FB /* Text.swift in Sources */,
 				942033E31EB2D67F00A458F8 /* Point.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -582,7 +582,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.skylarsch.PollockTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
 		};
@@ -594,7 +595,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.skylarsch.PollockTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
 		};
@@ -728,8 +730,8 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_SWIFT3_OBJC_INFERENCE = Off;
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
 		};
@@ -749,8 +751,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.skylarsch.Pollock;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_SWIFT3_OBJC_INFERENCE = Off;
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
 		};

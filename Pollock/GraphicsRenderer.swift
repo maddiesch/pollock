@@ -18,7 +18,7 @@ internal class GraphicsRenderer : Renderer {
         ctx.setMiterLimit(2.0)
         defer { ctx.restoreGState() }
 
-        let canvase: Canvas = {
+        let canvas: Canvas = {
             if let cid = canvasID {
                 return self.project.canvas(atIndex: cid)
             } else {
@@ -28,8 +28,11 @@ internal class GraphicsRenderer : Renderer {
 
         let finalSettings = settings ?? RenderSettings.defaultSettings()
 
-        for drawing in canvase.allDrawings {
+        for drawing in canvas.allDrawings {
             _ = try drawing.draw(inContext: ctx, withSize: rect.size, settings: finalSettings, backgroundRenderer: bg)
+        }
+        for text in canvas.allText {
+            try text.draw(inContext: ctx, size: rect.size, settings: finalSettings)
         }
     }
 }

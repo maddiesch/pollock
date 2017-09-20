@@ -25,28 +25,61 @@ internal final class Canvas : Serializable, Hashable {
         self.drawings.append(drawing)
     }
 
+    @discardableResult
+    func removeDrawingWithID(_ id: UUID) -> Drawing? {
+        if let index = self.drawings.index(where: { $0.id == id }) {
+            return self.drawings.remove(at: index)
+        }
+        return nil
+    }
+
+    private var text: [Text] = []
+
+    var allText: [Text] {
+        return self.text
+    }
+
+    func addText(_ text: Text) {
+        let existing = self.text.filter { $0.id == text.id }
+        for replace in existing {
+            if let index = self.text.index(where: { $0.id == replace.id}) {
+                self.text.remove(at: index)
+            }
+        }
+        self.text.append(text)
+    }
+
+    @discardableResult
+    func removeTextWithID(_ id: UUID) -> Text? {
+        if let index = self.text.index(where: { $0.id == id }) {
+            return self.text.remove(at: index)
+        }
+        return nil
+    }
+
     func clear() {
         self.drawings.removeAll()
+        self.text.removeAll()
     }
 
     // MARK: - Serialization
     func serialize() throws -> [String : Any] {
-        let drawings = try self.drawings.map { try $0.serialize() }
         return [
             "index": self.index,
-            "drawings": drawings,
+            "drawings": self.drawings.flatMap { try? $0.serialize() },
+            "text": self.text.flatMap { try? $0.serialize() },
             "_type": "canvas"
         ]
     }
 
     init(_ payload: [String : Any]) throws {
-        guard let drawings = payload["drawings"] as? [[String: Any]] else {
-            throw SerializerError("Missing drawings")
-        }
         guard let index = payload["index"] as? Int else {
             throw SerializerError("Missing index")
         }
-        self.drawings = try drawings.map { try Drawing($0) }
+        let drawings = payload["drawings"] as? [[String: Any]] ?? []
+        let text = payload["text"] as? [[String: Any]] ?? []
+        self.drawings = drawings.flatMap { try? Drawing($0) }
+        self.text = text.flatMap { try? Text($0) }
         self.index = index
     }
 
@@ -69,21 +102,19 @@ internal final class Canvas : Serializable, Hashable {
             switch drawing.tool {
             case is EraserTool:
                 guard let path = drawing.createPath(forSize: size) else {
-                    continue;
+                    continue
                 }
                 drawing.isCulled = false
                 let rect = EraserTool.eraseRect(path)
                 for erase in eraseRects {
                     if erase.contains(rect) {
                         drawing.isCulled = true
-                        break;
+                        break
                     }
                 }
                 if !rect.isEmpty {
                     eraseRects.append(rect)
                 }
-            case is TextTool:
-                break;
             default:
                 guard let path = drawing.createPath(forSize: size) else {
                     continue;
@@ -93,7 +124,7 @@ internal final class Canvas : Serializable, Hashable {
                 for erase in eraseRects {
                     if erase.contains(rect) {
                         drawing.isCulled = true
-                        break;
+                        break
                     }
                 }
             }
@@ -108,15 +139,21 @@ internal final class Canvas : Serializable, Hashable {
     }
 
     internal var canUndo: Bool {
-        return self.drawings.count >= 1
+        return self.allDrawings.count >= 1
     }
 
     internal func undo() throws -> String {
-        guard self.drawings.count >= 1 else {
+        let drawings = self.allDrawings
+        guard drawings.count >= 1 else {
             return Localized("pollock.undo-name.none")
         }
 
-        let drawing = self.drawings.removeLast()
+        let drawing = drawings.last!
+        let index = self.drawings.index { $0.id == drawing.id }
+        if let i = index {
+            self.drawings.remove(at: i)
+        }
+
         try self.performOcclusionCulling()
 
         do {

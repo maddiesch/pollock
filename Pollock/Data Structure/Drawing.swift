@@ -15,11 +15,10 @@ internal final class Drawing : Serializable {
 
     private var points: [Point] = []
     private var predictive: [Point] = []
-    private let id: UUID
+    internal let id: UUID
     private let version: PollockVersion
-    private var color: Color
+    internal var color: Color
     internal var isCulled: Bool = false
-    internal private(set) var metadata: [String: Any] = [:]
 
     public let isSmoothingEnabled: Bool
 
@@ -45,8 +44,6 @@ internal final class Drawing : Serializable {
         switch self.tool {
         case is EraserTool:
             self.cullErasePoints()
-        case is TextTool:
-            self.cullTextPoints()
         default:
             self.cullPoints(size)
         }
@@ -61,16 +58,6 @@ internal final class Drawing : Serializable {
         self.points = [
             Point(location: first.location, previous: first.location, force: 1.0, predictive: false),
             Point(location: last.location, previous: first.location, force: 1.0, predictive: false)
-        ]
-    }
-
-    private func cullTextPoints() {
-        guard self.points.count >= 1 else {
-            return
-        }
-        let point = self.points.last!
-        self.points = [
-            Point(location: point.location, previous: point.location, force: 1.0, predictive: false)
         ]
     }
 
@@ -156,7 +143,6 @@ internal final class Drawing : Serializable {
             "tool": try self.tool.serialize(),
             "points": try self.points.map({ try $0.serialize() }),
             "isCulled": self.isCulled,
-            "metadata": self.metadata,
             "color": try self.color.serialize(),
             "isSmoothingEnabled": self.isSmoothingEnabled,
             "_type": "drawing"
@@ -168,7 +154,6 @@ internal final class Drawing : Serializable {
         self.id = try Serializer.decodeUUID(payload["drawingID"])
         self.tool = try LoadTool(payload["tool"])
         self.isCulled = payload["isCulled"] as? Bool ?? false
-        self.metadata = payload["metadata"] as? [String: Any] ?? [:]
         guard let points = payload["points"] as? [[String: Any]] else {
             throw SerializerError("Unknown points")
         }

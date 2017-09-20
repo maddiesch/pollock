@@ -14,6 +14,14 @@ public protocol DrawingProvider {
     func rendererForDrawingView(_ drawingView: DrawingView) -> Renderer
 }
 
+@available(iOS 10.0, *)
+private var SelectionFeedbackInstance: UISelectionFeedbackGenerator = UISelectionFeedbackGenerator()
+
+public enum EditorState {
+    case tool(Tool)
+    case text
+}
+
 @objc(POLDrawingView)
 public final class DrawingView : UIView {
     internal var currentDrawing: Drawing?
@@ -43,14 +51,18 @@ public final class DrawingView : UIView {
         }
     }
 
-    @objc
-    public var currentTool: Tool = PenTool() {
+    public var state: EditorState = .tool(PenTool()) {
         didSet {
-            self.endTextEditing(false)
+            self.updateTextState()
         }
     }
 
-    public var color: Color = Color.Name.black.color
+    public var color: Color = Color.Name.black.color {
+        didSet {
+            self.textView?.text.color = self.color
+            self.textView?.textField.textColor = self.color.uiColor
+        }
+    }
 
     public var settings: RenderSettings? {
         didSet {
@@ -70,10 +82,55 @@ public final class DrawingView : UIView {
     }
 
     private var isErasing: Bool {
-        return self.currentTool is EraserTool
+        switch self.state {
+        case .tool(let tool):
+            return tool is EraserTool
+        default:
+            return false
+        }
+    }
+
+    private var currentTool: Tool {
+        switch self.state {
+        case .tool(let tool):
+            return tool
+        default:
+            return PenTool()
+        }
     }
 
     private var lastRenderRect: CGRect?
+
+    private lazy var tapGesture: UITapGestureRecognizer = {
+        let gesture = UITapGestureRecognizer(target: self, action: #selector(textDrawingTapGestureRecognizerAction))
+        self.addGestureRecognizer(gesture)
+        return gesture
+    }()
+
+    private lazy var longPressGesture: UILongPressGestureRecognizer = {
+        let gesture = UILongPressGestureRecognizer(target: self, action: #selector(textDrawingLongPressGestureRecognizerAction))
+        gesture.minimumPressDuration = 0.5
+        self.addGestureRecognizer(gesture)
+        gesture.require(toFail: self.tapGesture)
+        return gesture
+    }()
+
+    private func updateSelection() {
+        if #available(iOS 10.0, *) {
+            SelectionFeedbackInstance.selectionChanged()
+        } else {
+            print("Haptics not available...")
+        }
+    }
+
+    public var isTextModeEnabled: Bool {
+        switch self.state {
+        case .text:
+            return true
+        default:
+            return false
+        }
+    }
 
     @objc
     public func clearDrawings() {
@@ -105,10 +162,13 @@ public final class DrawingView : UIView {
     private func finishSetupForInitialization() {
         self.backgroundColor = UIColor.clear
         self.isOpaque = false
+        self.clipsToBounds = true
 
         self.layer.needsDisplayOnBoundsChange = true
 
         NotificationCenter.default.addObserver(self, selector: #selector(canvasDidUndoNotification), name: .canvasDidUndo, object: nil)
+
+        self.updateTextState()
     }
 
     deinit {
@@ -120,14 +180,25 @@ public final class DrawingView : UIView {
         self.renderer = self.drawingProvider?.rendererForDrawingView(self) ?? Renderer.createRenderer()
     }
 
+    private func createDrawing() -> Drawing {
+        return Drawing(tool: self.currentTool.duplicate(), color: self.color, isSmoothingEnabled: self.isSmoothingEnabled)
+    }
+
     // MARK: - Touch Tracking
     public override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard self.isEnabled else {
+        guard self.isEnabled && !self.isTextModeEnabled else {
             return
         }
-        let drawing = Drawing(tool: self.currentTool.duplicate(), color: self.color, isSmoothingEnabled: self.isSmoothingEnabled)
+        let drawing = self.createDrawing()
         self.currentDrawing = drawing
         self.canvas.addDrawing(drawing)
+        self.process(touches, forEvent: event)
+    }
+
+    public override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard self.isEnabled && !self.isTextModeEnabled else {
+            return
+        }
         self.process(touches, forEvent: event)
     }
 
@@ -139,23 +210,9 @@ public final class DrawingView : UIView {
         self.handleTouchesCompleted(touches, with: event)
     }
 
-    public override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard self.isEnabled else {
-            return
-        }
-        self.process(touches, forEvent: event)
-    }
-
     private func handleTouchesCompleted(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard self.isEnabled else {
+        guard self.isEnabled && !self.isTextModeEnabled else {
             return
-        }
-        if let drawing = self.currentDrawing {
-            drawing.cullExtraneous(forSize: self.bounds.size)
-            print(drawing.tool)
-            if drawing.tool is TextTool {
-                self.beginEditingTextForDrawing(drawing)
-            }
         }
         self.currentDrawing = nil
         self.process(touches, forEvent: event)
@@ -246,6 +303,12 @@ public final class DrawingView : UIView {
                 }
             }
 
+            if let text = self.targetText {
+                let rect = text.textRectForCanvasSize(self.bounds.size)
+                ctx.setFillColor(UIColor(white: 0.6, alpha: 0.3).cgColor)
+                ctx.fill(rect)
+            }
+
             if let color = self.settings?.renderBoxColor {
                 ctx.setStrokeColor(color)
                 ctx.setLineWidth(1.0)
@@ -316,31 +379,111 @@ public final class DrawingView : UIView {
         }
     }
 
-    // MARK: - Text Editing
-    private func beginEditingTextForDrawing(_ drawing: Drawing) {
-        if let view = self.textView {
-            view.removeFromSuperview()
-        }
+    public override func endEditing(_ force: Bool) -> Bool {
+        self.endTextEditing(false, commit: true)
 
-        let view = TextDrawingView(drawing)
+        return super.endEditing(force)
+    }
+
+    // MARK: - Text Editing
+    private func beginEditingText(_ text: Text) {
+        self.endTextEditing(false, commit: true)
+        let view = TextDrawingView(text)
         self.addSubview(view)
         do {
             try view.beginEditing()
             self.textView = view
+            text.isRenderable = false
+            self.setNeedsDisplay()
         } catch {
             view.removeFromSuperview()
         }
     }
 
-    public func endTextEditing(_ animated: Bool) {
+    public func endTextEditing(_ animated: Bool, commit: Bool) {
         if let view = self.textView {
             try? view.endEditing()
             view.removeFromSuperview()
+
+            view.text.isRenderable = true
+
+            if commit && view.text.value.count > 0 {
+                self.canvas.addText(view.text)
+            } else {
+                self.canvas.removeTextWithID(view.text.id)
+            }
         }
         self.textView = nil
+        self.updateTextState()
+        self.setNeedsDisplay()
+    }
+
+    func updateTextState() {
+        self.tapGesture.isEnabled = self.isTextModeEnabled
+        self.longPressGesture.isEnabled = self.isTextModeEnabled
+    }
+
+    internal func textViewShouldEndEditing(_ textView: TextDrawingView, _ shouldDelete: Bool) {
+        self.endTextEditing(true, commit: !shouldDelete)
     }
 
     private var textView: TextDrawingView? = nil
+
+    private var targetText: Text? = nil {
+        willSet {
+            if self.targetText?.id != newValue?.id {
+                self.setNeedsDisplay()
+            }
+        }
+    }
+
+    public weak var textDrawingToolbarViewDelegate: TextDrawingToolbarDelegate?
+
+    @objc private func textDrawingTapGestureRecognizerAction(_ sender: UITapGestureRecognizer) {
+        let point = sender.location(in: self)
+        let location = Location(point, self.bounds.size)
+        let text = Text("", self.color, location, .arial, Text.defaultFontSize)
+        self.beginEditingText(text)
+    }
+
+    @objc private func textDrawingLongPressGestureRecognizerAction(_ sender: UILongPressGestureRecognizer) {
+        switch sender.state {
+        case .began:
+            self.updateSelection()
+            self.endTextEditing(false, commit: true)
+            let location = sender.location(in: self)
+            self.targetText = self.textForLocation(location)
+        case .changed:
+            if let target = self.targetText {
+                let raw = sender.location(in: self)
+                target.location = Location(raw, self.bounds.size)
+                self.setNeedsDisplay()
+            }
+        case .ended, .cancelled:
+            if let text = self.targetText {
+                self.beginEditingText(text)
+            } else {
+                print("No target drawing: Ending Edit Begin Gesture")
+            }
+            self.targetText = nil
+        default:
+            break
+        }
+    }
+ 
+    private func textForLocation(_ location: CGPoint) -> Text? {
+        for text in self.canvas.allText {
+            let rect = text.textRectForCanvasSize(self.bounds.size)
+            guard !rect.isEmpty else {
+                continue
+            }
+            let insetRect = UIEdgeInsetsInsetRect(rect, UIEdgeInsetsMake(-8.0, -8.0, -8.0, -8.0))
+            if insetRect.contains(location) {
+                return text
+            }
+        }
+        return nil
+    }
 }
 
 public extension DrawingView {

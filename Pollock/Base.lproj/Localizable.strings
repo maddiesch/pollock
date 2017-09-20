@@ -55,3 +55,13 @@
 
 /* Project contains invalid data */
 "pollock.error.project-invalid" = "The Project isn't valid";
+
+/**
+ *  Text Controlls
+ */
+/* Text toolbar done button title */
+"pollock.text-toolbar.done-button-title" = "Done";
+
+/* Text toolbar delete button title */
+"pollock.text-toolbar.delete-button-title" = "Delete";
+

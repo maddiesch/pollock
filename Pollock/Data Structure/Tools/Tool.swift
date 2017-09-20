@@ -119,8 +119,6 @@ internal func LoadTool(_ object: Any?) throws -> Tool {
         return try PenTool(payload)
     case "eraser":
         return try EraserTool(payload)
-    case "text":
-        return try TextTool(payload)
     case "highlighter":
         return try HighlighterTool(payload)
     default:

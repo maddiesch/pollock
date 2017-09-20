@@ -1,0 +1,21 @@
+#!/usr/bin/env ruby
+
+require 'json'
+require 'zlib'
+
+file_path = ARGV[0]
+
+raise 'Must specify a valid file path' if file_path.nil?
+raise "File doesn't exist #{file_path}" unless File.exist?(file_path)
+
+compressed = File.read(file_path)
+raw_data = Zlib::Inflate.inflate(compressed)
+
+object = JSON.parse(raw_data)
+
+puts 'Pollock'
+puts "  id:       #{object['header']['projectID']}"
+puts "  version:  #{object['header']['version']}"
+puts "  canvases: #{object['canvases'].count}"
+puts "\n\n"
+puts JSON.pretty_generate(object)

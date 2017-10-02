@@ -45,6 +45,21 @@ public final class Project : NSObject, Serializable {
         ]
     }
 
+    public func merge(withProject project: Project) {
+        for index in 0...project.canvases.count  {
+            let canvasToMerge = project.canvas(atIndex: index)
+            let baseCanvas = self.canvas(atIndex: index)
+
+            for drawing in canvasToMerge.allDrawings {
+                baseCanvas.addDrawing(drawing)
+            }
+
+            for text in canvasToMerge.allText {
+                baseCanvas.addText(text)
+            }
+        }
+    }
+
     public init(_ payload: [String : Any]) throws {
         self.header = try Header.load(payload["header"])
         guard let canvasesHashes = payload["canvases"] as? [[String: Any]] else {

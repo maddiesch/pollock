@@ -59,14 +59,17 @@ public struct Color : Equatable, Serializable, Codable {
     }
 
     public enum Name : String, Codable {
-        case red    = "red"
-        case green  = "green"
-        case blue   = "blue"
-        case orange = "orange"
-        case yellow = "yellow"
-        case purple = "purple"
-        case black  = "black"
-        case white  = "white"
+        case red     = "red"
+        case green   = "green"
+        case blue    = "blue"
+        case orange  = "orange"
+        case yellow  = "yellow"
+        case purple  = "purple"
+        case black   = "black"
+        case white   = "white"
+        case fuchsia = "fuchsia"
+        case lime    = "lime"
+        case aqua    = "aqua"
 
         init?(_ name: Any?) {
             guard let name = (name as? String)?.presence else {
@@ -96,6 +99,8 @@ public struct Color : Equatable, Serializable, Codable {
                 self = .black
             case (255.0, 255.0, 255.0):
                 self = .white
+            case (0.0, 255.0, 255.0):
+                self = .aqua
             default:
                 return nil
             }
@@ -111,14 +116,16 @@ public struct Color : Equatable, Serializable, Codable {
                 return Color(255.0, 0.0, 0.0, 1.0, self)
             case .yellow:
                 return Color(255.0, 255.0, 0.0, 1.0, self)
-            case .purple:
+            case .purple, .fuchsia:
                 return Color(255.0, 0.0, 255.0, 1.0, self)
-            case .green:
+            case .green, .lime:
                 return Color(0.0, 255.0, 0.0, 1.0, self)
             case .black:
                 return Color(0.0, 0.0, 0.0, 1.0, self)
             case .white:
                 return Color(255.0, 255.0, 255.0, 1.0, self)
+            case .aqua:
+                return Color(0.0, 255.0, 255.0, 1.0, self)
             }
         }
     }

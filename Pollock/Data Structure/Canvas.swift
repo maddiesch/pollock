@@ -57,9 +57,11 @@ internal final class Canvas : Serializable, Hashable {
         return nil
     }
 
-    func clear() {
+    internal func clear() {
         self.drawings.removeAll()
         self.text.removeAll()
+        let notification = Notification(name: .canvasDidClear, object: self)
+        NotificationCenter.default.post(notification)
     }
 
     // MARK: - Serialization
@@ -169,4 +171,5 @@ internal final class Canvas : Serializable, Hashable {
 
 public extension Notification.Name {
     static let canvasDidUndo = Notification.Name(rawValue: "Pollock.CanvasDidUndoNotification")
+    static let canvasDidClear = Notification.Name(rawValue: "Pollock.CanvasDidClearNotification")
 }

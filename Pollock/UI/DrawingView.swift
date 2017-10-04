@@ -167,6 +167,7 @@ public final class DrawingView : UIView {
         self.layer.needsDisplayOnBoundsChange = true
 
         NotificationCenter.default.addObserver(self, selector: #selector(canvasDidUndoNotification), name: .canvasDidUndo, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(canvasDidClearNotification), name: .canvasDidClear, object: nil)
 
         self.updateTextState()
     }
@@ -371,6 +372,15 @@ public final class DrawingView : UIView {
     }
 
     @objc private func canvasDidUndoNotification(_ notif: Notification) {
+        guard let updated = notif.object as? Canvas else {
+            return
+        }
+        if updated == self.canvas {
+            self.setNeedsDisplay()
+        }
+    }
+
+    @objc private func canvasDidClearNotification(_ notif: Notification) {
         guard let updated = notif.object as? Canvas else {
             return
         }

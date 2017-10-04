@@ -126,6 +126,14 @@ extension Project {
         self.canvases.remove(canvas)
         return canvas
     }
+
+    public func clearCanvas(withIndex index: Int) throws {
+        self.canvas(withIndex: index)?.clear()
+    }
+
+    public func clearAllCanvases() throws {
+        self.canvases.forEach { $0.clear() }
+    }
 }
 
 internal struct ProjectError : CustomNSError {

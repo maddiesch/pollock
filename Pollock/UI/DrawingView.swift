@@ -132,6 +132,8 @@ public final class DrawingView : UIView {
         }
     }
 
+    public var defaultFontSize: CGFloat = Text.defaultFontSize
+
     @objc
     public func clearDrawings() {
         self.canvas.clear()
@@ -452,7 +454,7 @@ public final class DrawingView : UIView {
     @objc private func textDrawingTapGestureRecognizerAction(_ sender: UITapGestureRecognizer) {
         let point = sender.location(in: self)
         let location = Location(point, self.bounds.size)
-        let text = Text("", self.color, location, .arial, Text.defaultFontSize)
+        let text = Text("", self.color, location, .arial, self.defaultFontSize)
         self.beginEditingText(text)
     }
 

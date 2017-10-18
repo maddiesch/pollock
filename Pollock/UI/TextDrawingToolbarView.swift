@@ -217,7 +217,6 @@ open class TextDrawingToolbarView : UIView {
     }
 
     @objc private func textDrawingFontSizeDidChangeNotification(_ notif: Notification) {
-        print(#function)
     }
 }
 

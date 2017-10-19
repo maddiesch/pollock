@@ -109,7 +109,7 @@ public final class DrawingView : UIView {
 
     private lazy var longPressGesture: UILongPressGestureRecognizer = {
         let gesture = UILongPressGestureRecognizer(target: self, action: #selector(textDrawingLongPressGestureRecognizerAction))
-        gesture.minimumPressDuration = 0.5
+        gesture.minimumPressDuration = 0.1
         self.addGestureRecognizer(gesture)
         gesture.require(toFail: self.tapGesture)
         return gesture
@@ -451,11 +451,17 @@ public final class DrawingView : UIView {
 
     public weak var textDrawingToolbarViewDelegate: TextDrawingToolbarDelegate?
 
+    private var startingPoint: CGPoint?
+
     @objc private func textDrawingTapGestureRecognizerAction(_ sender: UITapGestureRecognizer) {
         let point = sender.location(in: self)
-        let location = Location(point, self.bounds.size)
-        let text = Text("", self.color, location, .arial, self.defaultFontSize)
-        self.beginEditingText(text)
+        if let text = self.textForLocation(point) {
+            self.beginEditingText(text)
+        } else {
+            let location = Location(point, self.bounds.size)
+            let text = Text("", self.color, location, .arial, self.defaultFontSize)
+            self.beginEditingText(text)
+        }
     }
 
     @objc private func textDrawingLongPressGestureRecognizerAction(_ sender: UILongPressGestureRecognizer) {
@@ -464,20 +470,21 @@ public final class DrawingView : UIView {
             self.updateSelection()
             self.endTextEditing(false, commit: true)
             let location = sender.location(in: self)
+            self.startingPoint = location
             self.targetText = self.textForLocation(location)
         case .changed:
-            if let target = self.targetText {
-                let raw = sender.location(in: self)
-                target.location = Location(raw, self.bounds.size)
+            if let target = self.targetText, let starting = self.startingPoint {
+                let current = target.location.point(forSize: self.bounds.size)
+                let point = sender.location(in: self)
+                let translation = point.translation(fromPoint: starting)
+                let updated = current.offset(byPoint: translation)
+                self.startingPoint = point
+                target.location = Location(updated, self.bounds.size)
                 self.setNeedsDisplay()
             }
         case .ended, .cancelled:
-            if let text = self.targetText {
-                self.beginEditingText(text)
-            } else {
-                print("No target drawing: Ending Edit Begin Gesture")
-            }
             self.targetText = nil
+            self.startingPoint = nil
         default:
             break
         }

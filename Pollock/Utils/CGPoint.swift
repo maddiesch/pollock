@@ -13,6 +13,14 @@ internal extension CGPoint {
     func distance(fromPoint point: CGPoint) -> CGFloat {
         return sqrt(pow((point.x - self.x), 2.0) + pow(point.y - self.y, 2.0))
     }
+
+    func translation(fromPoint point: CGPoint) -> CGPoint {
+        return CGPoint(x: self.x - point.x, y: self.y - point.y)
+    }
+
+    func offset(byPoint point: CGPoint) -> CGPoint {
+        return CGPoint(x: self.x + point.x, y: self.y + point.y)
+    }
 }
 
 extension CGPoint : Serializable {

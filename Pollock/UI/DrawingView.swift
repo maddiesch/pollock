@@ -403,8 +403,8 @@ public final class DrawingView : UIView {
         let view = TextDrawingView(text)
         self.addSubview(view)
         do {
-            try view.beginEditing()
             self.textView = view
+            try view.beginEditing()
             text.isRenderable = false
             self.setNeedsDisplay()
         } catch {
@@ -502,6 +502,13 @@ public final class DrawingView : UIView {
             }
         }
         return nil
+    }
+
+    public func currentTextFieldFrame() -> CGRect? {
+        guard let text = self.textView else {
+            return nil
+        }
+        return text.frame
     }
 }
 

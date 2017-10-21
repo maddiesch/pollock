@@ -109,9 +109,8 @@ public final class DrawingView : UIView {
 
     private lazy var longPressGesture: UILongPressGestureRecognizer = {
         let gesture = UILongPressGestureRecognizer(target: self, action: #selector(textDrawingLongPressGestureRecognizerAction))
-        gesture.minimumPressDuration = 0.1
+        gesture.minimumPressDuration = 0.35
         self.addGestureRecognizer(gesture)
-        gesture.require(toFail: self.tapGesture)
         return gesture
     }()
 
@@ -458,9 +457,7 @@ public final class DrawingView : UIView {
         if let text = self.textForLocation(point) {
             self.beginEditingText(text)
         } else {
-            let location = Location(point, self.bounds.size)
-            let text = Text("", self.color, location, .arial, self.defaultFontSize)
-            self.beginEditingText(text)
+            self.createAndEditTextAtPoint(point)
         }
     }
 
@@ -483,11 +480,22 @@ public final class DrawingView : UIView {
                 self.setNeedsDisplay()
             }
         case .ended, .cancelled:
-            self.targetText = nil
-            self.startingPoint = nil
+            if self.targetText == nil {
+                let point = sender.location(in: self)
+                self.createAndEditTextAtPoint(point)
+            } else {
+                self.targetText = nil
+                self.startingPoint = nil
+            }
         default:
             break
         }
+    }
+
+    private func createAndEditTextAtPoint(_ point: CGPoint) {
+        let location = Location(point, self.bounds.size)
+        let text = Text("", self.color, location, .arial, self.defaultFontSize)
+        self.beginEditingText(text)
     }
  
     private func textForLocation(_ location: CGPoint) -> Text? {

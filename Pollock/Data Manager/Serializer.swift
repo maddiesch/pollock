@@ -28,7 +28,7 @@ struct Serializer {
 
     private static func createRawData(_ data: Data) throws -> Data {
         if data.isZip {
-            return try data.unzip(skipChecksumValidate: false)
+            return try data.unzip(skipChecksumValidate: true)
         } else {
             return data
         }

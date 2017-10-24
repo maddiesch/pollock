@@ -80,8 +80,22 @@ internal final class Canvas : Serializable, Hashable {
         }
         let drawings = payload["drawings"] as? [[String: Any]] ?? []
         let text = payload["text"] as? [[String: Any]] ?? []
-        self.drawings = drawings.flatMap { try? Drawing($0) }
-        self.text = text.flatMap { try? Text($0) }
+        self.drawings = drawings.flatMap {
+            do {
+                return try Drawing($0)
+            } catch {
+                print(error)
+                return nil
+            }
+        }
+        self.text = text.flatMap {
+            do {
+                return try Text($0)
+            } catch {
+                print(error)
+                return nil
+            }
+        }
         self.index = index
     }
 

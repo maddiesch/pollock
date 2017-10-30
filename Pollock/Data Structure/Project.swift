@@ -33,6 +33,25 @@ public final class Project : NSObject, Serializable {
         }
     }
 
+    public var isEmpty: Bool {
+        var empty = true
+        for canvas in self.canvases {
+            for drawing in canvas.allDrawings {
+                empty = drawing.allPoints.count == 0
+                if !empty {
+                    return empty
+                }
+            }
+            for text in canvas.allText {
+                empty = text.value.isEmpty
+                if !empty {
+                    return empty
+                }
+            }
+        }
+        return empty
+    }
+
     fileprivate var canvases: Set<Canvas> = []
 
     public func serialize() throws -> [String : Any] {

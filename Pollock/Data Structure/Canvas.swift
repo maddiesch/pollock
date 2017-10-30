@@ -145,6 +145,15 @@ internal final class Canvas : Serializable, Hashable {
                 }
             }
         }
+        self.performTextCulling()
+    }
+
+    func performTextCulling() {
+        for text in self.allText {
+            if text.value.isEmpty {
+                self.removeTextWithID(text.id)
+            }
+        }
     }
 
     internal func localizedNextUndoName() -> String {

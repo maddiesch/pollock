@@ -92,11 +92,6 @@ public final class Project : NSObject, Serializable {
         for canvas in self.canvases {
             let start = canvas.allDrawings.filter { !$0.isCulled }.count
             try canvas.performOcclusionCulling()
-            for text in canvas.allText {
-                if text.value.isEmpty {
-                    canvas.removeTextWithID(text.id)
-                }
-            }
             let end = canvas.allDrawings.filter { !$0.isCulled }.count
             print("Canvas \(canvas.index) culling pass: (\(start - end))")
         }

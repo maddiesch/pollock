@@ -60,7 +60,7 @@ public final class DrawingView : UIView {
     public var color: Color = Color.Name.black.color {
         didSet {
             self.textView?.text.color = self.color
-            self.textView?.textField.textColor = self.color.uiColor
+            self.textView?.textColor = self.color.uiColor
         }
     }
 

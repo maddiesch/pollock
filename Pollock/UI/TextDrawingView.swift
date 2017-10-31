@@ -9,13 +9,14 @@
 import Foundation
 import UIKit
 
-internal class TextDrawingView : UIView, UITextFieldDelegate {
+internal class TextDrawingView : UIView, UITextViewDelegate {
     let text: Text
 
     init(_ text: Text) {
         self.text = text
         self.centerConstraint = CenterConstraint(nil, nil)
         super.init(frame: CGRect(x: 0.0, y: 0.0, width: 50.0, height: 24.0))
+        self.string = text.value
         self.translatesAutoresizingMaskIntoConstraints = false
         self.backgroundColor = UIColor(white: 0.6, alpha: 0.3)
     }
@@ -39,17 +40,37 @@ internal class TextDrawingView : UIView, UITextFieldDelegate {
     }
 
     override var intrinsicContentSize: CGSize {
-        let size = self.textField.intrinsicContentSize
+        let size = self.textView.intrinsicContentSize
         return CGSize(width: max(50.0, size.width), height: size.height)
     }
 
-    lazy var textField: UITextField = {
-        let field = UITextField(frame: self.bounds)
-        field.translatesAutoresizingMaskIntoConstraints = false
-        field.returnKeyType = .done
-        field.delegate = self
+    var string: String? {
+        set {
+            if let string = newValue {
+                let style = NSMutableParagraphStyle()
+                style.lineSpacing = 0.0
+                let attribs: Dictionary<NSAttributedStringKey, Any> = [
+                    .paragraphStyle: style,
+                    .font: self.text.fontForSize(self.superview?.bounds.size ?? CGSize.zero)
+                ]
+                self.textView.attributedText = NSAttributedString(string: string, attributes: attribs)
+            } else {
+                self.textView.attributedText = nil
+            }
+        }
+        get {
+            return self.textView.text
+        }
+    }
 
-        field.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
+    private lazy var textView: UITextView = {
+        let field = UITextView(frame: self.bounds)
+        field.translatesAutoresizingMaskIntoConstraints = false
+        field.delegate = self
+        field.isScrollEnabled = false
+        field.textContainerInset = UIEdgeInsets.zero
+        field.textContainer.lineFragmentPadding = 0.0
+        field.backgroundColor = .clear
 
         self.addSubview(field)
         self.addConstraints([
@@ -61,17 +82,26 @@ internal class TextDrawingView : UIView, UITextFieldDelegate {
         return field
     }()
 
+    var textColor: UIColor? {
+        set {
+            self.textView.textColor = newValue
+        }
+        get {
+            return self.textView.textColor
+        }
+    }
+
     // MARK: - State
     func beginEditing() throws {
         self.updateLocation()
 
-        self.textField.font = self.text.fontForSize(self.superview?.bounds.size ?? CGSize.zero)
-        self.textField.text = self.text.value
-        self.textField.textColor = self.text.color.uiColor
+        self.textView.font = self.text.fontForSize(self.superview?.bounds.size ?? CGSize.zero)
+        self.string = self.text.value
+        self.textView.textColor = self.text.color.uiColor
 
         self.setupInputAccessoryView()
 
-        self.textField.becomeFirstResponder()
+        self.textView.becomeFirstResponder()
 
         self.invalidateIntrinsicContentSize()
         self.superview?.setNeedsLayout()
@@ -87,12 +117,12 @@ internal class TextDrawingView : UIView, UITextFieldDelegate {
             bar.fontSize = Float(self.text.fontSize)
             bar.fontName = self.text.font.rawValue
         }
-        self.textField.inputAccessoryView = toolbar
+        self.textView.inputAccessoryView = toolbar
     }
 
     func endEditing() throws {
-        self.textField.resignFirstResponder()
-        self.text.value = self.textField.text ?? ""
+        self.textView.resignFirstResponder()
+        self.text.value = self.string ?? ""
     }
 
     private func updateLocation() {
@@ -103,7 +133,7 @@ internal class TextDrawingView : UIView, UITextFieldDelegate {
         )
     }
 
-    @objc private func textFieldDidChange(_ textField: UITextField) {
+    func textViewDidChange(_ textView: UITextView) {
         self.invalidateIntrinsicContentSize()
         self.superview?.setNeedsLayout()
     }
@@ -128,14 +158,14 @@ internal class TextDrawingView : UIView, UITextFieldDelegate {
         case .tnr:
             self.text.font = .arial
         }
-        self.textField.font = self.text.fontForSize(self.superview?.bounds.size ?? CGSize.zero)
+        self.textView.font = self.text.fontForSize(self.superview?.bounds.size ?? CGSize.zero)
         let notif = Notification(name: .textDrawingFontDidChange, object: self.text.font, userInfo: nil)
         NotificationCenter.default.post(notif)
     }
 
     @objc private func fontSizeSliderValueChanged(_ sender: UISlider) {
         self.text.fontSize = CGFloat(sender.value)
-        self.textField.font = self.text.fontForSize(self.superview?.bounds.size ?? CGSize.zero)
+        self.textView.font = self.text.fontForSize(self.superview?.bounds.size ?? CGSize.zero)
         self.invalidateIntrinsicContentSize()
         self.updateLocation()
         let notif = Notification(name: .textDrawingFontSizeDidChange, object: sender.value, userInfo: nil)

@@ -81,7 +81,12 @@ internal final class Text : Serializable {
         return [
             .font: self.fontForSize(size),
             .kern: NSNull(),
-            .foregroundColor: self.color.uiColor
+            .foregroundColor: self.color.uiColor,
+            .paragraphStyle: {
+                let style = NSMutableParagraphStyle()
+                style.lineSpacing = 1.0
+                return style
+            }()
         ]
     }
 

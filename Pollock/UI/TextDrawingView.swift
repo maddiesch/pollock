@@ -40,19 +40,14 @@ internal class TextDrawingView : UIView, UITextViewDelegate {
     }
 
     override var intrinsicContentSize: CGSize {
-        let size = self.textView.intrinsicContentSize
-        return CGSize(width: max(50.0, size.width), height: size.height)
+        let rect = self.text.textRectForCanvasSize(self.superview?.bounds.size ?? CGSize.zero)
+        return CGSize(width: max(50.0, rect.width), height: rect.height)
     }
 
     var string: String? {
         set {
             if let string = newValue {
-                let style = NSMutableParagraphStyle()
-                style.lineSpacing = 0.0
-                let attribs: Dictionary<NSAttributedStringKey, Any> = [
-                    .paragraphStyle: style,
-                    .font: self.text.fontForSize(self.superview?.bounds.size ?? CGSize.zero)
-                ]
+                let attribs = self.text.defaultAttributesForSize(self.superview?.bounds.size ?? CGSize.zero)
                 self.textView.attributedText = NSAttributedString(string: string, attributes: attribs)
             } else {
                 self.textView.attributedText = nil

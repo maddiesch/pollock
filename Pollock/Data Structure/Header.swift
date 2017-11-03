@@ -26,7 +26,8 @@ internal struct Header : Serializable {
     }
 
     init(_ payload: [String: Any]) throws {
-        self.version = try Serializer.validateVersion(payload["version"], "Context Header")
+        _ = try Serializer.validateVersion(payload["version"], "Context Header")
+        self.version = PollockCurrentVersion
         self.id = try Serializer.decodeUUID(payload["projectID"])
     }
 }

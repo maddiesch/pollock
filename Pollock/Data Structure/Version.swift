@@ -11,4 +11,4 @@ import Foundation
 public typealias PollockVersion = Int
 
 public let PollockCurrentVersion: PollockVersion = 1
-public let PollockSupportedVersions: [PollockVersion] = [PollockCurrentVersion]
+public let PollockSupportedVersions: [PollockVersion] = [0, PollockCurrentVersion]

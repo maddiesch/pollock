@@ -36,6 +36,9 @@ struct Serializer {
 
     @discardableResult
     internal static func validateVersion(_ version: Any?, _ ctx: String) throws -> PollockVersion {
+        guard version != nil else {
+            return PollockCurrentVersion
+        }
         guard let num = version as? Int else {
             throw SerializerError("Invalid version number for \(ctx)")
         }

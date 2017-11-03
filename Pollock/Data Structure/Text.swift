@@ -46,7 +46,8 @@ internal final class Text : Serializable {
     }
 
     init(_ payload: [String : Any]) throws {
-        self.version = try Serializer.validateVersion(payload["version"], "Text")
+        _ = try Serializer.validateVersion(payload["version"], "Text")
+        self.version = PollockCurrentVersion
         self.id = try Serializer.decodeUUID(payload["textID"])
         guard let location = payload["location"] as? [String: Any] else {
             throw SerializerError("Invalid Location")

@@ -150,7 +150,8 @@ internal final class Drawing : Serializable {
     }
 
     init(_ payload: [String : Any]) throws {
-        self.version = try Serializer.validateVersion(payload["version"], "Drawing")
+        _ = try Serializer.validateVersion(payload["version"], "Drawing")
+        self.version = PollockCurrentVersion
         self.id = try Serializer.decodeUUID(payload["drawingID"])
         self.tool = try LoadTool(payload["tool"])
         self.isCulled = payload["isCulled"] as? Bool ?? false

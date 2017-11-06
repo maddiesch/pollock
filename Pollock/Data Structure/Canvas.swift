@@ -117,6 +117,7 @@ internal final class Canvas : Serializable, Hashable {
         for drawing in self.drawings.reversed() {
             switch drawing.tool {
             case is EraserTool:
+                drawing.cullExtraneous(forSize: size)
                 guard let path = drawing.createPath(forSize: size) else {
                     continue
                 }

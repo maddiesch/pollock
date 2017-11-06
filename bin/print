@@ -2,6 +2,28 @@
 
 require 'json'
 require 'zlib'
+require 'optparse'
+
+options = {
+  points: true,
+  dump: true,
+  canvas: nil
+}
+OptionParser.new do |opts|
+  opts.banner = 'Usage: example.rb [options]'
+
+  opts.on('-p', '--[no-]points', 'Print the points array for each drawing') do |v|
+    options[:points] = v
+  end
+  opts.on('-c', '--canvas=[cid]', 'Prints only the specific canvas index') do |c|
+    options[:canvas] = c
+  end
+  opts.on('-d', '--[no-]dump', 'Prints the full object') do |d|
+    options[:dump] = d
+  end
+end.parse!
+
+puts options.inspect
 
 file_path = ARGV[0]
 
@@ -18,4 +40,17 @@ puts "  id:       #{object['header']['projectID']}"
 puts "  version:  #{object['header']['version']}"
 puts "  canvases: #{object['canvases'].count}"
 puts "\n\n"
+
+exit 0 if options[:dump] == false
+
+if options[:canvas] != nil
+  object['canvases'] = object['canvases'].select { |c| c['index'] == options[:canvas].to_i }
+end
+
+if options[:points] == false
+  object['canvases'] = object['canvases'].map do |c|
+    c['drawings'].each { |d| d['points'] = ["#{d['points'].count} points..."] }
+  end
+end
+
 puts JSON.pretty_generate(object)

@@ -494,7 +494,9 @@ public final class DrawingView : UIView {
 
     private func createAndEditTextAtPoint(_ point: CGPoint) {
         let location = Location(point, self.bounds.size)
-        let text = Text("", self.color, location, .arial, self.defaultFontSize)
+        let previousFontSize = UserDefaults.standard.float(forKey: TextDrawingView.kPreviousFontSize)
+        let fontSize = previousFontSize > 0 ? CGFloat(previousFontSize) : self.defaultFontSize
+        let text = Text("", self.color, location, .arial, fontSize)
         self.beginEditingText(text)
     }
  

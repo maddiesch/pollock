@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 
 internal class TextDrawingView : UIView, UITextViewDelegate {
+    static let kPreviousFontSize = "kPreviousFontSize"
     let text: Text
 
     init(_ text: Text) {
@@ -160,6 +161,7 @@ internal class TextDrawingView : UIView, UITextViewDelegate {
 
     @objc private func fontSizeSliderValueChanged(_ sender: UISlider) {
         self.text.fontSize = CGFloat(sender.value)
+        UserDefaults.standard.set(sender.value, forKey: TextDrawingView.kPreviousFontSize)
         self.textView.font = self.text.fontForSize(self.superview?.bounds.size ?? CGSize.zero)
         self.invalidateIntrinsicContentSize()
         self.updateLocation()

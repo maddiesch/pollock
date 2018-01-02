@@ -216,6 +216,7 @@ public final class DrawingView : UIView {
         guard self.isEnabled && !self.isTextModeEnabled else {
             return
         }
+        self.currentDrawing?.prune()
         self.currentDrawing = nil
         self.process(touches, forEvent: event)
         self.setNeedsDisplay()

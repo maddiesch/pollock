@@ -9,7 +9,7 @@
 import Foundation
 import Compression
 
-struct CompressorError : Error {
+struct CompressorError : CustomNSError {
     let message: String
 
     init(_ message: String) {
@@ -18,6 +18,9 @@ struct CompressorError : Error {
 
     var localizedDescription: String {
         return "CompressorError<\(self.message)>"
+    }
+    var errorUserInfo: [String : Any] {
+        return [NSLocalizedDescriptionKey: self.message]
     }
 }
 
@@ -103,9 +106,6 @@ final class Compressor {
             case COMPRESSION_STATUS_ERROR:
                 throw CompressorError("Stream process error")
             case COMPRESSION_STATUS_OK:
-                guard stream.dst_size == 0 else {
-                    throw CompressorError("WTF")
-                }
                 output.append(buffer, count: stream.dst_ptr - buffer)
                 stream.dst_ptr = buffer
                 stream.dst_size = bufferSize

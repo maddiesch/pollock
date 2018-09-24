@@ -10,7 +10,7 @@ import Foundation
 import CoreGraphics
 
 internal extension CGPath {
-    func forEach(_ block: @convention(block) (CGPathElement) -> Void) {
+    func forEach(_ block: @convention(block) @escaping (CGPathElement) -> Void) {
         typealias Body = @convention(block) (CGPathElement) -> Void
         let callback: @convention(c) (UnsafeMutableRawPointer, UnsafePointer<CGPathElement>) -> Void = { info, element in
             let body = unsafeBitCast(info, to: Body.self)

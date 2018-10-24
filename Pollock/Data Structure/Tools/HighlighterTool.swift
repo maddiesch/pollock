@@ -25,8 +25,8 @@ public final class HighlighterTool : Tool {
     public required init(_ payload: [String : Any]) throws {
         super.init()
         self.version = try Serializer.validateVersion(payload["version"], "HighlighterTool")
-        self.lineWidth = payload["lineWidth"] as? CGFloat ?? 16.0
-        self.forceSensitivity = payload["forceSensitivity"] as? CGFloat ?? 1.0
+        self.lineWidth = CGFloat(payload["lineWidth"] as? Double ?? 1.0)
+        self.forceSensitivity = CGFloat(payload["forceSensitivity"] as? Double ?? 1.0)
     }
 
     public override var localizedUndoName: String {

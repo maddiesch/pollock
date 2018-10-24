@@ -25,13 +25,13 @@ internal extension CGPoint {
 
 extension CGPoint : Serializable {
     public init(_ payload: [String : Any]) throws {
-        guard let x = payload["x"] as? CGFloat else {
+        guard let x = payload["x"] as? Double else {
             throw SerializerError("Size missing width")
         }
-        guard let y = payload["y"] as? CGFloat else {
+        guard let y = payload["y"] as? Double else {
             throw SerializerError("Size missing height")
         }
-        self.init(x: x, y: y)
+        self.init(x: CGFloat(x), y: CGFloat(y))
     }
 
     public func serialize() throws -> [String : Any] {

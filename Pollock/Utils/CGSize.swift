@@ -10,13 +10,13 @@ import Foundation
 
 extension CGSize : Serializable {
     public init(_ payload: [String : Any]) throws {
-        guard let width = payload["width"] as? CGFloat else {
+        guard let width = payload["width"] as? Double else {
             throw SerializerError("Size missing width")
         }
-        guard let height = payload["height"] as? CGFloat else {
+        guard let height = payload["height"] as? Double else {
             throw SerializerError("Size missing height")
         }
-        self.init(width: width, height: height)
+        self.init(width: CGFloat(width), height: CGFloat(height))
     }
 
     public func serialize() throws -> [String : Any] {

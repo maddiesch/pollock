@@ -18,14 +18,14 @@ internal struct Location : Serializable {
     }
 
     init(_ payload: [String : Any]) throws {
-        guard let xOffset = payload["xOffset"] as? Double else {
+        guard let xOffset = payload["xOffset"] as? NSNumber else {
             throw SerializerError("Missing xOffset for Location")
         }
-        guard let yOffset = payload["yOffset"] as? Double else {
+        guard let yOffset = payload["yOffset"] as? NSNumber else {
             throw SerializerError("Missing yOffset for Location")
         }
-        self.xOffset = CGFloat(xOffset)
-        self.yOffset = CGFloat(yOffset)
+        self.xOffset = CGFloat(truncating: xOffset)
+        self.yOffset = CGFloat(truncating: yOffset)
     }
 
     func serialize() throws -> [String : Any] {

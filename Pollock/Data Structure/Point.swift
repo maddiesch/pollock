@@ -46,7 +46,7 @@ internal struct Point : Serializable {
     init(_ payload: [String : Any]) throws {
         self.previous = try Location.load(payload["previous"])
         self.location = try Location.load(payload["location"])
-        self.force = CGFloat(payload["force"] as? Double ?? 1.0)
+        self.force = CGFloat(truncating: payload["force"] as? NSNumber ?? 1.0)
         self.isPredictive = payload["isPredictive"] as? Bool ?? false
     }
 }

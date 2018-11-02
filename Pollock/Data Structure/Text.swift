@@ -56,7 +56,7 @@ internal final class Text : Serializable {
         self.color = try Color(payload["color"] as? [String: Any] ?? [:])
         self.value = payload["value"] as? String ?? ""
         self.font = Font(rawValue: payload["fontName"] as? String ?? Font.arial.rawValue) ?? Font.arial
-        self.fontSize = payload["fontSize"] as? CGFloat ?? 0.025
+        self.fontSize = CGFloat(truncating: payload["fontSize"] as? NSNumber ?? 0.025)
     }
 
     internal func draw(inContext ctx: CGContext, size: CGSize, settings: RenderSettings) throws {

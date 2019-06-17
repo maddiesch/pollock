@@ -78,7 +78,7 @@ final class Compressor {
         }
 
         var streamWrapper = UnsafeMutablePointer<compression_stream>.allocate(capacity: 1)
-        defer { streamWrapper.deallocate(capacity: 1) }
+        defer { streamWrapper.deallocate() }
         var stream = streamWrapper.pointee
 
         let initStatus = compression_stream_init(&stream, self.operation, self.algorithm)
@@ -89,7 +89,7 @@ final class Compressor {
 
         let bufferSize = min(size, 0x3E800)
         let buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: bufferSize)
-        defer { buffer.deallocate(capacity: bufferSize) }
+        defer { buffer.deallocate() }
 
         stream.src_ptr = bytes
         stream.src_size = size

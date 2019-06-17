@@ -506,7 +506,7 @@ public final class DrawingView : UIView {
             guard !rect.isEmpty else {
                 continue
             }
-            let insetRect = UIEdgeInsetsInsetRect(rect, UIEdgeInsetsMake(-8.0, -8.0, -8.0, -8.0))
+            let insetRect = rect.inset(by: UIEdgeInsets.init(top: -8.0, left: -8.0, bottom: -8.0, right: -8.0))
             if insetRect.contains(location) {
                 return text
             }

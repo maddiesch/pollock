@@ -72,9 +72,9 @@ open class TextDrawingToolbarView : UIView {
     open override var intrinsicContentSize: CGSize {
         switch self.traitCollection.horizontalSizeClass {
         case .compact:
-            return CGSize(width: UIViewNoIntrinsicMetric, height: 96.0)
+            return CGSize(width: UIView.noIntrinsicMetric, height: 96.0)
         default:
-            return CGSize(width: UIViewNoIntrinsicMetric, height: 48.0)
+            return CGSize(width: UIView.noIntrinsicMetric, height: 48.0)
         }
     }
 

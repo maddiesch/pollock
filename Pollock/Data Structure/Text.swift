@@ -78,7 +78,7 @@ internal final class Text : Serializable {
         }
     }
 
-    internal func defaultAttributesForSize(_ size: CGSize) -> [NSAttributedStringKey: Any] {
+    internal func defaultAttributesForSize(_ size: CGSize) -> [NSAttributedString.Key: Any] {
         return [
             .font: self.fontForSize(size),
             .kern: NSNull(),

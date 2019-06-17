@@ -68,8 +68,8 @@ internal final class Canvas : Serializable, Hashable {
     func serialize() throws -> [String : Any] {
         return [
             "index": self.index,
-            "drawings": self.drawings.flatMap { try? $0.serialize() },
-            "text": self.text.flatMap { try? $0.serialize() },
+            "drawings": self.drawings.compactMap { try? $0.serialize() },
+            "text": self.text.compactMap { try? $0.serialize() },
             "_type": "canvas"
         ]
     }
@@ -80,7 +80,7 @@ internal final class Canvas : Serializable, Hashable {
         }
         let drawings = payload["drawings"] as? [[String: Any]] ?? []
         let text = payload["text"] as? [[String: Any]] ?? []
-        self.drawings = drawings.flatMap {
+        self.drawings = drawings.compactMap {
             do {
                 return try Drawing($0)
             } catch {
@@ -88,7 +88,7 @@ internal final class Canvas : Serializable, Hashable {
                 return nil
             }
         }
-        self.text = text.flatMap {
+        self.text = text.compactMap {
             do {
                 return try Text($0)
             } catch {

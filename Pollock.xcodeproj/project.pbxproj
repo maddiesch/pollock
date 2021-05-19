@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		22A86B8B264C4A0500463030 /* PKDrawingRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22A86B8A264C4A0500463030 /* PKDrawingRenderer.swift */; };
 		22C42D16265578DC00C02675 /* PKProject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C42D15265578DC00C02675 /* PKProject.swift */; };
-		22C42D182655799900C02675 /* PKDrawingWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C42D172655799900C02675 /* PKDrawingWrapper.swift */; };
 		22C42D1A265589B400C02675 /* PKCanvas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C42D19265589B400C02675 /* PKCanvas.swift */; };
 		22D24F20264995D600568A8F /* PencilKit+PCO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22D24F1F264995D600568A8F /* PencilKit+PCO.swift */; };
 		22D2504A2649EEC400568A8F /* Compressor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22D250492649EEC400568A8F /* Compressor.swift */; };
@@ -94,7 +93,6 @@
 /* Begin PBXFileReference section */
 		22A86B8A264C4A0500463030 /* PKDrawingRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PKDrawingRenderer.swift; sourceTree = "<group>"; };
 		22C42D15265578DC00C02675 /* PKProject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PKProject.swift; sourceTree = "<group>"; };
-		22C42D172655799900C02675 /* PKDrawingWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PKDrawingWrapper.swift; sourceTree = "<group>"; };
 		22C42D19265589B400C02675 /* PKCanvas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PKCanvas.swift; sourceTree = "<group>"; };
 		22D24F1F264995D600568A8F /* PencilKit+PCO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PencilKit+PCO.swift"; sourceTree = "<group>"; };
 		22D250492649EEC400568A8F /* Compressor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Compressor.swift; sourceTree = "<group>"; };
@@ -309,7 +307,6 @@
 				94A46B9B1F200E2900A0EE0B /* Project.swift */,
 				22C42D15265578DC00C02675 /* PKProject.swift */,
 				22C42D19265589B400C02675 /* PKCanvas.swift */,
-				22C42D172655799900C02675 /* PKDrawingWrapper.swift */,
 				94D30C681EC55240009D32F6 /* Canvas.swift */,
 				942033E01EB2D66900A458F8 /* Drawing.swift */,
 				94FD5BDF1F71CF3B0023E6FB /* Text.swift */,
@@ -518,7 +515,6 @@
 				94060D991F33A01A00703402 /* CGPoint.swift in Sources */,
 				94D26B3F1F63386D000F3FFD /* EraserTool.swift in Sources */,
 				94D30C6D1EC557AE009D32F6 /* Tool.swift in Sources */,
-				22C42D182655799900C02675 /* PKDrawingWrapper.swift in Sources */,
 				22D2504A2649EEC400568A8F /* Compressor.swift in Sources */,
 				945BAF3B1F4DFAF400E7EB34 /* Comparable.swift in Sources */,
 				94A46B9C1F200E2900A0EE0B /* Project.swift in Sources */,

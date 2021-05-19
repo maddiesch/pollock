@@ -34,7 +34,7 @@ public final class Project : NSObject, Serializable {
     }
 
     public var isEmpty: Bool {
-        var empty = true
+        var empty = true        
         for canvas in self.canvases {
             for drawing in canvas.allDrawings {
                 empty = drawing.allPoints.count == 0
@@ -78,7 +78,6 @@ public final class Project : NSObject, Serializable {
             }
         }
     }
-
     public init(_ payload: [String : Any]) throws {
         self.header = try Header.load(payload["header"])
         guard let canvasesHashes = payload["canvases"] as? [[String: Any]] else {

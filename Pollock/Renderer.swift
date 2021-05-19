@@ -44,7 +44,7 @@ public class Renderer : NSObject {
     @discardableResult
     public func load(serializedData data: Data) throws -> AnyObject {
         let project = try Serializer.unserialize(data: data)
-        self.project = project
+        try load(project: project)
         return project
     }
 

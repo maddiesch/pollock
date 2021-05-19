@@ -7,10 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		22A86B8B264C4A0500463030 /* PKDrawingRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22A86B8A264C4A0500463030 /* PKDrawingRenderer.swift */; };
+		22C42D16265578DC00C02675 /* PKProject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C42D15265578DC00C02675 /* PKProject.swift */; };
+		22C42D182655799900C02675 /* PKDrawingWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C42D172655799900C02675 /* PKDrawingWrapper.swift */; };
+		22C42D1A265589B400C02675 /* PKCanvas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C42D19265589B400C02675 /* PKCanvas.swift */; };
+		22D24F20264995D600568A8F /* PencilKit+PCO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22D24F1F264995D600568A8F /* PencilKit+PCO.swift */; };
+		22D2504A2649EEC400568A8F /* Compressor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22D250492649EEC400568A8F /* Compressor.swift */; };
+		22FEE7262652C62B00ED0164 /* PencilKitHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22FEE7252652C62B00ED0164 /* PencilKitHelper.swift */; };
 		94060D931F3397A200703402 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94060D921F3397A200703402 /* String.swift */; };
 		94060D971F339B5900703402 /* CGPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94060D961F339B5900703402 /* CGPath.swift */; };
 		94060D991F33A01A00703402 /* CGPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94060D981F33A01A00703402 /* CGPoint.swift */; };
-		9407F1EE1EC4E99300568034 /* Compressor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9407F1ED1EC4E99300568034 /* Compressor.swift */; };
 		9407F1F81EC4F86400568034 /* Pollock.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 942033AE1EB2CDAE00A458F8 /* Pollock.framework */; };
 		9407F1FF1EC4F89F00568034 /* CompressorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9407F1FE1EC4F89F00568034 /* CompressorTests.swift */; };
 		9407F2021EC4FAFE00568034 /* decompress-test.txt in Resources */ = {isa = PBXBuildFile; fileRef = 9407F2001EC4FAFE00568034 /* decompress-test.txt */; };
@@ -86,10 +92,16 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		22A86B8A264C4A0500463030 /* PKDrawingRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PKDrawingRenderer.swift; sourceTree = "<group>"; };
+		22C42D15265578DC00C02675 /* PKProject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PKProject.swift; sourceTree = "<group>"; };
+		22C42D172655799900C02675 /* PKDrawingWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PKDrawingWrapper.swift; sourceTree = "<group>"; };
+		22C42D19265589B400C02675 /* PKCanvas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PKCanvas.swift; sourceTree = "<group>"; };
+		22D24F1F264995D600568A8F /* PencilKit+PCO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PencilKit+PCO.swift"; sourceTree = "<group>"; };
+		22D250492649EEC400568A8F /* Compressor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Compressor.swift; sourceTree = "<group>"; };
+		22FEE7252652C62B00ED0164 /* PencilKitHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PencilKitHelper.swift; sourceTree = "<group>"; };
 		94060D921F3397A200703402 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
 		94060D961F339B5900703402 /* CGPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGPath.swift; sourceTree = "<group>"; };
 		94060D981F33A01A00703402 /* CGPoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGPoint.swift; sourceTree = "<group>"; };
-		9407F1ED1EC4E99300568034 /* Compressor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Compressor.swift; sourceTree = "<group>"; };
 		9407F1F31EC4F86400568034 /* PollockTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PollockTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9407F1F71EC4F86400568034 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9407F1FE1EC4F89F00568034 /* CompressorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompressorTests.swift; sourceTree = "<group>"; };
@@ -177,6 +189,7 @@
 				94E5C2DE1F4C9D86000CC2B2 /* CreateQuadCurvePath.swift */,
 				945BAF3A1F4DFAF400E7EB34 /* Comparable.swift */,
 				940BFEEF1F5A0DB000672230 /* Localized.swift */,
+				22FEE7252652C62B00ED0164 /* PencilKitHelper.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -282,8 +295,9 @@
 		94A46B9D1F20100300A0EE0B /* Data Manager */ = {
 			isa = PBXGroup;
 			children = (
+				22D250492649EEC400568A8F /* Compressor.swift */,
 				948EB3AD1EB2EFDA008600CE /* Serializable.swift */,
-				9407F1ED1EC4E99300568034 /* Compressor.swift */,
+				22D24F1F264995D600568A8F /* PencilKit+PCO.swift */,
 				94D30C6A1EC55410009D32F6 /* Serializer.swift */,
 			);
 			path = "Data Manager";
@@ -293,6 +307,9 @@
 			isa = PBXGroup;
 			children = (
 				94A46B9B1F200E2900A0EE0B /* Project.swift */,
+				22C42D15265578DC00C02675 /* PKProject.swift */,
+				22C42D19265589B400C02675 /* PKCanvas.swift */,
+				22C42D172655799900C02675 /* PKDrawingWrapper.swift */,
 				94D30C681EC55240009D32F6 /* Canvas.swift */,
 				942033E01EB2D66900A458F8 /* Drawing.swift */,
 				94FD5BDF1F71CF3B0023E6FB /* Text.swift */,
@@ -322,6 +339,7 @@
 			isa = PBXGroup;
 			children = (
 				94D30C6E1EC57AF0009D32F6 /* Renderer.swift */,
+				22A86B8A264C4A0500463030 /* PKDrawingRenderer.swift */,
 				94D30C731EC57CD2009D32F6 /* GraphicsRenderer.swift */,
 			);
 			name = Renderer;
@@ -428,6 +446,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -499,24 +518,30 @@
 				94060D991F33A01A00703402 /* CGPoint.swift in Sources */,
 				94D26B3F1F63386D000F3FFD /* EraserTool.swift in Sources */,
 				94D30C6D1EC557AE009D32F6 /* Tool.swift in Sources */,
+				22C42D182655799900C02675 /* PKDrawingWrapper.swift in Sources */,
+				22D2504A2649EEC400568A8F /* Compressor.swift in Sources */,
 				945BAF3B1F4DFAF400E7EB34 /* Comparable.swift in Sources */,
 				94A46B9C1F200E2900A0EE0B /* Project.swift in Sources */,
 				94142F431F68975B00D82A83 /* TextDrawingView.swift in Sources */,
 				94D26B3D1F633850000F3FFD /* HighlighterTool.swift in Sources */,
 				94D30C6B1EC55410009D32F6 /* Serializer.swift in Sources */,
+				22A86B8B264C4A0500463030 /* PKDrawingRenderer.swift in Sources */,
 				94D6F61F1F4C90D0008F25FF /* Location.swift in Sources */,
 				94D30C691EC55240009D32F6 /* Canvas.swift in Sources */,
 				94CA185D1F16D0AC00E379C2 /* Header.swift in Sources */,
 				9497105B1F70801C008393DA /* TextDrawingToolbarView.swift in Sources */,
 				94E5C2DF1F4C9D86000CC2B2 /* CreateQuadCurvePath.swift in Sources */,
-				9407F1EE1EC4E99300568034 /* Compressor.swift in Sources */,
 				94C7A40C1F6317760081559D /* RenderSettings.swift in Sources */,
 				94D26B3B1F63380C000F3FFD /* PenTool.swift in Sources */,
+				22C42D1A265589B400C02675 /* PKCanvas.swift in Sources */,
+				22C42D16265578DC00C02675 /* PKProject.swift in Sources */,
 				94060D971F339B5900703402 /* CGPath.swift in Sources */,
 				94060D931F3397A200703402 /* String.swift in Sources */,
 				94D30C6F1EC57AF0009D32F6 /* Renderer.swift in Sources */,
 				94FD5BE01F71CF3B0023E6FB /* Text.swift in Sources */,
+				22D24F20264995D600568A8F /* PencilKit+PCO.swift in Sources */,
 				942033E31EB2D67F00A458F8 /* Point.swift in Sources */,
+				22FEE7262652C62B00ED0164 /* PencilKitHelper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

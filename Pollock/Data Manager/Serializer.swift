@@ -7,11 +7,42 @@
 //
 
 import Foundation
+import PencilKit
 
 struct Serializer {
+    @available(iOS 13.0, *)
+    static func downConvert(pkdrawing: PKDrawing, compress: Bool) throws -> Data {
+        let output = try pkdrawing.serialize()
+        let data = try JSONSerialization.data(withJSONObject: output, options: [])
+        if compress {
+            return try data.zip()
+        }
+        return data
+    }
+    
     static func serialize(project: Project, compress: Bool) throws -> Data {
         let output = try project.serialize()
         let data = try JSONSerialization.data(withJSONObject: output, options: [])
+        if compress {
+            return try data.zip()
+        }
+        return data
+    }
+    
+    
+    @available(iOS 14.0, *)
+    static func serialize(pkproject: PKProject, compress: Bool) throws -> Data {
+        let encoder = JSONEncoder()
+        let data = try encoder.encode(pkproject)
+        if compress {
+            return try data.zip()
+        }
+        return data
+    }
+    
+    @available(iOS 13.0, *)
+    static func serialize(pkdrawing: PKDrawing, compress: Bool) throws -> Data {
+        let data = pkdrawing.dataRepresentation()
         if compress {
             return try data.zip()
         }

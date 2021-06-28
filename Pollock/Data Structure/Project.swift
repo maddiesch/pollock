@@ -7,8 +7,10 @@
 //
 
 import Foundation
+import PencilKit
 
 public final class Project : NSObject, Serializable {
+    
     let header: Header
 
     override init() {
@@ -34,22 +36,28 @@ public final class Project : NSObject, Serializable {
     }
 
     public var isEmpty: Bool {
-        var empty = true        
         for canvas in self.canvases {
+            if #available(iOS 14.0, *) {
+            if let pkdrawing = canvas._pkdrawing {
+                    if let pkDrawing = pkdrawing as? PKDrawing {
+                        if !pkDrawing.isEmpty() {
+                            return false
+                        }
+                    }
+                }
+            }
             for drawing in canvas.allDrawings {
-                empty = drawing.allPoints.count == 0
-                if !empty {
-                    return empty
+                if drawing.allPoints.count > 0 {
+                    return false
                 }
             }
             for text in canvas.allText {
-                empty = text.value.isEmpty
-                if !empty {
-                    return empty
+                if !text.value.isEmpty {
+                    return false
                 }
             }
         }
-        return empty
+        return true
     }
 
     fileprivate var canvases: Set<Canvas> = []
@@ -57,6 +65,16 @@ public final class Project : NSObject, Serializable {
     public func serialize() throws -> [String : Any] {
         let header = try self.header.serialize()
         let canvases = try self.canvases.sorted { $0.index < $1.index }.map { try $0.serialize() }
+        return [
+            "header": header,
+            "canvases": canvases,
+            "_type": "project"
+        ]
+    }
+    
+    public func serializePK() throws -> [String : Any] {
+        let header = try self.header.serialize()
+        let canvases = try self.canvases.sorted { $0.index < $1.index }.filter { $0.canvasSize != .zero }.map { try $0.serializePK() }
         return [
             "header": header,
             "canvases": canvases,
@@ -129,12 +147,7 @@ extension Project {
     }
 
     func canvas(withIndex index: Int) -> Canvas? {
-        for canvas in self.canvases {
-            if canvas.index == index {
-                return canvas
-            }
-        }
-        return nil
+        return canvases.first(where: {$0.index == index})
     }
 
     func removeCanvas(withIndex index: Int) -> Canvas? {

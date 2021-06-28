@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import PencilKit
 
 internal final class Canvas : Serializable, Hashable {
     let index: Int
@@ -19,6 +20,18 @@ internal final class Canvas : Serializable, Hashable {
 
     var allDrawings: [Drawing] {
         return self.drawings
+    }
+    
+    var canvasSize: CGSize = CGSize.zero
+    var _pkdrawing: Any?
+    
+    @available(iOS 14.0, *)
+    var pkdrawing: PKDrawing? {
+        if let drawing = _pkdrawing as? PKDrawing {
+            return drawing
+        }
+        _pkdrawing = PKDrawing()
+        return _pkdrawing as? PKDrawing
     }
 
     func addDrawing(_ drawing: Drawing) {
@@ -58,6 +71,7 @@ internal final class Canvas : Serializable, Hashable {
     }
 
     internal func clear() {
+        _pkdrawing = nil
         self.drawings.removeAll()
         self.text.removeAll()
         let notification = Notification(name: .canvasDidClear, object: self)
@@ -73,12 +87,38 @@ internal final class Canvas : Serializable, Hashable {
             "_type": "canvas"
         ]
     }
+    
+    func serializePK() throws -> [String : Any] {
+        var drawings: [[String : Any]] = []
+        if #available(iOS 14.0, *) {
+            if _pkdrawing != nil {
+                    if let drawing = _pkdrawing as? PKDrawing {
+                        let downscaledDrawing = PKDrawingExtractor.downscalePoints(ofDrawing: drawing, withSize: self.canvasSize)
+                        if let strokes = try? downscaledDrawing.serialize() {
+                            drawings = strokes
+                        }
+                    }
+            }
+        }
+        return [
+            "index": self.index,
+            "drawings": drawings,
+            "text": self.text.compactMap { try? $0.serialize() },
+            "_type": "canvas"
+        ]
+    }
 
     init(_ payload: [String : Any]) throws {
         guard let index = payload["index"] as? Int else {
             throw SerializerError("Missing index")
         }
         let drawings = payload["drawings"] as? [[String: Any]] ?? []
+        
+        
+        if #available(iOS 14.0, *) {
+            self._pkdrawing = try PKDrawing(payload)
+        }
+        
         let text = payload["text"] as? [[String: Any]] ?? []
         self.drawings = drawings.compactMap {
             do {
@@ -162,10 +202,6 @@ internal final class Canvas : Serializable, Hashable {
             return drawing.tool.localizedUndoName
         }
         return Localized("pollock.undo-name.none")
-    }
-
-    internal var canUndo: Bool {
-        return self.allDrawings.count >= 1
     }
 
     internal func undo() throws -> String {

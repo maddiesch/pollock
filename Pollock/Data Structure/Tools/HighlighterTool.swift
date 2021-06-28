@@ -38,7 +38,8 @@ public final class HighlighterTool : Tool {
     }
 
     internal override func configureContextForDrawing(_ settings: RenderSettings, _ ctx: CGContext, _ size: CGSize) throws {
-        ctx.setLineWidth(self.calculateLineWidth(forSize: size))
+        let lineWidth = self.calculateLineWidth(forSize: size)
+        ctx.setLineWidth(lineWidth)
 
         switch settings.highlightStyle {
         case .alpha:

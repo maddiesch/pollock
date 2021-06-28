@@ -30,6 +30,14 @@ public class Renderer : NSObject {
             return self.project.currentCanvas
         }
     }
+    
+    public func clearCanvas(withIndex index: Int) {
+        try? self.project.clearCanvas(withIndex: index)
+    }
+    
+    public func clearAllCanvases() {
+        try? self.project.clearAllCanvases()
+    }
 
     public func draw(inContext ctx: CGContext, canvasID: Int?, forRect rect: CGRect, settings: RenderSettings?, backgroundRenderer bg: BackgroundRenderer?) throws {
         fatalError("Must Override")
@@ -39,12 +47,16 @@ public class Renderer : NSObject {
     public func serialize(compressOutput compress: Bool) throws -> Data {
         return try Serializer.serialize(project: self.project, compress: compress)
     }
+    
+    public func serializePK(compressOutput compress: Bool) throws -> Data {
+        return try Serializer.serializePK(project: self.project, compress: compress)
+    }
 
     @objc(loadSerializedData:error:)
     @discardableResult
     public func load(serializedData data: Data) throws -> AnyObject {
         let project = try Serializer.unserialize(data: data)
-        try load(project: project)
+        self.project = project
         return project
     }
 

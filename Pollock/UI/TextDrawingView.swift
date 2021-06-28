@@ -9,8 +9,18 @@
 import Foundation
 import UIKit
 
+
+internal protocol TextDrawingViewDelegate : class {
+    func textViewShouldEndEditing(_ textView: TextDrawingView, _ shouldDelete: Bool)
+    func textDrawingToolbarDelegate() -> TextDrawingToolbarDelegate
+    
+}
+
 internal class TextDrawingView : UIView, UITextViewDelegate {
     let text: Text
+    
+    public weak var textDrawingToolbarViewDelegate: TextDrawingToolbarDelegate?
+    public weak var delgate: TextDrawingViewDelegate?
 
     init(_ text: Text) {
         self.text = text
@@ -103,7 +113,7 @@ internal class TextDrawingView : UIView, UITextViewDelegate {
     }
 
     private func setupInputAccessoryView() {
-        let toolbar = self.drawingView?.textDrawingToolbarViewDelegate?.createToolbarView()
+        let toolbar = self.delgate?.textDrawingToolbarDelegate().createToolbarView()
         if let bar = toolbar {
             bar.doneButton.addTarget(self, action: #selector(doneButtonAction), for: .touchUpInside)
             bar.fontButton.addTarget(self, action: #selector(fontPickerButtonAction), for: .touchUpInside)
@@ -134,16 +144,16 @@ internal class TextDrawingView : UIView, UITextViewDelegate {
     }
 
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        self.drawingView?.textViewShouldEndEditing(self, false)
+        self.delgate?.textViewShouldEndEditing(self, false)
         return false
     }
 
     @objc private func doneButtonAction(_ sender: UIButton) {
-        self.drawingView?.textViewShouldEndEditing(self, false)
+        self.delgate?.textViewShouldEndEditing(self, false)
     }
 
     @objc private func deleteButtonAction(_ sender: UIButton) {
-        self.drawingView?.textViewShouldEndEditing(self, true)
+        self.delgate?.textViewShouldEndEditing(self, true)
     }
 
     @objc private func fontPickerButtonAction(_ sender: UIButton) {

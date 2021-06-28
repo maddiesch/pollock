@@ -71,7 +71,8 @@ public class Tool : NSObject, Serializable, Duplicating {
     }
 
     internal func configureContextForDrawing(_ settings: RenderSettings, _ ctx: CGContext, _ size: CGSize) throws {
-        ctx.setLineWidth(self.calculateLineWidth(forSize: size))
+        let lineWidth = self.calculateLineWidth(forSize: size)
+        ctx.setLineWidth(lineWidth)
         ctx.setBlendMode(.normal)
     }
 

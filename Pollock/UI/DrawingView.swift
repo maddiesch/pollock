@@ -11,7 +11,7 @@ import UIKit
 
 @objc(POLDrawingProvider)
 public protocol DrawingProvider {
-    func rendererForDrawingView(_ drawingView: DrawingView) -> Renderer
+    func rendererForDrawingView() -> Renderer
 }
 
 @available(iOS 10.0, *)
@@ -23,7 +23,7 @@ public enum EditorState {
 }
 
 @objc(POLDrawingView)
-public final class DrawingView : UIView {
+public final class DrawingView : UIView, TextDrawingViewDelegate {
     internal var currentDrawing: Drawing?
 
     public weak var drawingProvider: DrawingProvider?
@@ -155,7 +155,7 @@ public final class DrawingView : UIView {
         super.init(frame: CGRect(x: 0.0, y: 0.0, width: 320.0, height:320.0))
 
         self.drawingProvider = provider
-        self.renderer = provider.rendererForDrawingView(self)
+        self.renderer = provider.rendererForDrawingView()
 
         self.finishSetupForInitialization()
     }
@@ -179,9 +179,12 @@ public final class DrawingView : UIView {
 
     // MARK: - State
     public func updateRenderer() {
-        self.renderer = self.drawingProvider?.rendererForDrawingView(self) ?? Renderer.createRenderer()
+        guard let provider = self.drawingProvider else {
+            return
+        }
+        self.renderer = provider.rendererForDrawingView()
     }
-
+    
     private func createDrawing() -> Drawing {
         return Drawing(tool: self.currentTool.duplicate(), color: self.color, isSmoothingEnabled: self.isSmoothingEnabled)
     }
@@ -397,11 +400,15 @@ public final class DrawingView : UIView {
 
         return super.endEditing(force)
     }
+    func textDrawingToolbarDelegate() -> TextDrawingToolbarDelegate {
+        return self.textDrawingToolbarViewDelegate!
+    }
 
     // MARK: - Text Editing
     private func beginEditingText(_ text: Text) {
         self.endTextEditing(false, commit: true)
         let view = TextDrawingView(text)
+        view.delgate = self
         self.addSubview(view)
         do {
             self.textView = view
@@ -515,7 +522,7 @@ public final class DrawingView : UIView {
     }
 
     public func currentTextFieldFrame() -> CGRect? {
-        guard let text = self.textView else {
+        guard let text = self.textView, !isHidden else {
             return nil
         }
         return text.frame
@@ -523,15 +530,11 @@ public final class DrawingView : UIView {
 }
 
 public extension DrawingView {
-    public func localizedNextUndoName() -> String {
+    func localizedNextUndoName() -> String {
         return self.canvas.localizedNextUndoName()
     }
 
-    public var canUndo: Bool {
-        return self.canvas.canUndo
-    }
-
-    public func undo() throws -> String {
+    func undo() throws -> String {
         return try self.canvas.undo()
     }
 }

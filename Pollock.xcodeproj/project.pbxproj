@@ -7,9 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		22A86B8B264C4A0500463030 /* PKDrawingRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22A86B8A264C4A0500463030 /* PKDrawingRenderer.swift */; };
-		22C42D16265578DC00C02675 /* PKProject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C42D15265578DC00C02675 /* PKProject.swift */; };
-		22C42D1A265589B400C02675 /* PKCanvas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C42D19265589B400C02675 /* PKCanvas.swift */; };
+		22107657267127EB00FE7684 /* PKDrawingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22107656267127EB00FE7684 /* PKDrawingView.swift */; };
 		22D24F20264995D600568A8F /* PencilKit+PCO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22D24F1F264995D600568A8F /* PencilKit+PCO.swift */; };
 		22D2504A2649EEC400568A8F /* Compressor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22D250492649EEC400568A8F /* Compressor.swift */; };
 		22FEE7262652C62B00ED0164 /* PencilKitHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22FEE7252652C62B00ED0164 /* PencilKitHelper.swift */; };
@@ -91,9 +89,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		22A86B8A264C4A0500463030 /* PKDrawingRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PKDrawingRenderer.swift; sourceTree = "<group>"; };
-		22C42D15265578DC00C02675 /* PKProject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PKProject.swift; sourceTree = "<group>"; };
-		22C42D19265589B400C02675 /* PKCanvas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PKCanvas.swift; sourceTree = "<group>"; };
+		22107656267127EB00FE7684 /* PKDrawingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PKDrawingView.swift; sourceTree = "<group>"; };
 		22D24F1F264995D600568A8F /* PencilKit+PCO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PencilKit+PCO.swift"; sourceTree = "<group>"; };
 		22D250492649EEC400568A8F /* Compressor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Compressor.swift; sourceTree = "<group>"; };
 		22FEE7252652C62B00ED0164 /* PencilKitHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PencilKitHelper.swift; sourceTree = "<group>"; };
@@ -215,6 +211,7 @@
 			isa = PBXGroup;
 			children = (
 				942033DC1EB2CF9B00A458F8 /* DrawingView.swift */,
+				22107656267127EB00FE7684 /* PKDrawingView.swift */,
 				94142F421F68975B00D82A83 /* TextDrawingView.swift */,
 				9497105A1F70801C008393DA /* TextDrawingToolbarView.swift */,
 			);
@@ -305,8 +302,6 @@
 			isa = PBXGroup;
 			children = (
 				94A46B9B1F200E2900A0EE0B /* Project.swift */,
-				22C42D15265578DC00C02675 /* PKProject.swift */,
-				22C42D19265589B400C02675 /* PKCanvas.swift */,
 				94D30C681EC55240009D32F6 /* Canvas.swift */,
 				942033E01EB2D66900A458F8 /* Drawing.swift */,
 				94FD5BDF1F71CF3B0023E6FB /* Text.swift */,
@@ -336,7 +331,6 @@
 			isa = PBXGroup;
 			children = (
 				94D30C6E1EC57AF0009D32F6 /* Renderer.swift */,
-				22A86B8A264C4A0500463030 /* PKDrawingRenderer.swift */,
 				94D30C731EC57CD2009D32F6 /* GraphicsRenderer.swift */,
 			);
 			name = Renderer;
@@ -521,7 +515,6 @@
 				94142F431F68975B00D82A83 /* TextDrawingView.swift in Sources */,
 				94D26B3D1F633850000F3FFD /* HighlighterTool.swift in Sources */,
 				94D30C6B1EC55410009D32F6 /* Serializer.swift in Sources */,
-				22A86B8B264C4A0500463030 /* PKDrawingRenderer.swift in Sources */,
 				94D6F61F1F4C90D0008F25FF /* Location.swift in Sources */,
 				94D30C691EC55240009D32F6 /* Canvas.swift in Sources */,
 				94CA185D1F16D0AC00E379C2 /* Header.swift in Sources */,
@@ -529,13 +522,12 @@
 				94E5C2DF1F4C9D86000CC2B2 /* CreateQuadCurvePath.swift in Sources */,
 				94C7A40C1F6317760081559D /* RenderSettings.swift in Sources */,
 				94D26B3B1F63380C000F3FFD /* PenTool.swift in Sources */,
-				22C42D1A265589B400C02675 /* PKCanvas.swift in Sources */,
-				22C42D16265578DC00C02675 /* PKProject.swift in Sources */,
 				94060D971F339B5900703402 /* CGPath.swift in Sources */,
 				94060D931F3397A200703402 /* String.swift in Sources */,
 				94D30C6F1EC57AF0009D32F6 /* Renderer.swift in Sources */,
 				94FD5BE01F71CF3B0023E6FB /* Text.swift in Sources */,
 				22D24F20264995D600568A8F /* PencilKit+PCO.swift in Sources */,
+				22107657267127EB00FE7684 /* PKDrawingView.swift in Sources */,
 				942033E31EB2D67F00A458F8 /* Point.swift in Sources */,
 				22FEE7262652C62B00ED0164 /* PencilKitHelper.swift in Sources */,
 			);

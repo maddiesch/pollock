@@ -80,4 +80,51 @@ class CompressorTests: XCTestCase {
         XCTAssertTrue(compressed.isZip)
         XCTAssertFalse(uncompressed.isZip)
     }
+    
+    func testSerialize() {
+        let jsonString = "{\"location\": \"the moon\"}"
+
+        if let documentDirectory = FileManager.default.urls(for: .documentDirectory,
+                                                            in: .userDomainMask).first {
+            let pathWithFilename = documentDirectory.appendingPathComponent("myJsonString.json")
+            do {
+                try jsonString.write(to: pathWithFilename,
+                                     atomically: true,
+                                     encoding: .utf8)
+            } catch {
+                // Handle error
+            }
+        }
+        
+    
+        
+        
+        
+        let json:[String : Any] = ["key": "value"]
+        
+        let data = try? JSONSerialization.data(withJSONObject: json, options: [])
+//
+        guard let convertedJSON = try? JSONSerialization.jsonObject(with: data!, options: []) as? [String: Any] else {
+//            XCTFail()
+            return
+        }
+        if let dict = convertedJSON {
+            if let value = dict["key"] as? String {
+                XCTAssert(value == "value")
+                
+            } else {
+                XCTFail()
+            }
+        }
+        
+        
+        
+        
+            
+
+//        let proj = try Serializer.unserialize(data: data)
+//
+//        try renderer.load(project: proj)
+        
+    }
 }

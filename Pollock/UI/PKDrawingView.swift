@@ -18,7 +18,6 @@ public final class PKDrawingView: UIView, PKCanvasViewDelegate, TextDrawingViewD
         return self.textDrawingToolbarViewDelegate!
     }
     
-    
     internal var currentDrawing: Drawing?
     
     public weak var drawingProvider: DrawingProvider?
@@ -33,15 +32,6 @@ public final class PKDrawingView: UIView, PKCanvasViewDelegate, TextDrawingViewD
     public override init(frame: CGRect) {
         super.init(frame: frame)
         self.isOpaque = false
-        
-//        NotificationCenter.default.addObserver(self, selector: #selector(knownDrawingSizeDidChange), name: Notification.Name(rawValue: "DrawingManagerLastKnownSizeDidChangeNotification"), object: nil)
-        //        self.backgroundColor = .blue
-    }
-
-    @objc private func knownDrawingSizeDidChange(_ notif: Notification) {
-//        if #available(iOS 14.0, *) {
-//            update(canvasSize: self.canvasView.bounds.size)
-//        }
     }
     
     public override var bounds: CGRect {
@@ -157,8 +147,6 @@ public final class PKDrawingView: UIView, PKCanvasViewDelegate, TextDrawingViewD
     public func canvasViewDrawingDidChange(_ canvasView: PKCanvasView) {
         //update the drawing on the canvas?
         if #available(iOS 14.0, *) {
-//            self.update(canvasSize: self.canvasView.bounds.size)
-//            canvas.canvasSize = self.canvasView.bounds.size
             canvas._pkdrawing = self.canvasView.drawing
         }
         self.setNeedsDisplay()  //this runs draw(rect) for text
@@ -185,10 +173,10 @@ public final class PKDrawingView: UIView, PKCanvasViewDelegate, TextDrawingViewD
     
     public override func endEditing(_ force: Bool) -> Bool {
         self.endTextEditing(false, commit: true)
-
+        
         return super.endEditing(force)
     }
-
+    
     // MARK: - Text Editing
     private func beginEditingText(_ text: Text) {
         self.endTextEditing(false, commit: true)
@@ -204,14 +192,14 @@ public final class PKDrawingView: UIView, PKCanvasViewDelegate, TextDrawingViewD
             view.removeFromSuperview()
         }
     }
-
+    
     public func endTextEditing(_ animated: Bool, commit: Bool) {
         if let view = self.textView {
             try? view.endEditing()
             view.removeFromSuperview()
-
+            
             view.text.isRenderable = true
-
+            
             if commit && view.text.value.count > 0 {
                 canvas.addText(view.text)
             } else {
@@ -222,7 +210,7 @@ public final class PKDrawingView: UIView, PKCanvasViewDelegate, TextDrawingViewD
         self.updateTextState()
         self.setNeedsDisplay()
     }
-
+    
     func updateTextState() {
         guard !isHidden else {
             return
@@ -257,16 +245,16 @@ public final class PKDrawingView: UIView, PKCanvasViewDelegate, TextDrawingViewD
             self.updateTextState()
         }
     }
-
+    
     public var defaultFontSize: CGFloat = Text.defaultFontSize
-
+    
     
     private lazy var tapGesture: UITapGestureRecognizer = {
         let gesture = UITapGestureRecognizer(target: self, action: #selector(textDrawingTapGestureRecognizerAction))
         self.addGestureRecognizer(gesture)
         return gesture
     }()
-
+    
     private lazy var longPressGesture: UILongPressGestureRecognizer = {
         let gesture = UILongPressGestureRecognizer(target: self, action: #selector(textDrawingLongPressGestureRecognizerAction))
         gesture.minimumPressDuration = 0.35
@@ -278,9 +266,9 @@ public final class PKDrawingView: UIView, PKCanvasViewDelegate, TextDrawingViewD
     internal func textViewShouldEndEditing(_ textView: TextDrawingView, _ shouldDelete: Bool) {
         self.endTextEditing(true, commit: !shouldDelete)
     }
-
+    
     private var textView: TextDrawingView? = nil
-
+    
     private var targetText: Text? = nil {
         willSet {
             if self.targetText?.id != newValue?.id {
@@ -290,11 +278,11 @@ public final class PKDrawingView: UIView, PKCanvasViewDelegate, TextDrawingViewD
     }
     
     public weak var textDrawingToolbarViewDelegate: TextDrawingToolbarDelegate?
-
+    
     private var startingPoint: CGPoint?
     
     
-
+    
     @objc private func textDrawingTapGestureRecognizerAction(_ sender: UITapGestureRecognizer) {
         let point = sender.location(in: self)
         if let text = self.textForLocation(point) {
@@ -311,7 +299,7 @@ public final class PKDrawingView: UIView, PKCanvasViewDelegate, TextDrawingViewD
             print("Haptics not available...")
         }
     }
-
+    
     @objc private func textDrawingLongPressGestureRecognizerAction(_ sender: UILongPressGestureRecognizer) {
         switch sender.state {
         case .began:
@@ -342,13 +330,13 @@ public final class PKDrawingView: UIView, PKCanvasViewDelegate, TextDrawingViewD
             break
         }
     }
-
+    
     private func createAndEditTextAtPoint(_ point: CGPoint) {
         let location = Location(point, self.bounds.size)
         let text = Text("", self.color, location, .arial, self.defaultFontSize)
         self.beginEditingText(text)
     }
- 
+    
     private func textForLocation(_ location: CGPoint) -> Text? {
         for text in canvas.allText {
             let rect = text.textRectForCanvasSize(self.bounds.size)
@@ -362,7 +350,7 @@ public final class PKDrawingView: UIView, PKCanvasViewDelegate, TextDrawingViewD
         }
         return nil
     }
-
+    
     public func currentTextFieldFrame() -> CGRect? {
         guard let text = self.textView, !isHidden else {
             return nil
@@ -388,7 +376,6 @@ extension PKDrawingView: PKToolPickerObserver {
                 //display an alert and switch back to vector
                 tool.eraserType = .vector
                 if #available(iOS 14.0, *) {
-                    //                    canvasView.tool = tool
                     toolPicker.selectedTool = tool
                 } else {
                     toolPicker.selectedTool = tool

@@ -84,14 +84,6 @@ public struct PKDrawingExtractor {
             let newPath = PKStrokePath(controlPoints: newPoints, creationDate: Date())
             
             stroke.path = newPath
-            let maskBezierPath: UIBezierPath?
-            if let mask = stroke.mask {
-                maskBezierPath = mask
-                maskBezierPath!.apply(CGAffineTransform(scaleX: size.width, y: size.height))
-                stroke.mask = nil  //Need to set the mask to nil so the renderBounds is recalculated to the correct size!
-                maskBezierPath?.append(UIBezierPath(rect: stroke.renderBounds))
-                stroke.mask = maskBezierPath
-            }
             newStrokes.append(stroke)
         }
         let newDrawing = PKDrawing(strokes: newStrokes)
@@ -122,13 +114,7 @@ public struct PKDrawingExtractor {
                 newPoints.append(newPoint)
             }
             stroke.path = PKStrokePath(controlPoints: newPoints, creationDate: Date())
-            if let mask = stroke.mask {
-                
-                stroke.mask!.apply(CGAffineTransform(scaleX: 1/size.width, y: 1/size.height))
-                
-            }
             newDrawingStrokes.append(stroke)
-        
         }
         return PKDrawing(strokes: newDrawingStrokes)
     }
@@ -139,49 +125,7 @@ extension PKDrawing {
     public func serialize() throws -> [[String : Any]] {
         var drawings: [[String: Any]] = []
         if #available(iOS 14.0, *) {
-            
-            
-            //loop over strokes and pull out any erasers and set the masks to nil
-            for var stroke in strokes {
-                var point1: CGPoint = .zero
-                var point2: CGPoint = .zero
-                var hasMask = false
-                if stroke.mask != nil {
-                    hasMask = true
-                    // create an eraser!
-                    let path = stroke.mask
-                    
-                    stroke.mask = nil
-                    //this path could contain multiple erasers, but we know the bounding box is last
-                    var points = path?.cgPath.getPoints()
-                    points?.removeLast(4)  //remove the bounding box as it's not an eraser
-                    
-                    if let rectPoints = points?.prefix(4) {
-                        //find the minx and miny and the maxX and maxY
-                        var minX: CGFloat = rectPoints[0].x
-                        var minY: CGFloat = rectPoints[0].y
-                        var maxX: CGFloat = rectPoints[0].x
-                        var maxY: CGFloat = rectPoints[0].y
-                        for point in rectPoints {
-                            minX = min(minX, point.x)
-                            maxX = max(maxX, point.x)
-                            
-                            minY = min(minY, point.y)
-                            maxY = max(maxY, point.y)
-                        }
-                        
-                        point1 = CGPoint(x: minX, y: minY)
-                        point2 = CGPoint(x: maxX, y: maxY)
-                      
-                    }
-                }
-                
-                drawings.append(try stroke.serialize())
-                
-                if hasMask {
-                    drawings.append(eraser(fromPoint1: point1, toPoint2: point2))
-                }
-            }
+            drawings = try self.strokes.map{ try $0.serialize() }
         }
         
         return drawings
@@ -277,10 +221,9 @@ extension PKDrawing {
                     toolSize = CGSize(width: lineWidth, height: lineWidth)
                 }
                 if toolName == "eraser" {
-                    //if this stroke is an eraser, need to update all the previous strokes with a new mask if the eraser overlaps...
-                    pkStrokes = PKDrawing.apply(eraserPayload: drawing, toStrokes: pkStrokes)
-                    return
-                }
+                   //Remove Eraser Data from JSON
+                   return
+               }
                 var inkColor = UIColor.black
                 if let color = drawing["color"] as? [String: Any] {
                     inkColor = PKDrawingHelper.color(forDict: color)

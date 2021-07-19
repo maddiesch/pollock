@@ -20,7 +20,7 @@ struct PKDrawingHelper {
         var blue: CGFloat = 0
         var alpha: CGFloat = 0
         color.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
-
+        
         return [
             "alpha" : min(max(alpha, 0), 1),            //0 - 1
             "red" : min(max(red * 255.0, 0), 255),      //0 - 255
@@ -28,7 +28,7 @@ struct PKDrawingHelper {
             "green" : min(max(green * 255.0, 0), 255)   //0 - 255
         ]
     }
-
+    
     static func color(forDict dict: [String: Any]) -> UIColor {
         let red = dict["red"] as? CGFloat ?? 0
         let alpha = dict["alpha"] as? CGFloat ?? 0
@@ -55,15 +55,12 @@ public struct PKDrawingExtractor {
         }
         return []
     }
-
+    
     @available(iOS 14.0, *)
     public static func upscalePoints(ofDrawing drawing: PKDrawing, withSize size: CGSize) -> PKDrawing {
-        var newDrawingStrokes = [PKStroke]()
-        for stroke in drawing.strokes {
-            let previousInk = stroke.ink
-
+        var newStrokes = [PKStroke]()
+        for var stroke in drawing.strokes {
             var newPoints = [PKStrokePoint]()
-            
             var pointSize = CGSize.zero
             stroke.path.forEach { (point) in
                 pointSize = point.size
@@ -85,24 +82,33 @@ public struct PKDrawingExtractor {
                 newPoints.append(newPoint)
             }
             let newPath = PKStrokePath(controlPoints: newPoints, creationDate: Date())
-            newDrawingStrokes.append(PKStroke(ink: previousInk, path: newPath))
+            
+            stroke.path = newPath
+            let maskBezierPath: UIBezierPath?
+            if let mask = stroke.mask {
+                maskBezierPath = mask
+                maskBezierPath!.apply(CGAffineTransform(scaleX: size.width, y: size.height))
+                stroke.mask = nil  //Need to set the mask to nil so the renderBounds is recalculated to the correct size!
+                maskBezierPath?.append(UIBezierPath(rect: stroke.renderBounds))
+                stroke.mask = maskBezierPath
+            }
+            newStrokes.append(stroke)
         }
-        return PKDrawing(strokes: newDrawingStrokes)
+        let newDrawing = PKDrawing(strokes: newStrokes)
+        return newDrawing
     }
     
     @available(iOS 14.0, *)
     public static func downscalePoints(ofDrawing drawing: PKDrawing, withSize size: CGSize) -> PKDrawing {
         var newDrawingStrokes = [PKStroke]()
-        for stroke in drawing.strokes {
-            let previousInk = stroke.ink
-
+        for var stroke in drawing.strokes {
             var newPoints = [PKStrokePoint]()
             var pointSize = CGSize.zero
             stroke.path.forEach { (point) in
                 let transformedPoint = point.location.applying(stroke.transform) //apply lasso transform
                 let newLocation = CGPoint(x: transformedPoint.x / size.width, y: transformedPoint.y / size.height)
                 pointSize = point.size
-                if (pointSize.width > 1) {
+                if (pointSize.width > 1) { // this is the code that scales the stroke width
                     let scale: CGFloat = 0.54
                     let toolWidth = pointSize.width / size.height / scale
                     let toolHeight = pointSize.height / size.height / scale
@@ -115,8 +121,14 @@ public struct PKDrawingExtractor {
                                              azimuth: point.azimuth, altitude: point.altitude)
                 newPoints.append(newPoint)
             }
-            let newPath = PKStrokePath(controlPoints: newPoints, creationDate: Date())
-            newDrawingStrokes.append(PKStroke(ink: previousInk, path: newPath))
+            stroke.path = PKStrokePath(controlPoints: newPoints, creationDate: Date())
+            if let mask = stroke.mask {
+                
+                stroke.mask!.apply(CGAffineTransform(scaleX: 1/size.width, y: 1/size.height))
+                
+            }
+            newDrawingStrokes.append(stroke)
+        
         }
         return PKDrawing(strokes: newDrawingStrokes)
     }
@@ -127,12 +139,118 @@ extension PKDrawing {
     public func serialize() throws -> [[String : Any]] {
         var drawings: [[String: Any]] = []
         if #available(iOS 14.0, *) {
-            drawings = try self.strokes.map{ try $0.serialize() }
+            
+            
+            //loop over strokes and pull out any erasers and set the masks to nil
+            for var stroke in strokes {
+                var point1: CGPoint = .zero
+                var point2: CGPoint = .zero
+                var hasMask = false
+                if stroke.mask != nil {
+                    hasMask = true
+                    // create an eraser!
+                    let path = stroke.mask
+                    
+                    stroke.mask = nil
+                    //this path could contain multiple erasers, but we know the bounding box is last
+                    var points = path?.cgPath.getPoints()
+                    points?.removeLast(4)  //remove the bounding box as it's not an eraser
+                    
+                    if let rectPoints = points?.prefix(4) {
+                        //find the minx and miny and the maxX and maxY
+                        var minX: CGFloat = rectPoints[0].x
+                        var minY: CGFloat = rectPoints[0].y
+                        var maxX: CGFloat = rectPoints[0].x
+                        var maxY: CGFloat = rectPoints[0].y
+                        for point in rectPoints {
+                            minX = min(minX, point.x)
+                            maxX = max(maxX, point.x)
+                            
+                            minY = min(minY, point.y)
+                            maxY = max(maxY, point.y)
+                        }
+                        
+                        point1 = CGPoint(x: minX, y: minY)
+                        point2 = CGPoint(x: maxX, y: maxY)
+                      
+                    }
+                }
+                
+                drawings.append(try stroke.serialize())
+                
+                if hasMask {
+                    drawings.append(eraser(fromPoint1: point1, toPoint2: point2))
+                }
+            }
         }
-
+        
         return drawings
     }
-
+    
+    public func eraser(fromPoint1 point1: CGPoint, toPoint2 point2: CGPoint) -> [String: Any] {
+        
+        var points = [[String: Any]]()
+        
+        let point1Json: [String: Any] = [
+            "previous": [
+                "xOffset": point1.x,
+                "yOffset": point1.y
+            ],
+            "isPredictive": false,
+            "_type": "point",
+            "force": 1,
+            "location": [
+                "xOffset": point1.x,
+                "yOffset": point1.y
+            ]
+        ]
+        points.append(point1Json)
+        
+        let point2Json: [String: Any] = [
+            "previous": [
+                "xOffset": point1.x,
+                "yOffset": point1.y
+            ],
+            "isPredictive": false,
+            "_type": "point",
+            "force": 1,
+            "location": [
+                "xOffset": point2.x,
+                "yOffset": point2.y
+            ]
+        ]
+        points.append(point2Json)
+        
+        let tool: [String: Any] = [
+          "_type" : "tool",
+          "forceSensitivity" : 1,
+          "lineWidth" : 0.02,
+          "name" : "eraser",
+          "version" : 1
+        ]
+        
+        let color: [String: Any] = [
+            "color" : [
+              "red" : 0,
+              "alpha" : 1,
+              "name" : "green",
+              "blue" : 0,
+              "green" : 255
+            ]
+        ]
+        
+        return [
+            "drawingID": UUID().uuidString,  //TODO need to set a uuid on the actual stroke somehow
+            "version": 1,  //TODO: Same as above, but need to hold a version somewhere
+            "tool": tool,
+            "points": points,
+            "isCulled": false,  //TODO: Figure out what is culled does
+            "color": color,
+            "isSmoothingEnabled": false, //Appears to always be true
+            "_type": "drawing"
+        ]
+    }
+    
     public init(_ payload: [String : Any]) throws {
         guard #available(iOS 14.0, *) else {
             if #available(iOS 14.0, *) {
@@ -149,15 +267,18 @@ extension PKDrawing {
                 var toolForce: CGFloat = 1
                 var isHighlighter = false
                 var toolName = ""
+                
                 if let tool = drawing["tool"] as? [String: Any] {
                     toolForce = tool["forceSensitivity"] as? CGFloat ?? 0
                     let lineWidth = tool["lineWidth"] as? CGFloat ?? 0
                     toolName = tool["name"] as? String ?? "pen"
-
+                    
                     isHighlighter = toolName == "highlighter"
                     toolSize = CGSize(width: lineWidth, height: lineWidth)
                 }
                 if toolName == "eraser" {
+                    //if this stroke is an eraser, need to update all the previous strokes with a new mask if the eraser overlaps...
+                    pkStrokes = PKDrawing.apply(eraserPayload: drawing, toStrokes: pkStrokes)
                     return
                 }
                 var inkColor = UIColor.black
@@ -168,25 +289,21 @@ extension PKDrawing {
                         inkColor = inkColor.withAlphaComponent(0.4)
                     }
                 }
-
+                
                 if let points = drawing["points"] as? [[String: Any]] {
                     var pkPoints = [PKStrokePoint]()
                     points.forEach { (pointJson) in
                         do {
                             let point = try PKStrokePoint(pointJson)
-                            pkPoints.append(point)
+                            toolSize = point.size == CGSize.zero ? toolSize : point.size
+                            let newPoint = PKStrokePoint(location: point.location, timeOffset: TimeInterval.init(), size: toolSize, opacity: 1, force: toolForce, azimuth: 9, altitude: 1)
+                            pkPoints.append(newPoint)
                         } catch {
                             print(error)
                         }
                     }
-                    var newPoints = [PKStrokePoint]()
-                    pkPoints.forEach { (point) in
-                        toolSize = point.size == CGSize.zero ? toolSize : point.size
-                        let newPoint = PKStrokePoint(location: point.location, timeOffset: TimeInterval.init(), size: toolSize, opacity: 2, force: toolForce, azimuth: 9, altitude: 1)
-                        newPoints.append(newPoint)
-                    }
-                    let strokePath = PKStrokePath(controlPoints: newPoints, creationDate: Date())
-                    let toolType: PKInk.InkType = isHighlighter ? .marker : .pen
+                    let strokePath = PKStrokePath(controlPoints: pkPoints, creationDate: Date())
+                    let toolType: PKInk.InkType = (isHighlighter ? .marker : .pen)
                     let stroke = PKStroke(ink: PKInk(toolType, color: inkColor), path: strokePath)
                     pkStrokes.append(stroke)
                 }
@@ -195,6 +312,45 @@ extension PKDrawing {
             return
         }
         self.init(strokes: [])
+    }
+    
+    @available(iOS 14.0, *)
+    static func apply(eraserPayload payload: [String: Any], toStrokes strokes: [PKStroke]) -> [PKStroke] {
+        
+        guard let points = payload["points"] as? [[String: Any]] else {
+            return strokes
+        }
+        
+        var cgPoints = [CGPoint]()
+        for point in points {
+            let location = point["location"] as? [String: Any] ?? [:]
+            let yOffset = location["yOffset"] as? NSNumber ?? 0
+            let xOffset = location["xOffset"] as? NSNumber ?? 0
+            cgPoints.append(CGPoint(x: CGFloat(truncating: xOffset), y: CGFloat(truncating: yOffset)))
+        }
+         
+        guard cgPoints.count == 2 else {
+            return strokes
+        }
+        
+        let eraserRect = CGRect(cgPoints.first!, cgPoints.last!)
+        var newStrokes = [PKStroke]()
+        for var stroke in strokes {
+            if stroke.renderBounds.intersects(eraserRect) {  //this render bounds isn't correct :(
+                let path = UIBezierPath(rect: eraserRect)
+                if stroke.mask == nil {
+                    stroke.mask = path
+                } else {
+                    let oldMask = stroke.mask
+                    oldMask?.append(path)
+                    stroke.mask = oldMask
+                }
+                
+            }
+            newStrokes.append(stroke)
+        }
+        
+        return newStrokes
     }
     
     public func isEmpty() -> Bool {
@@ -242,27 +398,26 @@ extension PKDrawing {
 @available(iOS 14.0, *)
 extension PKStroke {
     public init(_ payload: [String : Any]) throws {
-
         //this isn't used and instead PKDrawing's init does all the conversions
         self = PKStroke(ink: PKInk(.pen), path: PKStrokePath(controlPoints: [], creationDate: Date()))
     }
-
+    
     public func serialize() throws -> [String : Any] {
         var points: [[String: Any]] = []
-
-
+        
+        
         var maxLineWidth: CGFloat = 0
         var maxLineHeight: CGFloat = 0
-
-
+        
+        
         // The path is a uniform cubic B-Spline and holds control points
         // To get points on the center of the path, need to use:
         //  path.interpolatedPoints(by: .distance(CGFloat))
-
+        
         //  a distance around 0.1 seems to be good
-
-
-
+        
+        
+        
         //        for point in path.interpolatedPoints(by: .distance(0.1)) {
         //            maxLineWidth = max(maxLineWidth, point.size.width)
         //            maxLineHeight = max(maxLineHeight, point.size.height)
@@ -288,7 +443,7 @@ extension PKStroke {
                 }
             }
         }
-
+        
         //This generates a lot more points when we may not need so many.
         //        for index in path.indices {
         //            let point = path.interpolatedPoint(at: CGFloat(index))
@@ -298,15 +453,13 @@ extension PKStroke {
         //                points.append(dictPoint)
         //            }
         //        }
-
+        
         //To get the stroke color we pull it from the ink
         let color = PKDrawingHelper.dict(forColor: self.ink.color)
         
         var tool = try self.ink.serialize()
+        tool["lineWidth"] = 0.07//max(maxLineHeight, maxLineWidth)
         
-        var lineWidth = max(maxLineHeight, maxLineWidth)
-        tool["lineWidth"] = lineWidth
-
         return [
             "drawingID": UUID().uuidString,  //TODO need to set a uuid on the actual stroke somehow
             "version": 1,  //TODO: Same as above, but need to hold a version somewhere
@@ -337,25 +490,39 @@ extension PKInk: Pollock.Serializable {
     public init(_ payload: [String : Any]) throws {
         self.init(InkType.pen)
     }
-
+    
     public func serialize() throws -> [String : Any] {
         return [
             "_type" : "tool",
             "forceSensitivity" : 1,
             "lineWidth" : self.inkType.defaultWidth,
             "name" : toolName(),
+            "pk_name" : pkToolName(),
             "version" : 1
         ]
     }
-
+    
     func toolName() -> String {
         switch self.inkType {
-            case .pen:
-                return "pen"
-            case .marker:
-                return "highlighter"
-            default:
-                return "pen"
+        case .pen:
+            return "pen"
+        case .marker:
+            return "highlighter"
+        default:
+            return "pen"
+        }
+    }
+    
+    func pkToolName() -> String {
+        switch self.inkType {
+        case .pen:
+            return "pen"
+        case .marker:
+            return "highlighter"
+        case .pencil:
+            return "pencil"
+        default:
+            return "pen"
         }
     }
 }
@@ -364,19 +531,21 @@ extension PKInk: Pollock.Serializable {
 extension PKStrokePoint: Serializable {
     public init(_ payload: [String : Any]) throws {
         let location = payload["location"] as? [String: Any] ?? [:]
-
         let yOffset = location["yOffset"] as? NSNumber ?? 0
         let xOffset = location["xOffset"] as? NSNumber ?? 0
-
+        
         let size = payload["size"] as? [String: Any] ?? [:]
         let width = size["width"] as? NSNumber ?? 0
         let height = size["height"] as? NSNumber ?? 0
-
         let force = payload["force"] as? NSNumber ?? 0
-
-        self.init(location: CGPoint(x: xOffset.doubleValue, y: yOffset.doubleValue), timeOffset: 0, size: CGSize(width: width.doubleValue, height: height.doubleValue), opacity: 1.0, force: CGFloat(truncating:force), azimuth: 1.23, altitude: 0.8)
+        
+        let timeOffset = payload["timeOffset"] as? NSNumber ?? 0
+        let azimuth = payload["azimuth"] as? NSNumber ?? 1.23
+        let altitude = payload["altitude"] as? NSNumber ?? 0.8
+        
+        self.init(location: CGPoint(x: xOffset.doubleValue, y: yOffset.doubleValue), timeOffset: TimeInterval(truncating: timeOffset), size: CGSize(width: width.doubleValue, height: height.doubleValue), opacity: 1.0, force: CGFloat(truncating:force), azimuth: CGFloat(truncating: azimuth), altitude: CGFloat(truncating: altitude))
     }
-
+    
     public func serialize() throws -> [String : Any] {
         return ["previous": [
             "xOffset": self.location.x,
@@ -385,14 +554,18 @@ extension PKStrokePoint: Serializable {
         "isPredictive": false,
         "_type": "point",
         "force": 1,
+        "pkForce": self.force,
+        "timeOffset": self.timeOffset,
+        "azimuth": self.azimuth,
+        "altitude": self.altitude,
         "size": [
             "width": self.size.width,
             "height": self.size.height,
         ],
         "location": [
             "xOffset": self.location.x,
-            "yOffset": self.location.y  //TODO: This location data is not stored as percent (0-1) and instead as a full location.. need to convert back to 0-1... needs a size?
-        ]    //might want to also save the b-spline location for accurate pencil kit rendering.
+            "yOffset": self.location.y
+        ]
         ]
     }
 }

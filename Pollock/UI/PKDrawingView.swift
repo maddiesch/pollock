@@ -185,17 +185,10 @@ public final class PKDrawingView: UIView, PKCanvasViewDelegate, TextDrawingViewD
         if #available(iOS 14.0, *) {
             let strokes = self.canvasView.drawing.strokes
             var newStrokes: [PKStroke] = []
-            
-            
-            let eraserRect = CGRect(x: 100, y: 100, width: 200, height: 200)
             for var stroke in strokes {
                 let mask = UIBezierPath()
-                
-//                mask.append(UIBezierPath(rect: eraserRect))
-
-                mask.lineWidth = 30
                 var setStartLocation = false
-                for point in stroke.path.interpolatedPoints(by: .distance(0.2)) {
+                for point in stroke.path.interpolatedPoints(by: .distance(0.5)) {
                     if !setStartLocation {
                         mask.move(to: point.location)
                         setStartLocation = true
@@ -203,30 +196,18 @@ public final class PKDrawingView: UIView, PKCanvasViewDelegate, TextDrawingViewD
                         mask.addLine(to: point.location)
                     }
                 }
-                
-                
-                
-                
                 UIColor.purple.setStroke()
-//                mask.stroke()
-                
                 let width: CGFloat = 80
-                
-                let newMask = pathOutliningPath(path: mask, withWidth: width, inSize: CGSize(width: 100, height: 100))
-                
-//                let pathRef = mask.cgPath.copy(strokingWithWidth: width, lineCap: .round, lineJoin: .round, miterLimit: 1)
-//                let newMask = UIBezierPath(cgPath: pathRef)
+                let pathRef = mask.cgPath.copy(strokingWithWidth: width, lineCap: .round, lineJoin: .round, miterLimit: 1)
+                let newMask = UIBezierPath(cgPath: pathRef)
                 newMask.lineWidth = 1
                 newMask.stroke()
                 newMask.usesEvenOddFillRule = false
-//                newMask.apply(UIBezierPath(rect: eraserRect))
                 stroke.mask = newMask
                 newStrokes.append(stroke)
-    }
+            }
             if strokes.count > 0 {
-                //do I need to make a new PKDrawing with strokes? or Edit the current drawing ones?
-                let newDrawing = PKDrawing(strokes: newStrokes)
-                self.canvasView.drawing = newDrawing
+                self.canvasView.drawing.strokes = newStrokes
             }
         }
     }
@@ -289,6 +270,22 @@ public final class PKDrawingView: UIView, PKCanvasViewDelegate, TextDrawingViewD
         }
     }
     
+    fileprivate func drawStrokeAroundMaskForDebug() {
+        
+        if #available(iOS 14.0, *) {
+            let strokes = self.canvasView.drawing.strokes
+            for stroke in strokes {
+                guard let mask = stroke.mask else {
+                    continue
+                }
+                mask.lineWidth = 1
+                UIColor.black.setStroke()
+                mask.stroke()
+                
+            }
+        }
+    }
+    
     public override func draw(_ rect: CGRect) {
         guard let ctx = UIGraphicsGetCurrentContext() else {
             print("Don't have a current context.  WTF!")
@@ -300,6 +297,7 @@ public final class PKDrawingView: UIView, PKCanvasViewDelegate, TextDrawingViewD
 //            drawStrokeAroundEraserMask()
 //            drawSquareEraserMaskAroundStroke()
 //            drawMaskFromStrokes()
+            drawStrokeAroundMaskForDebug()
             
             if let graphicsRenderer = self.renderer as? GraphicsRenderer {
                 try graphicsRenderer.drawText(inContext: ctx, canvasID: graphicsRenderer.currentCanvas.index, forRect: self.bounds, settings: RenderSettings.defaultSettings(highlightStyle: .alpha), backgroundRenderer: nil)

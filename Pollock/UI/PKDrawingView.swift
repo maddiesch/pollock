@@ -374,6 +374,7 @@ extension PKDrawingView: PKToolPickerObserver {
         if var tool = toolPicker.selectedTool as? PKEraserTool {
             if tool.eraserType == .bitmap {
                 //display an alert and switch back to vector
+                NotificationCenter.default.post(Notification(name: Notification.Name("pk.pixel.eraser.disabled")))
                 tool.eraserType = .vector
                 if #available(iOS 14.0, *) {
                     toolPicker.selectedTool = tool

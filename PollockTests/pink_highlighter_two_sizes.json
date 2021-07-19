@@ -1,0 +1,663 @@
+{
+    "canvases" : [
+      {
+        "text" : [
+  
+        ],
+        "drawings" : [
+          {
+            "points" : [
+              {
+                "_type" : "point",
+                "previous" : {
+                  "yOffset" : 0.21811460258780038,
+                  "xOffset" : 0.14273501665164262
+                },
+                "force" : 1,
+                "isPredictive" : false,
+                "location" : {
+                  "yOffset" : 0.21811460258780038,
+                  "xOffset" : 0.14273501665164262
+                }
+              },
+              {
+                "_type" : "point",
+                "isPredictive" : false,
+                "previous" : {
+                  "xOffset" : 0.14273501665164262,
+                  "yOffset" : 0.21811460258780038
+                },
+                "force" : 1,
+                "location" : {
+                  "yOffset" : 0.22982130914430743,
+                  "xOffset" : 0.14273501665164262
+                }
+              },
+              {
+                "previous" : {
+                  "xOffset" : 0.14273501665164262,
+                  "yOffset" : 0.22982130914430743
+                },
+                "force" : 1,
+                "isPredictive" : false,
+                "_type" : "point",
+                "location" : {
+                  "xOffset" : 0.14273501665164262,
+                  "yOffset" : 0.25200245517018544
+                }
+              },
+              {
+                "previous" : {
+                  "xOffset" : 0.14273501665164262,
+                  "yOffset" : 0.25200245517018544
+                },
+                "force" : 1,
+                "isPredictive" : false,
+                "_type" : "point",
+                "location" : {
+                  "yOffset" : 0.30006160489292111,
+                  "xOffset" : 0.14273501665164262
+                }
+              },
+              {
+                "_type" : "point",
+                "isPredictive" : false,
+                "previous" : {
+                  "yOffset" : 0.30006160489292111,
+                  "xOffset" : 0.14273501665164262
+                },
+                "force" : 1,
+                "location" : {
+                  "yOffset" : 0.32902033271719039,
+                  "xOffset" : 0.14273501665164262
+                }
+              },
+              {
+                "previous" : {
+                  "xOffset" : 0.14273501665164262,
+                  "yOffset" : 0.32902033271719039
+                },
+                "force" : 1,
+                "isPredictive" : false,
+                "_type" : "point",
+                "location" : {
+                  "yOffset" : 0.37091803418510283,
+                  "xOffset" : 0.14273501665164262
+                }
+              },
+              {
+                "previous" : {
+                  "xOffset" : 0.14273501665164262,
+                  "yOffset" : 0.37091803418510283
+                },
+                "force" : 1,
+                "isPredictive" : false,
+                "_type" : "point",
+                "location" : {
+                  "xOffset" : 0.14273501665164262,
+                  "yOffset" : 0.39494760904647064
+                }
+              },
+              {
+                "previous" : {
+                  "xOffset" : 0.14273501665164262,
+                  "yOffset" : 0.39494760904647064
+                },
+                "force" : 1,
+                "_type" : "point",
+                "isPredictive" : false,
+                "location" : {
+                  "yOffset" : 0.42452247041430802,
+                  "xOffset" : 0.14273501665164262
+                }
+              },
+              {
+                "_type" : "point",
+                "force" : 1,
+                "isPredictive" : false,
+                "previous" : {
+                  "xOffset" : 0.14273501665164262,
+                  "yOffset" : 0.42452247041430802
+                },
+                "location" : {
+                  "xOffset" : 0.14273501665164262,
+                  "yOffset" : 0.44670361644018602
+                }
+              },
+              {
+                "_type" : "point",
+                "force" : 1,
+                "previous" : {
+                  "yOffset" : 0.44670361644018602,
+                  "xOffset" : 0.14273501665164262
+                },
+                "isPredictive" : false,
+                "location" : {
+                  "xOffset" : 0.14273501665164262,
+                  "yOffset" : 0.45902648474504681
+                }
+              },
+              {
+                "previous" : {
+                  "xOffset" : 0.14273501665164262,
+                  "yOffset" : 0.45902648474504681
+                },
+                "isPredictive" : false,
+                "force" : 1,
+                "_type" : "point",
+                "location" : {
+                  "yOffset" : 0.47874306839186692,
+                  "xOffset" : 0.14273501665164262
+                }
+              },
+              {
+                "previous" : {
+                  "xOffset" : 0.14273501665164262,
+                  "yOffset" : 0.47874306839186692
+                },
+                "isPredictive" : false,
+                "force" : 1,
+                "_type" : "point",
+                "location" : {
+                  "xOffset" : 0.14273501665164262,
+                  "yOffset" : 0.4947627661629217
+                }
+              },
+              {
+                "_type" : "point",
+                "force" : 1,
+                "isPredictive" : false,
+                "previous" : {
+                  "xOffset" : 0.14273501665164262,
+                  "yOffset" : 0.4947627661629217
+                },
+                "location" : {
+                  "xOffset" : 0.14273501665164262,
+                  "yOffset" : 0.50462107208872453
+                }
+              },
+              {
+                "previous" : {
+                  "xOffset" : 0.14273501665164262,
+                  "yOffset" : 0.50462107208872453
+                },
+                "isPredictive" : false,
+                "force" : 1,
+                "_type" : "point",
+                "location" : {
+                  "xOffset" : 0.14273501665164262,
+                  "yOffset" : 0.51447934980974175
+                }
+              },
+              {
+                "_type" : "point",
+                "force" : 1,
+                "isPredictive" : false,
+                "previous" : {
+                  "xOffset" : 0.14273501665164262,
+                  "yOffset" : 0.51447934980974175
+                },
+                "location" : {
+                  "yOffset" : 0.52064076985977936,
+                  "xOffset" : 0.14273501665164262
+                }
+              },
+              {
+                "previous" : {
+                  "xOffset" : 0.14273501665164262,
+                  "yOffset" : 0.52064076985977936
+                },
+                "isPredictive" : false,
+                "force" : 1,
+                "_type" : "point",
+                "location" : {
+                  "yOffset" : 0.52618605636624882,
+                  "xOffset" : 0.14017091408754007
+                }
+              },
+              {
+                "_type" : "point",
+                "isPredictive" : false,
+                "previous" : {
+                  "xOffset" : 0.14017091408754007,
+                  "yOffset" : 0.52618605636624882
+                },
+                "force" : 1,
+                "location" : {
+                  "yOffset" : 0.53049907578558231,
+                  "xOffset" : 0.14017091408754007
+                }
+              },
+              {
+                "_type" : "point",
+                "isPredictive" : false,
+                "previous" : {
+                  "xOffset" : 0.14017091408754007,
+                  "yOffset" : 0.53049907578558231
+                },
+                "force" : 1,
+                "location" : {
+                  "yOffset" : 0.53604436229205177,
+                  "xOffset" : 0.13931622627453927
+                }
+              },
+              {
+                "_type" : "point",
+                "force" : 1,
+                "previous" : {
+                  "yOffset" : 0.53604436229205177,
+                  "xOffset" : 0.13931622627453927
+                },
+                "isPredictive" : false,
+                "location" : {
+                  "xOffset" : 0.13931622627453927,
+                  "yOffset" : 0.54343807763401109
+                }
+              },
+              {
+                "previous" : {
+                  "yOffset" : 0.54343807763401109,
+                  "xOffset" : 0.13931622627453927
+                },
+                "force" : 1,
+                "isPredictive" : false,
+                "_type" : "point",
+                "location" : {
+                  "yOffset" : 0.54959949768404859,
+                  "xOffset" : 0.13846153846153847
+                }
+              },
+              {
+                "previous" : {
+                  "xOffset" : 0.13846153846153847,
+                  "yOffset" : 0.54959949768404859
+                },
+                "isPredictive" : false,
+                "force" : 1,
+                "_type" : "point",
+                "location" : {
+                  "xOffset" : 0.13846153846153847,
+                  "yOffset" : 0.55822550831792972
+                }
+              },
+              {
+                "previous" : {
+                  "xOffset" : 0.13846153846153847,
+                  "yOffset" : 0.55822550831792972
+                },
+                "isPredictive" : false,
+                "force" : 1,
+                "_type" : "point",
+                "location" : {
+                  "xOffset" : 0.13846153846153847,
+                  "yOffset" : 0.56869991958251498
+                }
+              },
+              {
+                "_type" : "point",
+                "previous" : {
+                  "yOffset" : 0.56869991958251498,
+                  "xOffset" : 0.13846153846153847
+                },
+                "force" : 1,
+                "isPredictive" : false,
+                "location" : {
+                  "xOffset" : 0.13675212371043668,
+                  "yOffset" : 0.57670979667282807
+                }
+              },
+              {
+                "_type" : "point",
+                "isPredictive" : false,
+                "previous" : {
+                  "xOffset" : 0.13675212371043668,
+                  "yOffset" : 0.57670979667282807
+                },
+                "force" : 1,
+                "location" : {
+                  "xOffset" : 0.13675212371043668,
+                  "yOffset" : 0.58410351201478738
+                }
+              },
+              {
+                "previous" : {
+                  "yOffset" : 0.58410351201478738,
+                  "xOffset" : 0.13675212371043668
+                },
+                "isPredictive" : false,
+                "force" : 1,
+                "_type" : "point",
+                "location" : {
+                  "xOffset" : 0.13675212371043668,
+                  "yOffset" : 0.590264932064825
+                }
+              },
+              {
+                "_type" : "point",
+                "previous" : {
+                  "yOffset" : 0.590264932064825,
+                  "xOffset" : 0.13675212371043668
+                },
+                "isPredictive" : false,
+                "force" : 1,
+                "location" : {
+                  "yOffset" : 0.5939617897358046,
+                  "xOffset" : 0.13675212371043668
+                }
+              },
+              {
+                "_type" : "point",
+                "previous" : {
+                  "xOffset" : 0.13675212371043668,
+                  "yOffset" : 0.59704251386321627
+                },
+                "isPredictive" : false,
+                "force" : 1,
+                "location" : {
+                  "xOffset" : 0.13675212371043668,
+                  "yOffset" : 0.59765864740678432
+                }
+              }
+            ],
+            "tool" : {
+              "_type" : "tool",
+              "forceSensitivity" : 1,
+              "lineWidth" : 0.001,
+              "name" : "highlighter",
+              "version" : 1
+            },
+            "color" : {
+              "red" : 255,
+              "alpha" : 1,
+              "name" : "fuchsia",
+              "blue" : 255,
+              "green" : 0
+            },
+            "isSmoothingEnabled" : true,
+            "_type" : "drawing",
+            "version" : 1,
+            "drawingID" : "DE9C9F2A-25AB-41F2-95D3-1A1C3373265C",
+            "isCulled" : false
+          },
+          {
+            "points" : [
+              {
+                "_type" : "point",
+                "force" : 1,
+                "previous" : {
+                  "yOffset" : 0.18915587476353107,
+                  "xOffset" : 0.39914527306189906
+                },
+                "isPredictive" : false,
+                "location" : {
+                  "yOffset" : 0.18915587476353107,
+                  "xOffset" : 0.39914527306189906
+                }
+              },
+              {
+                "previous" : {
+                  "yOffset" : 0.18915587476353107,
+                  "xOffset" : 0.39914527306189906
+                },
+                "isPredictive" : false,
+                "force" : 1,
+                "_type" : "point",
+                "location" : {
+                  "xOffset" : 0.39914527306189906,
+                  "yOffset" : 0.20948859195391925
+                }
+              },
+              {
+                "_type" : "point",
+                "isPredictive" : false,
+                "previous" : {
+                  "xOffset" : 0.39914527306189906,
+                  "yOffset" : 0.20948859195391925
+                },
+                "force" : 1,
+                "location" : {
+                  "xOffset" : 0.39914527306189906,
+                  "yOffset" : 0.2322858715233653
+                }
+              },
+              {
+                "_type" : "point",
+                "isPredictive" : false,
+                "previous" : {
+                  "xOffset" : 0.39914527306189906,
+                  "yOffset" : 0.2322858715233653
+                },
+                "force" : 1,
+                "location" : {
+                  "yOffset" : 0.2735674676524954,
+                  "xOffset" : 0.39914527306189906
+                }
+              },
+              {
+                "previous" : {
+                  "xOffset" : 0.39914527306189906,
+                  "yOffset" : 0.2735674676524954
+                },
+                "_type" : "point",
+                "force" : 1,
+                "isPredictive" : false,
+                "location" : {
+                  "yOffset" : 0.33949474398177565,
+                  "xOffset" : 0.39914527306189906
+                }
+              },
+              {
+                "_type" : "point",
+                "force" : 1,
+                "previous" : {
+                  "yOffset" : 0.33949474398177565,
+                  "xOffset" : 0.39914527306189906
+                },
+                "isPredictive" : false,
+                "location" : {
+                  "xOffset" : 0.39914527306189906,
+                  "yOffset" : 0.38817005545286504
+                }
+              },
+              {
+                "previous" : {
+                  "xOffset" : 0.39914527306189906,
+                  "yOffset" : 0.38817005545286504
+                },
+                "force" : 1,
+                "isPredictive" : false,
+                "_type" : "point",
+                "location" : {
+                  "xOffset" : 0.39914527306189906,
+                  "yOffset" : 0.42575476570622978
+                }
+              },
+              {
+                "previous" : {
+                  "yOffset" : 0.42575476570622978,
+                  "xOffset" : 0.39914527306189906
+                },
+                "force" : 1,
+                "isPredictive" : false,
+                "_type" : "point",
+                "location" : {
+                  "xOffset" : 0.39914527306189906,
+                  "yOffset" : 0.47011705775798579
+                }
+              },
+              {
+                "_type" : "point",
+                "force" : 1,
+                "previous" : {
+                  "xOffset" : 0.39914527306189906,
+                  "yOffset" : 0.47011705775798579
+                },
+                "isPredictive" : false,
+                "location" : {
+                  "yOffset" : 0.47751077309994511,
+                  "xOffset" : 0.39914527306189906
+                }
+              },
+              {
+                "previous" : {
+                  "xOffset" : 0.39914527306189906,
+                  "yOffset" : 0.47751077309994511
+                },
+                "isPredictive" : false,
+                "force" : 1,
+                "_type" : "point",
+                "location" : {
+                  "xOffset" : 0.39914527306189906,
+                  "yOffset" : 0.49106590849194198
+                }
+              },
+              {
+                "_type" : "point",
+                "isPredictive" : false,
+                "force" : 1,
+                "previous" : {
+                  "yOffset" : 0.49106590849194198,
+                  "xOffset" : 0.39914527306189906
+                },
+                "location" : {
+                  "xOffset" : 0.39914527306189906,
+                  "yOffset" : 0.4966111949984115
+                }
+              },
+              {
+                "previous" : {
+                  "xOffset" : 0.39914527306189906,
+                  "yOffset" : 0.4966111949984115
+                },
+                "force" : 1,
+                "isPredictive" : false,
+                "_type" : "point",
+                "location" : {
+                  "xOffset" : 0.39914527306189906,
+                  "yOffset" : 0.50893406330327229
+                }
+              },
+              {
+                "previous" : {
+                  "xOffset" : 0.39914527306189906,
+                  "yOffset" : 0.50893406330327229
+                },
+                "force" : 1,
+                "isPredictive" : false,
+                "_type" : "point",
+                "location" : {
+                  "yOffset" : 0.54528650646950094,
+                  "xOffset" : 0.3940170679336939
+                }
+              },
+              {
+                "_type" : "point",
+                "force" : 1,
+                "previous" : {
+                  "yOffset" : 0.54528650646950094,
+                  "xOffset" : 0.3940170679336939
+                },
+                "isPredictive" : false,
+                "location" : {
+                  "yOffset" : 0.58102278788737582,
+                  "xOffset" : 0.39059827755659055
+                }
+              },
+              {
+                "_type" : "point",
+                "force" : 1,
+                "isPredictive" : false,
+                "previous" : {
+                  "xOffset" : 0.39059827755659055,
+                  "yOffset" : 0.58102278788737582
+                },
+                "location" : {
+                  "xOffset" : 0.38717948717948719,
+                  "yOffset" : 0.60751692512780153
+                }
+              },
+              {
+                "previous" : {
+                  "xOffset" : 0.38717948717948719,
+                  "yOffset" : 0.60751692512780153
+                },
+                "force" : 1,
+                "isPredictive" : false,
+                "_type" : "point",
+                "location" : {
+                  "yOffset" : 0.62661737523105365,
+                  "xOffset" : 0.38376065767728368
+                }
+              },
+              {
+                "previous" : {
+                  "yOffset" : 0.62661737523105365,
+                  "xOffset" : 0.38376065767728368
+                },
+                "force" : 1,
+                "isPredictive" : false,
+                "_type" : "point",
+                "location" : {
+                  "yOffset" : 0.63524335766014906,
+                  "xOffset" : 0.38290596986428288
+                }
+              },
+              {
+                "previous" : {
+                  "xOffset" : 0.38290596986428288,
+                  "yOffset" : 0.63524335766014906
+                },
+                "isPredictive" : false,
+                "force" : 1,
+                "_type" : "point",
+                "location" : {
+                  "xOffset" : 0.38290596986428288,
+                  "yOffset" : 0.63894021533112866
+                }
+              },
+              {
+                "_type" : "point",
+                "isPredictive" : false,
+                "force" : 1,
+                "previous" : {
+                  "yOffset" : 0.63894021533112866,
+                  "xOffset" : 0.38290596986428288
+                },
+                "location" : {
+                  "yOffset" : 0.64017251062305047,
+                  "xOffset" : 0.38290596986428288
+                }
+              }
+            ],
+            "tool" : {
+              "_type" : "tool",
+              "lineWidth" : 0.074999999999999997,
+              "forceSensitivity" : 1,
+              "name" : "highlighter",
+              "version" : 1
+            },
+            "color" : {
+              "red" : 255,
+              "alpha" : 1,
+              "name" : "fuchsia",
+              "blue" : 255,
+              "green" : 0
+            },
+            "isSmoothingEnabled" : true,
+            "_type" : "drawing",
+            "version" : 1,
+            "drawingID" : "DCDB455B-9F4A-410A-ABC2-901867C4B3E5",
+            "isCulled" : false
+          }
+        ],
+        "_type" : "canvas",
+        "index" : 0
+      }
+    ],
+    "_type" : "project",
+    "header" : {
+      "version" : 1,
+      "_type" : "header",
+      "projectID" : "2033BE49-A12A-4E31-9F1D-E3D2D0755FA7"
+    }
+  }

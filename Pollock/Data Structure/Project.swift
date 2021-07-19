@@ -59,6 +59,17 @@ public final class Project : NSObject, Serializable {
         }
         return true
     }
+    
+    public var hasEraserTool: Bool {
+        for canvas in self.canvases {
+            for drawing in canvas.allDrawings {
+                if let _ = drawing.tool as? EraserTool {
+                    return true
+                }
+            }
+        }
+        return false
+    }
 
     fileprivate var canvases: Set<Canvas> = []
 

@@ -81,6 +81,18 @@ class CompressorTests: XCTestCase {
         XCTAssertFalse(uncompressed.isZip)
     }
     
+    func testProjectHasEraser() {
+        let eraserData = try! Data(contentsOf: (Bundle(for: CompressorTests.self).url(forResource: "eraser_with_two_pen_lines", withExtension: "json")!))
+        let project = try! Serializer.unserialize(data: eraserData)
+        XCTAssertTrue(project.hasEraserTool)
+    }
+    
+    func testProjectHasNoEraser() {
+        let eraserData = try! Data(contentsOf: (Bundle(for: CompressorTests.self).url(forResource: "blue_pen_line", withExtension: "json")!))
+        let project = try! Serializer.unserialize(data: eraserData)
+        XCTAssertTrue(!project.hasEraserTool)
+    }
+    
     func testSerialize() {
         let jsonString = "{\"location\": \"the moon\"}"
 

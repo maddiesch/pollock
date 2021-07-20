@@ -401,7 +401,7 @@ extension PKStroke {
         let color = PKDrawingHelper.dict(forColor: self.ink.color)
         
         var tool = try self.ink.serialize()
-        tool["lineWidth"] = 0.07//max(maxLineHeight, maxLineWidth)
+        tool["lineWidth"] = max(maxLineHeight, maxLineWidth)
         
         return [
             "drawingID": UUID().uuidString,  //TODO need to set a uuid on the actual stroke somehow

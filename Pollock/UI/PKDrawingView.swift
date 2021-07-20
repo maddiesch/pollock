@@ -88,18 +88,11 @@ public final class PKDrawingView: UIView, PKCanvasViewDelegate, TextDrawingViewD
     }
     
     func updateCanvasView() {
-        if let drawing = canvas._pkdrawing {
-            if #available(iOS 14.0, *) {
-                if let pkdrawing = drawing as? PKDrawing {
-                    let upscaleDrawing = PKDrawingExtractor.upscalePoints(ofDrawing: pkdrawing, withSize: canvas.canvasSize)
-                    canvasView.drawing = upscaleDrawing
-                    return
-                }
-            }
-        }
-        
         if #available(iOS 14.0, *) {
-            canvasView.drawing = PKDrawing()
+            if let drawing = canvas.pkdrawing {
+                let upscaleDrawing = PKDrawingExtractor.upscalePoints(ofDrawing: drawing, withSize: canvas.canvasSize)
+                canvasView.drawing = upscaleDrawing
+            }
         }
     }
     
@@ -140,8 +133,6 @@ public final class PKDrawingView: UIView, PKCanvasViewDelegate, TextDrawingViewD
             self.toolPicker.setVisible(false, forFirstResponder: self.canvasView)
         }
     }
-    
-    
     
     @available(iOS 13.0, *)
     public func canvasViewDrawingDidChange(_ canvasView: PKCanvasView) {
@@ -224,7 +215,7 @@ public final class PKDrawingView: UIView, PKCanvasViewDelegate, TextDrawingViewD
             }
         } else {
             if #available(iOS 14.0, *) {
-                self.showToolPicker()
+//                self.showToolPicker()
             }
         }
         

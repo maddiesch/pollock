@@ -67,7 +67,7 @@ public struct PKDrawingExtractor {
                 if (point.size.width < 1) {
                     let scale: CGFloat = 0.54
                     let minSize: CGFloat = 3
-                    var toolWidth: CGFloat = pointSize.width * size.height * scale
+                    var toolWidth: CGFloat = pointSize.width * size.width * scale
                     toolWidth = max(toolWidth, minSize)
                     var toolHeight: CGFloat = pointSize.height * size.height * scale
                     toolHeight = max(toolHeight, minSize)

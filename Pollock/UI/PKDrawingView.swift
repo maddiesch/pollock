@@ -36,7 +36,7 @@ public final class PKDrawingView: UIView, PKCanvasViewDelegate, TextDrawingViewD
     
     public override var bounds: CGRect {
         didSet {
-            self.update(canvasSize: bounds.size)
+//            self.update(canvasSize: bounds.size)
         }
     }
     
@@ -136,9 +136,9 @@ public final class PKDrawingView: UIView, PKCanvasViewDelegate, TextDrawingViewD
     
     @available(iOS 13.0, *)
     public func canvasViewDrawingDidChange(_ canvasView: PKCanvasView) {
-        //update the drawing on the canvas?
         if #available(iOS 14.0, *) {
-            canvas._pkdrawing = self.canvasView.drawing
+            let downscaledDrawing = PKDrawingExtractor.downscalePoints(ofDrawing: self.canvasView.drawing, withSize: canvas.canvasSize)
+            canvas._pkdrawing = downscaledDrawing
         }
         self.setNeedsDisplay()  //this runs draw(rect) for text
     }

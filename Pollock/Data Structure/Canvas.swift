@@ -92,12 +92,11 @@ internal final class Canvas : Serializable, Hashable {
         var drawings: [[String : Any]] = []
         if #available(iOS 14.0, *) {
             if _pkdrawing != nil {
-                    if let drawing = _pkdrawing as? PKDrawing {
-                        let downscaledDrawing = PKDrawingExtractor.downscalePoints(ofDrawing: drawing, withSize: self.canvasSize)
-                        if let strokes = try? downscaledDrawing.serialize() {
-                            drawings = strokes
-                        }
+                if let drawing = _pkdrawing as? PKDrawing, drawing.strokes.count > 0 {
+                    if let strokes = try? drawing.serialize() {
+                        drawings = strokes
                     }
+                }
             }
         }
         return [

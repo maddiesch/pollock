@@ -358,18 +358,9 @@ extension PKStroke {
         //  path.interpolatedPoints(by: .distance(CGFloat))
         
         //  a distance around 0.1 seems to be good
+
         
-        
-        
-        //        for point in path.interpolatedPoints(by: .distance(0.1)) {
-        //            maxLineWidth = max(maxLineWidth, point.size.width)
-        //            maxLineHeight = max(maxLineHeight, point.size.height)
-        //            if let dictPoint = try? point.serialize() {
-        //                points.append(dictPoint)
-        //            }
-        //        }
-        
-        for pathRange in maskedPathRanges {
+        for pathRange in maskedPathRanges {  //we wont have masked path ranges because we're not using the pixel eraser
             //each path range is a stroke?
             for point in path.interpolatedPoints(in: pathRange, by: .distance(0.01)) {   //adjusting the distance gives more accurate drawings, but requires more resources to save
                 maxLineWidth = max(maxLineWidth, point.size.width)

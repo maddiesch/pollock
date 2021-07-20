@@ -9,5 +9,5 @@
 import Foundation
 
 internal func Localized(_ key: String) -> String {
-    return NSLocalizedString(key, tableName: nil, bundle: Bundle(for: DrawingView.self), comment: "Localized String")
+    return NSLocalizedString(key, tableName: nil, bundle: Bundle(for: JSONDrawingView.self), comment: "Localized String")
 }

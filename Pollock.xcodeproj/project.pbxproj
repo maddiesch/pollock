@@ -37,7 +37,7 @@
 		942033D01EB2CDF900A458F8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 942033CE1EB2CDF900A458F8 /* LaunchScreen.storyboard */; };
 		942033D51EB2CE0900A458F8 /* Pollock.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 942033AE1EB2CDAE00A458F8 /* Pollock.framework */; };
 		942033D61EB2CE0900A458F8 /* Pollock.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 942033AE1EB2CDAE00A458F8 /* Pollock.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		942033DD1EB2CF9B00A458F8 /* DrawingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 942033DC1EB2CF9B00A458F8 /* DrawingView.swift */; };
+		942033DD1EB2CF9B00A458F8 /* JSONDrawingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 942033DC1EB2CF9B00A458F8 /* JSONDrawingView.swift */; };
 		942033E11EB2D66900A458F8 /* Drawing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 942033E01EB2D66900A458F8 /* Drawing.swift */; };
 		942033E31EB2D67F00A458F8 /* Point.swift in Sources */ = {isa = PBXBuildFile; fileRef = 942033E21EB2D67F00A458F8 /* Point.swift */; };
 		945BAF3B1F4DFAF400E7EB34 /* Comparable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 945BAF3A1F4DFAF400E7EB34 /* Comparable.swift */; };
@@ -130,7 +130,7 @@
 		942033CC1EB2CDF900A458F8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		942033CF1EB2CDF900A458F8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		942033D11EB2CDF900A458F8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		942033DC1EB2CF9B00A458F8 /* DrawingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DrawingView.swift; sourceTree = "<group>"; };
+		942033DC1EB2CF9B00A458F8 /* JSONDrawingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONDrawingView.swift; sourceTree = "<group>"; };
 		942033E01EB2D66900A458F8 /* Drawing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Drawing.swift; sourceTree = "<group>"; };
 		942033E21EB2D67F00A458F8 /* Point.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Point.swift; sourceTree = "<group>"; };
 		945BAF3A1F4DFAF400E7EB34 /* Comparable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comparable.swift; sourceTree = "<group>"; };
@@ -228,7 +228,7 @@
 		94142F411F68974900D82A83 /* UI */ = {
 			isa = PBXGroup;
 			children = (
-				942033DC1EB2CF9B00A458F8 /* DrawingView.swift */,
+				942033DC1EB2CF9B00A458F8 /* JSONDrawingView.swift */,
 				22107656267127EB00FE7684 /* PKDrawingView.swift */,
 				94142F421F68975B00D82A83 /* TextDrawingView.swift */,
 				9497105A1F70801C008393DA /* TextDrawingToolbarView.swift */,
@@ -527,7 +527,7 @@
 				94D30C741EC57CD2009D32F6 /* GraphicsRenderer.swift in Sources */,
 				942033E11EB2D66900A458F8 /* Drawing.swift in Sources */,
 				94A7D9D21F0EFA7F00BD9C2B /* Geometry.swift in Sources */,
-				942033DD1EB2CF9B00A458F8 /* DrawingView.swift in Sources */,
+				942033DD1EB2CF9B00A458F8 /* JSONDrawingView.swift in Sources */,
 				949D00241F312DF800AEF991 /* Color.swift in Sources */,
 				94CA185B1F16D02600E379C2 /* Version.swift in Sources */,
 				94060D991F33A01A00703402 /* CGPoint.swift in Sources */,

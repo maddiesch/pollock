@@ -23,7 +23,7 @@ public enum EditorState {
 }
 
 @objc(POLDrawingView)
-public final class DrawingView : UIView, TextDrawingViewDelegate {
+public final class JSONDrawingView : UIView, TextDrawingViewDelegate {
     internal var currentDrawing: Drawing?
 
     public weak var drawingProvider: DrawingProvider?
@@ -529,7 +529,7 @@ public final class DrawingView : UIView, TextDrawingViewDelegate {
     }
 }
 
-public extension DrawingView {
+public extension JSONDrawingView {
     func localizedNextUndoName() -> String {
         return self.canvas.localizedNextUndoName()
     }

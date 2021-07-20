@@ -35,8 +35,8 @@ internal class TextDrawingView : UIView, UITextViewDelegate {
         fatalError("init(coder:) has not been implemented")
     }
 
-    private var drawingView: DrawingView? {
-        return self.superview as? DrawingView
+    private var drawingView: JSONDrawingView? {
+        return self.superview as? JSONDrawingView
     }
 
     private var centerConstraint: CenterConstraint {

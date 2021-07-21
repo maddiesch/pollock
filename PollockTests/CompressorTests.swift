@@ -93,7 +93,27 @@ class CompressorTests: XCTestCase {
         XCTAssertTrue(!project.hasEraserTool)
     }
     
+    @available(iOS 14.0, *)
+    func testPenWidthConversion() {
+        let eraserData = try! Data(contentsOf: (Bundle(for: CompressorTests.self).url(forResource: "blue_pen_line", withExtension: "json")!))
+        let project = try! Serializer.unserialize(data: eraserData)
+        
+        let canvas = project.canvas(atIndex: 0)
+        
+        let pkDrawing = canvas.pkdrawing!
+        
+        let size = CGSize(width: 100, height: 100)
+        
+        let upscaleDrawing = PKDrawingExtractor.upscalePoints(ofDrawing: pkDrawing, withSize: size)
+        let downscaleDrawing = PKDrawingExtractor.downscalePoints(ofDrawing: pkDrawing, withSize: size)
+        
+        XCTAssertTrue(!project.hasEraserTool)
+    }
+    
     func testSerialize() {
+        
+        
+        
         let jsonString = "{\"location\": \"the moon\"}"
 
         if let documentDirectory = FileManager.default.urls(for: .documentDirectory,

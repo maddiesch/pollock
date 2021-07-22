@@ -98,16 +98,45 @@ class CompressorTests: XCTestCase {
         let eraserData = try! Data(contentsOf: (Bundle(for: CompressorTests.self).url(forResource: "blue_pen_line", withExtension: "json")!))
         let project = try! Serializer.unserialize(data: eraserData)
         
+        let lineWidthBefore = project.canvas(atIndex: 0).allDrawings.first?.tool.lineWidth
+
+        let json = try! project.serializePK()
+        let data = try! JSONSerialization.data(withJSONObject: json, options: [])
+        
+        let newProject = try! Serializer.unserialize(data: data)
+        
+        let lineWidthAfter = newProject.canvas(atIndex: 0).allDrawings.first?.tool.lineWidth
+        
+        XCTAssertTrue(lineWidthBefore!.isEqual(to: lineWidthAfter!))
+    }
+    
+    @available(iOS 14.0, *)
+    func testUpscaleDownScale() {
+        let eraserData = try! Data(contentsOf: (Bundle(for: CompressorTests.self).url(forResource: "blue_pen_line", withExtension: "json")!))
+        let project = try! Serializer.unserialize(data: eraserData)
+        
+        let lineWidthBefore = project.canvas(atIndex: 0).allDrawings.first?.tool.lineWidth
+        
         let canvas = project.canvas(atIndex: 0)
         
         let pkDrawing = canvas.pkdrawing!
         
         let size = CGSize(width: 100, height: 100)
-        
+        canvas.canvasSize = size
+
         let upscaleDrawing = PKDrawingExtractor.upscalePoints(ofDrawing: pkDrawing, withSize: size)
-        let downscaleDrawing = PKDrawingExtractor.downscalePoints(ofDrawing: pkDrawing, withSize: size)
+        let downscaleDrawing = PKDrawingExtractor.downscalePoints(ofDrawing: upscaleDrawing, withSize: size)
         
-        XCTAssertTrue(!project.hasEraserTool)
+        canvas._pkdrawing = downscaleDrawing
+        
+        let json = try! project.serializePK()
+        let data = try! JSONSerialization.data(withJSONObject: json, options: [])
+        
+        let newProject = try! Serializer.unserialize(data: data)
+        
+        let lineWidthAfter = newProject.canvas(atIndex: 0).allDrawings.first?.tool.lineWidth
+        
+        XCTAssertTrue(lineWidthBefore!.isEqual(to: lineWidthAfter!))
     }
     
     func testSerialize() {

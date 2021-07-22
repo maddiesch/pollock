@@ -65,13 +65,10 @@ public struct PKDrawingExtractor {
             stroke.path.forEach { (point) in
                 pointSize = point.size
                 if (point.size.width < 1) {
-                    let scale: CGFloat = 0.54
-                    let minSize: CGFloat = 2.1
-                    var toolWidth: CGFloat = pointSize.width * size.width * scale
-                    toolWidth = max(toolWidth, minSize)
-                    var toolHeight: CGFloat = pointSize.height * size.height * scale
-                    toolHeight = max(toolHeight, minSize)
-                    pointSize = CGSize(width: toolWidth, height: toolHeight)
+                    let minSize: CGFloat = 2.1 // PencilKit doesn't support sizes less than 2 :thinking-face:
+                    var toolHeight: CGFloat = pointSize.height * size.height * pkScale
+                    toolHeight = max(minSize, toolHeight)
+                    pointSize = CGSize(width: toolHeight, height: toolHeight)
                 }
                 let newLocation = CGPoint(x: point.location.x * size.width, y: point.location.y * size.height)
                 let newPoint = PKStrokePoint(location: newLocation,
@@ -90,6 +87,8 @@ public struct PKDrawingExtractor {
         return newDrawing
     }
     
+    public static let pkScale: CGFloat = 0.54
+    
     @available(iOS 14.0, *)
     public static func downscalePoints(ofDrawing drawing: PKDrawing, withSize size: CGSize) -> PKDrawing {
         var newDrawingStrokes = [PKStroke]()
@@ -100,12 +99,8 @@ public struct PKDrawingExtractor {
                 let transformedPoint = point.location.applying(stroke.transform) //apply lasso transform
                 let newLocation = CGPoint(x: transformedPoint.x / size.width, y: transformedPoint.y / size.height)
                 pointSize = point.size
-                if (pointSize.width > 1) { // this is the code that scales the stroke width
-                    let scale: CGFloat = 0.54
-                    let toolWidth = pointSize.width / size.height / scale
-                    let toolHeight = pointSize.height / size.height / scale
-                    pointSize = CGSize(width: toolWidth, height: toolHeight)
-                }
+                let toolHeight = pointSize.height / size.height / pkScale
+                pointSize = CGSize(width: toolHeight, height: toolHeight)
                 let newPoint = PKStrokePoint(location: newLocation,
                                              timeOffset: point.timeOffset,
                                              size: pointSize,
@@ -392,7 +387,8 @@ extension PKStroke {
         let color = PKDrawingHelper.dict(forColor: self.ink.color)
         
         var tool = try self.ink.serialize()
-        tool["lineWidth"] = max(maxLineHeight, maxLineWidth)
+        let lineWidth = max(maxLineHeight, maxLineWidth)
+        tool["lineWidth"] = round(1000 * lineWidth) / 1000
         
         return [
             "drawingID": UUID().uuidString,  //TODO need to set a uuid on the actual stroke somehow

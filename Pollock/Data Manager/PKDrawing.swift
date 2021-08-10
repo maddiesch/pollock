@@ -142,8 +142,6 @@ public struct PKDrawingExtractor {
         let scale = toolName == "pen" ? PKDrawingExtractor.pkPenScale : PKDrawingExtractor.pkHighlighterScale
         
         let scaledLineSize = lineWidth / size.height / scale
-        
-        print(scaledLineSize)
         return CGSize(width: scaledLineSize, height: scaledLineSize)
     }
 }
@@ -292,39 +290,6 @@ extension PKDrawing {
             return true
         }
     }
-    
-    static func normalized(value: CGFloat, minA: CGFloat, maxA: CGFloat, minB: CGFloat, maxB: CGFloat) -> CGFloat {
-        return minB + ((value - minA) * (maxB - minB)) / (maxA - minA)
-    }
-    @available(iOS 14.0, *)
-    static func normalizedJSONLineWidth(value: CGFloat) -> CGFloat {
-        print("PK pen Width: \(value)")
-        return PKDrawing.normalized(value: value, minA: minPKLineWidth, maxA: maxPKLineWidth, minB: minJSONLineWidth, maxB: maxJSONLineWidth)
-    }
-    @available(iOS 14.0, *)
-    static func normalizedPKLineWidth(value: CGFloat) -> CGFloat {
-        print("JSON pen Width: \(value)")
-        return PKDrawing.normalized(value: value, minA: minJSONLineWidth, maxA: maxJSONLineWidth, minB: minPKLineWidth, maxB: maxPKLineWidth)
-    }
-    @available(iOS 14.0, *)
-    static func normalizedPKMarkerLineWidth(value: CGFloat) -> CGFloat {
-        print("JSON Marker Width: \(value)")
-        return PKDrawing.normalized(value: value, minA: minJSONLineWidth, maxA: maxJSONLineWidth, minB: minPKMarkerLineWidth, maxB: maxPKMarkerLineWidth)
-    }
-    @available(iOS 14.0, *)
-    static func normalizedJSONMarkerLineWidth(value: CGFloat) -> CGFloat {
-        print("PK Marker Width: \(value)")
-        return PKDrawing.normalized(value: value, minA: minPKMarkerLineWidth, maxA: maxPKMarkerLineWidth, minB: minJSONLineWidth, maxB: maxJSONLineWidth)
-    }
-    
-    static let minJSONLineWidth: CGFloat = 0.001
-    static let maxJSONLineWidth: CGFloat = 0.075
-    
-    static let minPKLineWidth: CGFloat = 2.2
-    static let maxPKLineWidth: CGFloat = 21.3
-    
-    static let minPKMarkerLineWidth: CGFloat = 2.1
-    static let maxPKMarkerLineWidth: CGFloat = 40  //this was 30
 }
 
 @available(iOS 14.0, *)

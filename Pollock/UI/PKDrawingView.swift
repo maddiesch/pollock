@@ -32,7 +32,7 @@ public final class PKDrawingView: UIView, PKCanvasViewDelegate, TextDrawingViewD
     
     public func undo() -> String {
         undoManager?.undo()
-        return "Undo Text"
+        return "Undo Text Needed"
     }
     func textDrawingToolbarDelegate() -> TextDrawingToolbarDelegate {
         return self.textDrawingToolbarViewDelegate!

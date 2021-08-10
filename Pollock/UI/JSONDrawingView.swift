@@ -23,7 +23,19 @@ public enum EditorState {
 }
 
 @objc(POLDrawingView)
-public final class JSONDrawingView : UIView, TextDrawingViewDelegate {
+public final class JSONDrawingView : UIView, TextDrawingViewDelegate, DrawingViewInterface {
+    public func showToolPicker() {
+        //no op
+    }
+    
+    public func hideToolPicker() {
+        //no op
+    }
+    
+    public func undo() -> String {
+        return (try? self.undoWithThrow()) ?? "No undo text"
+    }
+    
     internal var currentDrawing: Drawing?
 
     public weak var drawingProvider: DrawingProvider?
@@ -534,7 +546,7 @@ public extension JSONDrawingView {
         return self.canvas.localizedNextUndoName()
     }
 
-    func undo() throws -> String {
+    func undoWithThrow() throws -> String {
         return try self.canvas.undo()
     }
 }

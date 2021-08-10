@@ -14,6 +14,10 @@ public class Renderer : NSObject {
     public class func createRenderer() -> Renderer {
         return GraphicsRenderer(1)
     }
+    
+    public class func createPKRenderer() -> Renderer {
+        return PKGraphicsRenderer(1)
+    }
 
     public var project = Project()
 

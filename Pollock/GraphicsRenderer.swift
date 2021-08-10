@@ -45,13 +45,13 @@ internal class GraphicsRenderer : Renderer {
         try drawText(canvas, ctx, rect, finalSettings)
     }
     
-    fileprivate func drawText(_ canvas: Canvas, _ ctx: CGContext, _ rect: CGRect, _ finalSettings: RenderSettings) throws {
+    func drawText(_ canvas: Canvas, _ ctx: CGContext, _ rect: CGRect, _ finalSettings: RenderSettings) throws {
         for text in canvas.allText {
             try text.draw(inContext: ctx, size: rect.size, settings: finalSettings)
         }
     }
     
-    fileprivate func drawJSONStrokes(_ canvas: Canvas, _ ctx: CGContext, _ rect: CGRect, _ finalSettings: RenderSettings, _ bg: BackgroundRenderer?) throws {
+    func drawJSONStrokes(_ canvas: Canvas, _ ctx: CGContext, _ rect: CGRect, _ finalSettings: RenderSettings, _ bg: BackgroundRenderer?) throws {
         for drawing in canvas.allDrawings {
             _ = try drawing.draw(inContext: ctx, withSize: rect.size, settings: finalSettings, backgroundRenderer: bg)
         }

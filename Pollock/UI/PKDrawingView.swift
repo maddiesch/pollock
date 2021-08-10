@@ -13,7 +13,27 @@ import PencilKit
 private var SelectionFeedbackInstance: UISelectionFeedbackGenerator = UISelectionFeedbackGenerator()
 
 
-public final class PKDrawingView: UIView, PKCanvasViewDelegate, TextDrawingViewDelegate {
+public protocol DrawingViewInterface {
+    var isEnabled: Bool { get set }
+    var isUserInteractionEnabled: Bool { get set }
+    var canvasID: Int? { get set }
+    var state: EditorState { get set }
+    var color: Color { get set }
+    var defaultFontSize: CGFloat { get set }
+    func updateRenderer()
+    func endEditing(_ force: Bool) -> Bool
+    func currentTextFieldFrame() -> CGRect?
+    func showToolPicker()
+    func hideToolPicker()
+    func undo() -> String
+}
+
+public final class PKDrawingView: UIView, PKCanvasViewDelegate, TextDrawingViewDelegate, DrawingViewInterface {
+    
+    public func undo() -> String {
+        undoManager?.undo()
+        return "Undo Text"
+    }
     func textDrawingToolbarDelegate() -> TextDrawingToolbarDelegate {
         return self.textDrawingToolbarViewDelegate!
     }
@@ -49,13 +69,16 @@ public final class PKDrawingView: UIView, PKCanvasViewDelegate, TextDrawingViewD
             return
         }
         self.renderer = provider.rendererForDrawingView()
-        if #available(iOS 14.0, *) {
-            self.update(canvasSize: self.canvasView.bounds.size)
+        
+        if PKDrawingHelper.isPencilKitAvailable {
+            if #available(iOS 14.0, *) {
+                self.update(canvasSize: self.canvasView.bounds.size)
+            }
         }
     }
     
     public func update(canvasSize: CGSize) {
-        if #available(iOS 14.0, *) {
+        if PKDrawingHelper.isPencilKitAvailable {
             if canvasSize != .zero {
                 canvas.canvasSize = canvasSize
                 updateCanvasView()

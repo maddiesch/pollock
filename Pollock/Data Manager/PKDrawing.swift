@@ -12,7 +12,7 @@ struct PollockConstants  {
     static let canvases = "canvases"
 }
 
-@available(iOS 10.0, *)
+
 struct PKDrawingHelper {
     static func dict(forColor color: UIColor) -> [String: Any] {
         var red: CGFloat = 0
@@ -38,6 +38,14 @@ struct PKDrawingHelper {
         
         return UIColor(red: red/255.0, green: green/255.0, blue: blue/255.0, alpha: alpha)
     }
+
+    static var isPencilKitAvailable: Bool {
+        if #available(iOS 14.0, *) {
+            return true
+        } else {
+            return false
+        }
+    }
 }
 
 @available(iOS 14.0, *)
@@ -62,18 +70,14 @@ public struct PKDrawingExtractor {
         for var stroke in drawing.strokes {
             var newPoints = [PKStrokePoint]()
             var pointSize = CGSize.zero
+            
+            let toolName = stroke.ink.toolName()
             stroke.path.forEach { (point) in
                 pointSize = point.size
-                if (point.size.width < 1) {
-                    let minSize: CGFloat = 2.1 // PencilKit doesn't support sizes less than 2 :thinking-face:
-                    var toolHeight: CGFloat = pointSize.height * size.height * pkScale
-                    toolHeight = max(minSize, toolHeight)
-                    pointSize = CGSize(width: toolHeight, height: toolHeight)
-                }
                 let newLocation = CGPoint(x: point.location.x * size.width, y: point.location.y * size.height)
                 let newPoint = PKStrokePoint(location: newLocation,
                                              timeOffset: point.timeOffset,
-                                             size: pointSize,
+                                             size: PKDrawingExtractor.upscaleToolSize(withToolName: toolName, fromLineWidth: pointSize.height, andSize: size),
                                              opacity: point.opacity, force: point.force,
                                              azimuth: point.azimuth, altitude: point.altitude)
                 newPoints.append(newPoint)
@@ -87,23 +91,20 @@ public struct PKDrawingExtractor {
         return newDrawing
     }
     
-    public static let pkScale: CGFloat = 0.54
-    
     @available(iOS 14.0, *)
     public static func downscalePoints(ofDrawing drawing: PKDrawing, withSize size: CGSize) -> PKDrawing {
         var newDrawingStrokes = [PKStroke]()
         for var stroke in drawing.strokes {
             var newPoints = [PKStrokePoint]()
             var pointSize = CGSize.zero
+            let toolName = stroke.ink.toolName()
             stroke.path.forEach { (point) in
                 let transformedPoint = point.location.applying(stroke.transform) //apply lasso transform
                 let newLocation = CGPoint(x: transformedPoint.x / size.width, y: transformedPoint.y / size.height)
                 pointSize = point.size
-                let toolHeight = pointSize.height / size.height / pkScale
-                pointSize = CGSize(width: toolHeight, height: toolHeight)
                 let newPoint = PKStrokePoint(location: newLocation,
                                              timeOffset: point.timeOffset,
-                                             size: pointSize,
+                                             size: PKDrawingExtractor.downscaleToolSize(withToolName: toolName, fromLineWidth: pointSize.height, andSize: size),
                                              opacity: point.opacity, force: point.force,
                                              azimuth: point.azimuth, altitude: point.altitude)
                 newPoints.append(newPoint)
@@ -112,6 +113,38 @@ public struct PKDrawingExtractor {
             newDrawingStrokes.append(stroke)
         }
         return PKDrawing(strokes: newDrawingStrokes)
+    }
+    
+    
+    
+    public static let pkPenScale: CGFloat = 0.54
+    public static let pkHighlighterScale: CGFloat = 0.8
+
+    static func upscaleToolSize(withToolName toolName: String, fromLineWidth lineWidth: CGFloat, andSize size: CGSize) -> CGSize {
+        // Music Stand seems to store line width between 0 and 0.075
+
+        // PencilKit line width seems to go bettween 3 and 13
+        // 175 seems to normalize for these values
+//        let size = CGSize(width: 1024, height: 681)
+        let scale = toolName == "pen" ? PKDrawingExtractor.pkPenScale : PKDrawingExtractor.pkHighlighterScale
+        
+        let scaledLineSize = lineWidth * size.height * scale
+        let minSize: CGFloat = 2.4
+        if scaledLineSize < minSize {
+            return CGSize(width: minSize, height: minSize)
+        }
+        return CGSize(width: scaledLineSize, height: scaledLineSize)
+    }
+    
+    static func downscaleToolSize(withToolName toolName: String, fromLineWidth lineWidth: CGFloat, andSize size: CGSize) -> CGSize {
+        // Music Stand seems to store line width between 0 and 0.075
+        
+        let scale = toolName == "pen" ? PKDrawingExtractor.pkPenScale : PKDrawingExtractor.pkHighlighterScale
+        
+        let scaledLineSize = lineWidth / size.height / scale
+        
+        print(scaledLineSize)
+        return CGSize(width: scaledLineSize, height: scaledLineSize)
     }
 }
 
@@ -250,45 +283,6 @@ extension PKDrawing {
             return
         }
         self.init(strokes: [])
-    }
-    
-    @available(iOS 14.0, *)
-    static func apply(eraserPayload payload: [String: Any], toStrokes strokes: [PKStroke]) -> [PKStroke] {
-        
-        guard let points = payload["points"] as? [[String: Any]] else {
-            return strokes
-        }
-        
-        var cgPoints = [CGPoint]()
-        for point in points {
-            let location = point["location"] as? [String: Any] ?? [:]
-            let yOffset = location["yOffset"] as? NSNumber ?? 0
-            let xOffset = location["xOffset"] as? NSNumber ?? 0
-            cgPoints.append(CGPoint(x: CGFloat(truncating: xOffset), y: CGFloat(truncating: yOffset)))
-        }
-         
-        guard cgPoints.count == 2 else {
-            return strokes
-        }
-        
-        let eraserRect = CGRect(cgPoints.first!, cgPoints.last!)
-        var newStrokes = [PKStroke]()
-        for var stroke in strokes {
-            if stroke.renderBounds.intersects(eraserRect) {  //this render bounds isn't correct :(
-                let path = UIBezierPath(rect: eraserRect)
-                if stroke.mask == nil {
-                    stroke.mask = path
-                } else {
-                    let oldMask = stroke.mask
-                    oldMask?.append(path)
-                    stroke.mask = oldMask
-                }
-                
-            }
-            newStrokes.append(stroke)
-        }
-        
-        return newStrokes
     }
     
     public func isEmpty() -> Bool {

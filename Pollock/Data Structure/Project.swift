@@ -92,6 +92,13 @@ public final class Project : NSObject, Serializable {
             "_type": "project"
         ]
     }
+    
+    public func updateCanvas(withSize size: CGSize) {
+        guard size != .zero else {
+            return
+        }
+        self.canvases.forEach{ $0.canvasSize = size }
+    }
 
     public func merge(withProject project: Project) {
         for index in 0...project.canvases.count  {

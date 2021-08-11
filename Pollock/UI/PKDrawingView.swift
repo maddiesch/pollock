@@ -80,7 +80,7 @@ public final class PKDrawingView: UIView, PKCanvasViewDelegate, TextDrawingViewD
     public func update(canvasSize: CGSize) {
         if PKDrawingHelper.isPencilKitAvailable {
             if canvasSize != .zero {
-                canvas.canvasSize = canvasSize
+                renderer.project.updateCanvas(withSize: canvasSize)
                 updateCanvasView()
             } else {
                 print("ERROR updating canvas size!")

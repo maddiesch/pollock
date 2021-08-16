@@ -68,13 +68,16 @@ public final class PKDrawingView: UIView, PKCanvasViewDelegate, TextDrawingViewD
         guard let provider = self.drawingProvider else {
             return
         }
-        self.renderer = provider.rendererForDrawingView()
-        
-        if PKDrawingHelper.isPencilKitAvailable {
-            if #available(iOS 14.0, *) {
-                self.update(canvasSize: self.canvasView.bounds.size)
+        if let renderer = provider.rendererForDrawingView() {
+            self.renderer = renderer
+            if PKDrawingHelper.isPencilKitAvailable {
+                if #available(iOS 14.0, *) {
+                    self.update(canvasSize: self.canvasView.bounds.size)
+                }
             }
         }
+        
+        
     }
     
     public func update(canvasSize: CGSize) {

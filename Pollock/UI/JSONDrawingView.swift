@@ -11,7 +11,7 @@ import UIKit
 
 @objc(POLDrawingProvider)
 public protocol DrawingProvider {
-    func rendererForDrawingView() -> Renderer
+    func rendererForDrawingView() -> Renderer?
 }
 
 @available(iOS 10.0, *)
@@ -167,7 +167,7 @@ public final class JSONDrawingView : UIView, TextDrawingViewDelegate, DrawingVie
         super.init(frame: CGRect(x: 0.0, y: 0.0, width: 320.0, height:320.0))
 
         self.drawingProvider = provider
-        self.renderer = provider.rendererForDrawingView()
+        self.updateRenderer()
 
         self.finishSetupForInitialization()
     }
@@ -194,7 +194,9 @@ public final class JSONDrawingView : UIView, TextDrawingViewDelegate, DrawingVie
         guard let provider = self.drawingProvider else {
             return
         }
-        self.renderer = provider.rendererForDrawingView()
+        if let renderer = provider.rendererForDrawingView() {
+            self.renderer = renderer
+        }
     }
     
     private func createDrawing() -> Drawing {

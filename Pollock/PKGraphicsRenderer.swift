@@ -26,15 +26,15 @@ internal class PKGraphicsRenderer : GraphicsRenderer {
                 return self.project.currentCanvas
             }
         }()
-    
+        let finalSettings = settings ?? RenderSettings.defaultSettings()
         if #available(iOS 14.0, *) {
             if let pkDrawing = canvas.pkdrawing {
                 let upscaledProject = PKDrawingExtractor.upscalePoints(ofDrawing: pkDrawing, withSize: rect.size)
                 let image = upscaledProject.image(from: rect, scale: 1)
                 image.draw(in: rect)
+                try drawText(canvas, ctx, rect, finalSettings)
             }
         } else {
-            let finalSettings = settings ?? RenderSettings.defaultSettings()
             try drawJSONStrokes(canvas, ctx, rect, finalSettings, bg)
             try drawText(canvas, ctx, rect, finalSettings)
         }   

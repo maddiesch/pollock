@@ -56,7 +56,7 @@ public final class PKDrawingView: UIView, PKCanvasViewDelegate, TextDrawingViewD
     
     public override var bounds: CGRect {
         didSet {
-//            self.update(canvasSize: bounds.size)
+            self.update(canvasSize: bounds.size)
         }
     }
     
@@ -139,7 +139,6 @@ public final class PKDrawingView: UIView, PKCanvasViewDelegate, TextDrawingViewD
     @available(iOS 14.0, *)
     private lazy var toolPicker: PKToolPicker = {
         let picker = PKToolPicker()
-        
         return picker
     }()
     
@@ -152,7 +151,6 @@ public final class PKDrawingView: UIView, PKCanvasViewDelegate, TextDrawingViewD
     
     public func hideToolPicker() {
         if #available(iOS 14.0, *) {
-            self.canvasView.resignFirstResponder()
             self.toolPicker.setVisible(false, forFirstResponder: self.canvasView)
         }
     }
@@ -173,11 +171,9 @@ public final class PKDrawingView: UIView, PKCanvasViewDelegate, TextDrawingViewD
         }
         do {
             super.draw(rect)
-            
             if let graphicsRenderer = self.renderer as? GraphicsRenderer {
                 try graphicsRenderer.drawText(inContext: ctx, canvasID: graphicsRenderer.currentCanvas.index, forRect: self.bounds, settings: RenderSettings.defaultSettings(highlightStyle: .alpha), backgroundRenderer: nil)
             }
-            
         } catch {
             print("Failed to draw")
             print(error)
@@ -187,7 +183,6 @@ public final class PKDrawingView: UIView, PKCanvasViewDelegate, TextDrawingViewD
     
     public override func endEditing(_ force: Bool) -> Bool {
         self.endTextEditing(false, commit: true)
-        
         return super.endEditing(force)
     }
     
@@ -233,17 +228,14 @@ public final class PKDrawingView: UIView, PKCanvasViewDelegate, TextDrawingViewD
         self.longPressGesture.isEnabled = self.isTextModeEnabled
         if isTextModeEnabled {
             if #available(iOS 14.0, *) {
-                self.canvasView.endEditing(true)
                 self.hideToolPicker()
             }
         } else {
             if #available(iOS 14.0, *) {
-//                self.showToolPicker()
+                self.showToolPicker()
             }
         }
-        
     }
-    
     
     public var isTextModeEnabled: Bool {
         switch self.state {

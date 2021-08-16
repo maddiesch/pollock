@@ -409,7 +409,6 @@ public final class JSONDrawingView : UIView, TextDrawingViewDelegate, DrawingVie
 
     public override func endEditing(_ force: Bool) -> Bool {
         self.endTextEditing(false, commit: true)
-
         return super.endEditing(force)
     }
     func textDrawingToolbarDelegate() -> TextDrawingToolbarDelegate {

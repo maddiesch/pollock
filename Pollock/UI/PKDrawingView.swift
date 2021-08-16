@@ -172,7 +172,7 @@ public final class PKDrawingView: UIView, PKCanvasViewDelegate, TextDrawingViewD
         do {
             super.draw(rect)
             if let graphicsRenderer = self.renderer as? GraphicsRenderer {
-                try graphicsRenderer.drawText(inContext: ctx, canvasID: graphicsRenderer.currentCanvas.index, forRect: self.bounds, settings: RenderSettings.defaultSettings(highlightStyle: .alpha), backgroundRenderer: nil)
+                try graphicsRenderer.drawText(inContext: ctx, canvasID: canvasID, forRect: rect, settings: nil, backgroundRenderer: nil)
             }
         } catch {
             print("Failed to draw")

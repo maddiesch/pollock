@@ -250,10 +250,6 @@ extension PKDrawing {
                 var inkColor = UIColor.black
                 if let color = drawing["color"] as? [String: Any] {
                     inkColor = PKDrawingHelper.color(forDict: color)
-                    if isHighlighter {
-                        //If this is a highlighter tool, force the alpha to be .6
-                        inkColor = inkColor.withAlphaComponent(0.4)
-                    }
                 }
                 
                 if let points = drawing["points"] as? [[String: Any]] {
@@ -262,7 +258,7 @@ extension PKDrawing {
                         do {
                             let point = try PKStrokePoint(pointJson)
                             toolSize = point.size == CGSize.zero ? toolSize : point.size
-                            let newPoint = PKStrokePoint(location: point.location, timeOffset: TimeInterval.init(), size: toolSize, opacity: 1, force: toolForce, azimuth: 9, altitude: 1)
+                            let newPoint = PKStrokePoint(location: point.location, timeOffset: TimeInterval.init(), size: toolSize, opacity: point.opacity, force: toolForce, azimuth: 9, altitude: 1)
                             pkPoints.append(newPoint)
                         } catch {
                             print(error)
@@ -461,8 +457,9 @@ extension PKStrokePoint: Serializable {
         let timeOffset = payload["timeOffset"] as? NSNumber ?? 0
         let azimuth = payload["azimuth"] as? NSNumber ?? 1.23
         let altitude = payload["altitude"] as? NSNumber ?? 0.8
+        let opacity = payload["opacity"] as? NSNumber ?? 1
         
-        self.init(location: CGPoint(x: xOffset.doubleValue, y: yOffset.doubleValue), timeOffset: TimeInterval(truncating: timeOffset), size: CGSize(width: width.doubleValue, height: height.doubleValue), opacity: 1.0, force: CGFloat(truncating:force), azimuth: CGFloat(truncating: azimuth), altitude: CGFloat(truncating: altitude))
+        self.init(location: CGPoint(x: xOffset.doubleValue, y: yOffset.doubleValue), timeOffset: TimeInterval(truncating: timeOffset), size: CGSize(width: width.doubleValue, height: height.doubleValue), opacity: CGFloat(truncating: opacity), force: CGFloat(truncating:force), azimuth: CGFloat(truncating: azimuth), altitude: CGFloat(truncating: altitude))
     }
     
     public func serialize() throws -> [String : Any] {
@@ -476,6 +473,7 @@ extension PKStrokePoint: Serializable {
         "pkForce": self.force,
         "timeOffset": self.timeOffset,
         "azimuth": self.azimuth,
+        "opacity": self.opacity,
         "altitude": self.altitude,
         "size": [
             "width": self.size.width,

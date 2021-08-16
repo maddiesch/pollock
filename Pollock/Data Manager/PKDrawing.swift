@@ -71,7 +71,7 @@ public struct PKDrawingExtractor {
             var newPoints = [PKStrokePoint]()
             var pointSize = CGSize.zero
             
-            let toolName = stroke.ink.toolName()
+            let toolName = stroke.ink.pkToolName()
             stroke.path.forEach { (point) in
                 pointSize = point.size
                 let newLocation = CGPoint(x: point.location.x * size.width, y: point.location.y * size.height)
@@ -97,7 +97,7 @@ public struct PKDrawingExtractor {
         for var stroke in drawing.strokes {
             var newPoints = [PKStrokePoint]()
             var pointSize = CGSize.zero
-            let toolName = stroke.ink.toolName()
+            let toolName = stroke.ink.pkToolName()
             stroke.path.forEach { (point) in
                 let transformedPoint = point.location.applying(stroke.transform) //apply lasso transform
                 let newLocation = CGPoint(x: transformedPoint.x / size.width, y: transformedPoint.y / size.height)
@@ -121,15 +121,13 @@ public struct PKDrawingExtractor {
     public static let pkHighlighterScale: CGFloat = 0.8
 
     static func upscaleToolSize(withToolName toolName: String, fromLineWidth lineWidth: CGFloat, andSize size: CGSize) -> CGSize {
-        // Music Stand seems to store line width between 0 and 0.075
-
-        // PencilKit line width seems to go bettween 3 and 13
-        // 175 seems to normalize for these values
-//        let size = CGSize(width: 1024, height: 681)
-        let scale = toolName == "pen" ? PKDrawingExtractor.pkPenScale : PKDrawingExtractor.pkHighlighterScale
+        let scale = toolName == ToolNames.pen.rawValue ? PKDrawingExtractor.pkPenScale : PKDrawingExtractor.pkHighlighterScale
         
         let scaledLineSize = lineWidth * size.height * scale
-        let minSize: CGFloat = 2.4
+        var minSize: CGFloat = 2.4
+        if toolName == ToolNames.pencil.rawValue {
+            minSize = 1
+        }
         if scaledLineSize < minSize {
             return CGSize(width: minSize, height: minSize)
         }
@@ -137,9 +135,7 @@ public struct PKDrawingExtractor {
     }
     
     static func downscaleToolSize(withToolName toolName: String, fromLineWidth lineWidth: CGFloat, andSize size: CGSize) -> CGSize {
-        // Music Stand seems to store line width between 0 and 0.075
-        
-        let scale = toolName == "pen" ? PKDrawingExtractor.pkPenScale : PKDrawingExtractor.pkHighlighterScale
+        let scale = toolName == ToolNames.pen.rawValue ? PKDrawingExtractor.pkPenScale : PKDrawingExtractor.pkHighlighterScale
         
         let scaledLineSize = lineWidth / size.height / scale
         return CGSize(width: scaledLineSize, height: scaledLineSize)
@@ -237,14 +233,15 @@ extension PKDrawing {
                 var toolForce: CGFloat = 1
                 var isHighlighter = false
                 var toolName = ""
-                
+                var toolType: PKInk.InkType = .pen
                 if let tool = drawing["tool"] as? [String: Any] {
                     toolForce = tool["forceSensitivity"] as? CGFloat ?? 0
                     let lineWidth = tool["lineWidth"] as? CGFloat ?? 0
-                    toolName = tool["name"] as? String ?? "pen"
+                    toolName = tool["name"] as? String ?? ToolNames.pen.rawValue
                     
-                    isHighlighter = toolName == "highlighter"
+                    isHighlighter = toolName == ToolNames.highlighter.rawValue
                     toolSize = CGSize(width: lineWidth, height: lineWidth)
+                    toolType = PKDrawing.inkType(fromToolPayload: tool)
                 }
                 if toolName == "eraser" {
                    //Remove Eraser Data from JSON
@@ -272,7 +269,7 @@ extension PKDrawing {
                         }
                     }
                     let strokePath = PKStrokePath(controlPoints: pkPoints, creationDate: Date())
-                    let toolType: PKInk.InkType = (isHighlighter ? .marker : .pen)
+
                     let stroke = PKStroke(ink: PKInk(toolType, color: inkColor), path: strokePath)
                     pkStrokes.append(stroke)
                 }
@@ -281,6 +278,32 @@ extension PKDrawing {
             return
         }
         self.init(strokes: [])
+    }
+    @available(iOS 14.0, *)
+    public static func inkType(fromToolPayload payload: [String: Any]) -> PKInk.InkType {
+        
+        if let toolName = payload["pk_name"] as? String {
+            if toolName == ToolNames.pen.rawValue {
+                return .pen
+            }
+            if toolName == ToolNames.highlighter.rawValue {
+                return .marker
+            }
+            if toolName == ToolNames.pencil.rawValue {
+                return .pencil
+            }
+        }
+        
+        if let toolName = payload["name"] as? String {
+            if toolName == ToolNames.pen.rawValue {
+                return .pen
+            }
+            if toolName == ToolNames.highlighter.rawValue {
+                return .marker
+            }
+        }
+        
+        return .pen
     }
     
     public func isEmpty() -> Bool {
@@ -374,6 +397,13 @@ extension PKStroke {
     }
 }
 
+enum ToolNames: String {
+    case pen
+    case highlighter
+    case marker
+    case pencil
+}
+
 @available(iOS 14.0, *)
 extension PKInk: Pollock.Serializable {
     public init(_ payload: [String : Any]) throws {
@@ -394,24 +424,24 @@ extension PKInk: Pollock.Serializable {
     func toolName() -> String {
         switch self.inkType {
         case .pen:
-            return "pen"
+            return ToolNames.pen.rawValue
         case .marker:
-            return "highlighter"
+            return ToolNames.highlighter.rawValue
         default:
-            return "pen"
+            return ToolNames.pen.rawValue
         }
     }
     
     func pkToolName() -> String {
         switch self.inkType {
         case .pen:
-            return "pen"
+            return ToolNames.pen.rawValue
         case .marker:
-            return "highlighter"
+            return ToolNames.highlighter.rawValue
         case .pencil:
-            return "pencil"
+            return ToolNames.pencil.rawValue
         default:
-            return "pen"
+            return ToolNames.pen.rawValue
         }
     }
 }

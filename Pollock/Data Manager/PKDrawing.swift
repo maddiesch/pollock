@@ -121,10 +121,11 @@ public struct PKDrawingExtractor {
     public static let pkHighlighterScale: CGFloat = 0.8
 
     static func upscaleToolSize(withToolName toolName: String, fromLineWidth lineWidth: CGFloat, andSize size: CGSize) -> CGSize {
-        let scale = toolName == ToolNames.pen.rawValue ? PKDrawingExtractor.pkPenScale : PKDrawingExtractor.pkHighlighterScale
+        let scale = scale(forToolName: toolName)
         
         let scaledLineSize = lineWidth * size.height * scale
         var minSize: CGFloat = 2.4
+        // Pencil Tool needs a smaller min size
         if toolName == ToolNames.pencil.rawValue {
             minSize = 1
         }
@@ -135,10 +136,14 @@ public struct PKDrawingExtractor {
     }
     
     static func downscaleToolSize(withToolName toolName: String, fromLineWidth lineWidth: CGFloat, andSize size: CGSize) -> CGSize {
-        let scale = toolName == ToolNames.pen.rawValue ? PKDrawingExtractor.pkPenScale : PKDrawingExtractor.pkHighlighterScale
+        let scale = scale(forToolName: toolName)
         
         let scaledLineSize = lineWidth / size.height / scale
         return CGSize(width: scaledLineSize, height: scaledLineSize)
+    }
+    
+    static func scale(forToolName toolName: String) -> CGFloat {
+        return toolName == ToolNames.pen.rawValue ? PKDrawingExtractor.pkPenScale : PKDrawingExtractor.pkHighlighterScale
     }
 }
 
@@ -151,70 +156,6 @@ extension PKDrawing {
         }
         
         return drawings
-    }
-    
-    public func eraser(fromPoint1 point1: CGPoint, toPoint2 point2: CGPoint) -> [String: Any] {
-        
-        var points = [[String: Any]]()
-        
-        let point1Json: [String: Any] = [
-            "previous": [
-                "xOffset": point1.x,
-                "yOffset": point1.y
-            ],
-            "isPredictive": false,
-            "_type": "point",
-            "force": 1,
-            "location": [
-                "xOffset": point1.x,
-                "yOffset": point1.y
-            ]
-        ]
-        points.append(point1Json)
-        
-        let point2Json: [String: Any] = [
-            "previous": [
-                "xOffset": point1.x,
-                "yOffset": point1.y
-            ],
-            "isPredictive": false,
-            "_type": "point",
-            "force": 1,
-            "location": [
-                "xOffset": point2.x,
-                "yOffset": point2.y
-            ]
-        ]
-        points.append(point2Json)
-        
-        let tool: [String: Any] = [
-          "_type" : "tool",
-          "forceSensitivity" : 1,
-          "lineWidth" : 0.02,
-          "name" : "eraser",
-          "version" : 1
-        ]
-        
-        let color: [String: Any] = [
-            "color" : [
-              "red" : 0,
-              "alpha" : 1,
-              "name" : "green",
-              "blue" : 0,
-              "green" : 255
-            ]
-        ]
-        
-        return [
-            "drawingID": UUID().uuidString,  //TODO need to set a uuid on the actual stroke somehow
-            "version": 1,  //TODO: Same as above, but need to hold a version somewhere
-            "tool": tool,
-            "points": points,
-            "isCulled": false,  //TODO: Figure out what is culled does
-            "color": color,
-            "isSmoothingEnabled": false, //Appears to always be true
-            "_type": "drawing"
-        ]
     }
     
     public init(_ payload: [String : Any]) throws {
@@ -231,15 +172,12 @@ extension PKDrawing {
             drawings.forEach { (drawing) in
                 var toolSize = CGSize(width: 1, height: 1)
                 var toolForce: CGFloat = 1
-                var isHighlighter = false
                 var toolName = ""
                 var toolType: PKInk.InkType = .pen
                 if let tool = drawing["tool"] as? [String: Any] {
                     toolForce = tool["forceSensitivity"] as? CGFloat ?? 0
                     let lineWidth = tool["lineWidth"] as? CGFloat ?? 0
                     toolName = tool["name"] as? String ?? ToolNames.pen.rawValue
-                    
-                    isHighlighter = toolName == ToolNames.highlighter.rawValue
                     toolSize = CGSize(width: lineWidth, height: lineWidth)
                     toolType = PKDrawing.inkType(fromToolPayload: tool)
                 }
@@ -378,18 +316,6 @@ extension PKStroke {
             "isSmoothingEnabled": false, //Appears to always be true
             "_type": "drawing"
         ]
-    }
-    
-    func calculateJSONMarkerLineWidth(lineWidth: CGFloat, canvasSize: CGSize) -> CGFloat {
-        //On an iPhone with 520 the calculated width of 0.075 = 39 this is just about correct
-        // 520 height min/max is 2.1/40
-        // 1262 height min/max is 2.1/75  16.8
-        //On an iPad with 1262 the calculated width of 0.075 = 94 which is way too big and instead I want it to be 0.046 ish
-        
-        //
-        //40 = 0.075 iPhone
-        //94 = 0.075 iPad
-        return 0
     }
 }
 

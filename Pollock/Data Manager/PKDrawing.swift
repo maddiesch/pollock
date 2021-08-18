@@ -8,11 +8,6 @@
 import Foundation
 import PencilKit
 
-struct PollockConstants  {
-    static let canvases = "canvases"
-}
-
-
 struct PKDrawingHelper {
     static func dict(forColor color: UIColor) -> [String: Any] {
         var red: CGFloat = 0
@@ -114,8 +109,6 @@ public struct PKDrawingExtractor {
         }
         return PKDrawing(strokes: newDrawingStrokes)
     }
-    
-    
     
     public static let pkPenScale: CGFloat = 0.54
     public static let pkHighlighterScale: CGFloat = 0.8

@@ -22,7 +22,7 @@ public enum EditorState {
     case text
 }
 
-@objc(POLDrawingView)
+@objc(JSONDrawingView)
 public final class JSONDrawingView : UIView, TextDrawingViewDelegate, DrawingViewInterface {
     public func showToolPicker() {
         //no op

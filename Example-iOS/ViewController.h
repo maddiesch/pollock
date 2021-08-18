@@ -11,7 +11,7 @@
 
 @interface ViewController : UIViewController
 
-@property (nonatomic, weak) IBOutlet POLDrawingView *drawingView;
+@property (nonatomic, weak) IBOutlet JSONDrawingView *drawingView;
 
 @property (nonatomic, weak) IBOutlet UILabel *statusLabel;
 

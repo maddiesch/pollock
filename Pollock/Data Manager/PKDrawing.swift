@@ -45,20 +45,6 @@ struct PKDrawingHelper {
 
 @available(iOS 14.0, *)
 public struct PKDrawingExtractor {
-    public static func unserialize(_ payload: [String : Any]) -> [PKDrawing] {
-        if let canvases = payload["canvases"] as? [[String: Any]] {
-            var pkDrawings = [PKDrawing]()
-            canvases.forEach { (canvas) in
-                if let drawing = try? PKDrawing(canvas) {
-                    pkDrawings.append(drawing)
-                    //need to update poin
-                }
-            }
-            return pkDrawings
-        }
-        return []
-    }
-    
     @available(iOS 14.0, *)
     public static func upscalePoints(ofDrawing drawing: PKDrawing, withSize size: CGSize) -> PKDrawing {
         var newStrokes = [PKStroke]()
@@ -97,9 +83,10 @@ public struct PKDrawingExtractor {
                 let transformedPoint = point.location.applying(stroke.transform) //apply lasso transform
                 let newLocation = CGPoint(x: transformedPoint.x / size.width, y: transformedPoint.y / size.height)
                 pointSize = point.size
+                pointSize = PKDrawingExtractor.downscaleToolSize(withToolName: toolName, fromLineWidth: pointSize.height, andSize: size)
                 let newPoint = PKStrokePoint(location: newLocation,
                                              timeOffset: point.timeOffset,
-                                             size: PKDrawingExtractor.downscaleToolSize(withToolName: toolName, fromLineWidth: pointSize.height, andSize: size),
+                                             size: pointSize,
                                              opacity: point.opacity, force: point.force,
                                              azimuth: point.azimuth, altitude: point.altitude)
                 newPoints.append(newPoint)
@@ -117,7 +104,7 @@ public struct PKDrawingExtractor {
         let scale = scale(forToolName: toolName)
         
         let scaledLineSize = lineWidth * size.height * scale
-        var minSize: CGFloat = 2.4
+        var minSize: CGFloat = 2.1
         // Pencil Tool needs a smaller min size
         if toolName == ToolNames.pencil.rawValue {
             minSize = 1
@@ -130,7 +117,6 @@ public struct PKDrawingExtractor {
     
     static func downscaleToolSize(withToolName toolName: String, fromLineWidth lineWidth: CGFloat, andSize size: CGSize) -> CGSize {
         let scale = scale(forToolName: toolName)
-        
         let scaledLineSize = lineWidth / size.height / scale
         return CGSize(width: scaledLineSize, height: scaledLineSize)
     }

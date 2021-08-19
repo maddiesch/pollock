@@ -23,8 +23,8 @@ internal final class Canvas : Serializable, Hashable {
     }
     
     var canvasSize: CGSize = CGSize.zero
+    var _pkDrawingOriginal: Any?
     var _pkdrawing: Any?
-    
     @available(iOS 14.0, *)
     var pkdrawing: PKDrawing? {
         if let drawing = _pkdrawing as? PKDrawing {
@@ -36,6 +36,10 @@ internal final class Canvas : Serializable, Hashable {
 
     func addDrawing(_ drawing: Drawing) {
         self.drawings.append(drawing)
+    }
+    
+    func revertPK() {
+        _pkdrawing = _pkDrawingOriginal
     }
 
     @discardableResult
@@ -116,6 +120,7 @@ internal final class Canvas : Serializable, Hashable {
         
         if #available(iOS 14.0, *) {
             self._pkdrawing = try PKDrawing(payload)
+            self._pkDrawingOriginal = try PKDrawing(payload)
         }
         
         let text = payload["text"] as? [[String: Any]] ?? []

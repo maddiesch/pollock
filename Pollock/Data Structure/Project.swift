@@ -70,6 +70,14 @@ public final class Project : NSObject, Serializable {
         }
         return false
     }
+    
+    public func revertPK() {
+        if #available(iOS 14.0, *) {
+            for canvas in self.canvases {
+                canvas.revertPK()
+            }
+        }    
+    }
 
     fileprivate var canvases: Set<Canvas> = []
 

@@ -17,21 +17,20 @@ struct PKDrawingHelper {
         color.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
         
         return [
-            "alpha" : min(max(alpha, 0), 1),            //0 - 1
-            "red" : min(max(red * 255.0, 0), 255),      //0 - 255
-            "blue" : min(max(blue * 255.0, 0), 255),    //0 - 255
-            "green" : min(max(green * 255.0, 0), 255)   //0 - 255
+            "alpha" : Float(min(max(alpha, 0), 1)),            //0 - 1
+            "red" : Float(min(max(red * 255.0, 0), 255)),      //0 - 255
+            "blue" : Float(min(max(blue * 255.0, 0), 255)),    //0 - 255
+            "green" : Float(min(max(green * 255.0, 0), 255))   //0 - 255
         ]
     }
     
     static func color(forDict dict: [String: Any]) -> UIColor {
-        let red = dict["red"] as? CGFloat ?? 0
-        let alpha = dict["alpha"] as? CGFloat ?? 0
-        let _ = dict["name"] as? String ?? ""
-        let blue = dict["blue"] as? CGFloat ?? 0
-        let green = dict["green"] as? CGFloat ?? 0
+        let red = dict["red"] as? Float ?? 0
+        let alpha = dict["alpha"] as? Float ?? 0
+        let blue = dict["blue"] as? Float ?? 0
+        let green = dict["green"] as? Float ?? 0
         
-        return UIColor(red: red/255.0, green: green/255.0, blue: blue/255.0, alpha: alpha)
+        return UIColor(red: CGFloat(red / 255.0), green: CGFloat(green / 255.0), blue: CGFloat(blue / 255.0), alpha: CGFloat(alpha))
     }
 
     static var isPencilKitAvailable: Bool {

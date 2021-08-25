@@ -25,14 +25,18 @@ public protocol DrawingViewInterface {
     func currentTextFieldFrame() -> CGRect?
     func showToolPicker()
     func hideToolPicker()
-    func undo() -> String
+    func undo() -> String?
 }
 
 public final class PKDrawingView: UIView, PKCanvasViewDelegate, TextDrawingViewDelegate, DrawingViewInterface {
     
-    public func undo() -> String {
-        undoManager?.undo()
-        return "Undo Text Needed"
+    public func undo() -> String? {
+        if undoManager?.canUndo ?? false {
+            undoManager?.undo()
+            return ""
+        }
+        
+        return "Nothing to Undo"
     }
     func textDrawingToolbarDelegate() -> TextDrawingToolbarDelegate {
         return self.textDrawingToolbarViewDelegate!

@@ -35,6 +35,9 @@ public final class JSONDrawingView : UIView, TextDrawingViewDelegate, DrawingVie
     public func undo() -> String? {
         return try? self.undoWithThrow()
     }
+    public func redo() -> String? {
+        return nil //no op
+    }
     
     internal var currentDrawing: Drawing?
 

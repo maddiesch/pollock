@@ -26,6 +26,7 @@ public protocol DrawingViewInterface {
     func showToolPicker()
     func hideToolPicker()
     func undo() -> String?
+    func redo() -> String?
 }
 
 public final class PKDrawingView: UIView, PKCanvasViewDelegate, TextDrawingViewDelegate, DrawingViewInterface {
@@ -33,10 +34,19 @@ public final class PKDrawingView: UIView, PKCanvasViewDelegate, TextDrawingViewD
     public func undo() -> String? {
         if undoManager?.canUndo ?? false {
             undoManager?.undo()
-            return ""
+            return nil
         }
         
-        return "Nothing to Undo"
+        return NSLocalizedString("Nothing to Undo", comment: "undo")
+    }
+    
+    public func redo() -> String? {
+        if undoManager?.canRedo ?? false {
+            undoManager?.redo()
+            return nil
+        }
+        
+        return NSLocalizedString("Nothing to Redo", comment: "redo")
     }
     func textDrawingToolbarDelegate() -> TextDrawingToolbarDelegate {
         return self.textDrawingToolbarViewDelegate!

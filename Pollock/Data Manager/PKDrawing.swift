@@ -49,15 +49,14 @@ public struct PKDrawingExtractor {
         var newStrokes = [PKStroke]()
         for var stroke in drawing.strokes {
             var newPoints = [PKStrokePoint]()
-            var pointSize = CGSize.zero
-            
             let toolName = stroke.ink.pkToolName()
             stroke.path.forEach { (point) in
-                pointSize = point.size
                 let newLocation = CGPoint(x: point.location.x * size.width, y: point.location.y * size.height)
+                let maxSize = max(point.size.width, point.size.height)
+                let pointSize = PKDrawingExtractor.upscaleToolSize(withToolName: toolName, fromLineWidth: maxSize, andSize: size)
                 let newPoint = PKStrokePoint(location: newLocation,
                                              timeOffset: point.timeOffset,
-                                             size: PKDrawingExtractor.upscaleToolSize(withToolName: toolName, fromLineWidth: pointSize.height, andSize: size),
+                                             size: pointSize,
                                              opacity: point.opacity, force: point.force,
                                              azimuth: point.azimuth, altitude: point.altitude)
                 newPoints.append(newPoint)
@@ -76,13 +75,12 @@ public struct PKDrawingExtractor {
         var newDrawingStrokes = [PKStroke]()
         for var stroke in drawing.strokes {
             var newPoints = [PKStrokePoint]()
-            var pointSize = CGSize.zero
             let toolName = stroke.ink.pkToolName()
             stroke.path.forEach { (point) in
                 let transformedPoint = point.location.applying(stroke.transform) //apply lasso transform
                 let newLocation = CGPoint(x: transformedPoint.x / size.width, y: transformedPoint.y / size.height)
-                pointSize = point.size
-                pointSize = PKDrawingExtractor.downscaleToolSize(withToolName: toolName, fromLineWidth: pointSize.height, andSize: size)
+                let maxSize = max(point.size.width, point.size.height)
+                let pointSize = PKDrawingExtractor.downscaleToolSize(withToolName: toolName, fromLineWidth: maxSize, andSize: size)
                 let newPoint = PKStrokePoint(location: newLocation,
                                              timeOffset: point.timeOffset,
                                              size: pointSize,

@@ -172,7 +172,7 @@ extension PKDrawing {
                         do {
                             let point = try PKStrokePoint(pointJson)
                             toolSize = point.size == CGSize.zero ? toolSize : point.size
-                            let newPoint = PKStrokePoint(location: point.location, timeOffset: TimeInterval.init(), size: toolSize, opacity: point.opacity, force: toolForce, azimuth: 9, altitude: 1)
+                            let newPoint = PKStrokePoint(location: point.location, timeOffset: TimeInterval.init(), size: toolSize, opacity: point.opacity, force: toolForce, azimuth: point.azimuth, altitude: point.altitude)
                             pkPoints.append(newPoint)
                         } catch {
                             print(error)
@@ -372,7 +372,6 @@ extension PKStrokePoint: Serializable {
         "isPredictive": false,
         "_type": "point",
         "force": 1,
-        "pkForce": self.force,
         "timeOffset": self.timeOffset,
         "azimuth": self.azimuth,
         "opacity": self.opacity,

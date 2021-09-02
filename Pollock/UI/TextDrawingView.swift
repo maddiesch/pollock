@@ -19,13 +19,15 @@ internal protocol TextDrawingViewDelegate : class {
 internal class TextDrawingView : UIView, UITextViewDelegate {
     let text: Text
     
+    let defaultWidth: CGFloat = 100.0
+    
     public weak var textDrawingToolbarViewDelegate: TextDrawingToolbarDelegate?
     public weak var delgate: TextDrawingViewDelegate?
 
     init(_ text: Text) {
         self.text = text
         self.centerConstraint = CenterConstraint(nil, nil)
-        super.init(frame: CGRect(x: 0.0, y: 0.0, width: 50.0, height: 24.0))
+        super.init(frame: CGRect(x: 0.0, y: 0.0, width: defaultWidth, height: 24.0))
         self.string = text.value
         self.translatesAutoresizingMaskIntoConstraints = false
         self.backgroundColor = UIColor(white: 0.6, alpha: 0.3)
@@ -51,7 +53,7 @@ internal class TextDrawingView : UIView, UITextViewDelegate {
 
     override var intrinsicContentSize: CGSize {
         let rect = self.text.textRectForCanvasSize(self.superview?.bounds.size ?? CGSize.zero)
-        return CGSize(width: max(50.0, rect.width), height: rect.height)
+        return CGSize(width: max(defaultWidth, rect.width), height: rect.height)
     }
 
     var string: String? {

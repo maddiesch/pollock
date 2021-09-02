@@ -234,46 +234,23 @@ extension PKStroke {
     
     public func serialize() throws -> [String : Any] {
         var points: [[String: Any]] = []
-        
-        
         var maxLineWidth: CGFloat = 0
         var maxLineHeight: CGFloat = 0
-        
-        
-        // The path is a uniform cubic B-Spline and holds control points
-        // To get points on the center of the path, need to use:
-        //  path.interpolatedPoints(by: .distance(CGFloat))
-        
-        //  a distance around 0.1 seems to be good
-
-        
         for pathRange in maskedPathRanges {  //we wont have masked path ranges because we're not using the pixel eraser
             //each path range is a stroke?
             for point in path.interpolatedPoints(in: pathRange, by: .distance(0.01)) {   //adjusting the distance gives more accurate drawings, but requires more resources to save
                 maxLineWidth = max(maxLineWidth, point.size.width)
                 maxLineHeight = max(maxLineHeight, point.size.height)
-                
                 do {
                     let dictPoint = try point.serialize()
                     if !point.location.x.isNaN && !point.location.y.isNaN {
                         points.append(dictPoint)
                     }
-                    
                 } catch {
                     print(error)
                 }
             }
         }
-        
-        //This generates a lot more points when we may not need so many.
-        //        for index in path.indices {
-        //            let point = path.interpolatedPoint(at: CGFloat(index))
-        //            maxLineWidth = max(maxLineWidth, point.size.width)
-        //            maxLineHeight = max(maxLineHeight, point.size.height)
-        //            if let dictPoint = try? point.serialize() {
-        //                points.append(dictPoint)
-        //            }
-        //        }
         
         //To get the stroke color we pull it from the ink
         let color = PKDrawingHelper.dict(forColor: self.ink.color)
@@ -357,8 +334,8 @@ extension PKStrokePoint: Serializable {
         let force = payload["force"] as? NSNumber ?? 0
         
         let timeOffset = payload["timeOffset"] as? NSNumber ?? 0
-        let azimuth = payload["azimuth"] as? NSNumber ?? 1.23
-        let altitude = payload["altitude"] as? NSNumber ?? 0.8
+        let azimuth = payload["azimuth"] as? NSNumber ?? 1
+        let altitude = payload["altitude"] as? NSNumber ?? 0
         let opacity = payload["opacity"] as? NSNumber ?? 1
         
         self.init(location: CGPoint(x: xOffset.doubleValue, y: yOffset.doubleValue), timeOffset: TimeInterval(truncating: timeOffset), size: CGSize(width: width.doubleValue, height: height.doubleValue), opacity: CGFloat(truncating: opacity), force: CGFloat(truncating:force), azimuth: CGFloat(truncating: azimuth), altitude: CGFloat(truncating: altitude))
@@ -371,7 +348,7 @@ extension PKStrokePoint: Serializable {
         ],
         "isPredictive": false,
         "_type": "point",
-        "force": 1,
+        "force": self.force,
         "timeOffset": self.timeOffset,
         "azimuth": self.azimuth,
         "opacity": self.opacity,

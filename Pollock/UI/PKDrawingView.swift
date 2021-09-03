@@ -243,6 +243,9 @@ public final class PKDrawingView: UIView, PKCanvasViewDelegate, TextDrawingViewD
         }
         self.tapGesture.isEnabled = self.isTextModeEnabled
         self.longPressGesture.isEnabled = self.isTextModeEnabled
+        if #available(iOS 14.0, *) {
+            self.canvasView.isUserInteractionEnabled = !self.isTextModeEnabled
+        }
         if isTextModeEnabled {
             if #available(iOS 14.0, *) {
                 self.hideToolPicker()

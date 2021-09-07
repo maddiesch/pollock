@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 public struct Color : Equatable, Serializable, Codable {
     /// Named colors support
@@ -23,6 +24,19 @@ public struct Color : Equatable, Serializable, Codable {
 
     /// Alpha channel value 0.0-1.0
     public let alpha: Float
+    
+    public init(uicolor color: UIColor) {
+        let values = color.rgba
+        self.red = Float(values.red * 255)
+        self.blue = Float(values.blue * 255)
+        self.green = Float(values.green * 255)
+        self.alpha = Float(values.alpha)
+        self.name = nil
+    }
+    
+    var uicolor: UIColor {
+        return UIColor(red: CGFloat(red/255), green: CGFloat(green/255), blue: CGFloat(blue/255), alpha: CGFloat(alpha))
+    }
 
     public init(_ red: Float, _ green: Float, _ blue: Float, _ alpha: Float = 1.0, _ name: Name? = nil) {
         self.red = red
@@ -136,5 +150,18 @@ public struct Color : Equatable, Serializable, Codable {
 
     public static func ==(lhs: Color, rhs: Color) -> Bool {
         return lhs.red == rhs.red && lhs.green == rhs.green && lhs.blue == rhs.blue && lhs.alpha == rhs.alpha
+    }
+}
+
+
+extension UIColor {
+    var rgba: (red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat) {
+        var red: CGFloat = 0
+        var green: CGFloat = 0
+        var blue: CGFloat = 0
+        var alpha: CGFloat = 0
+        getRed(&red, green: &green, blue: &blue, alpha: &alpha)
+
+        return (red, green, blue, alpha)
     }
 }

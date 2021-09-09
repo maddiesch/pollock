@@ -191,6 +191,14 @@ public final class PKDrawingView: UIView, PKCanvasViewDelegate, TextDrawingViewD
             if let graphicsRenderer = self.renderer as? GraphicsRenderer {
                 try graphicsRenderer.drawText(inContext: ctx, canvasID: canvasID, forRect: rect, settings: nil, backgroundRenderer: nil)
             }
+            
+            if let text = self.targetText {
+                let rect = text.textRectForCanvasSize(self.bounds.size)
+                ctx.setFillColor(UIColor(white: 0.6, alpha: 0.3).cgColor)
+                ctx.fill(rect)
+            }
+
+            
         } catch {
             print("Failed to draw")
             print(error)

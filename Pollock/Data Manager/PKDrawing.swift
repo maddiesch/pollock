@@ -244,6 +244,7 @@ extension PKStroke {
         for pathRange in maskedPathRanges {  //we wont have masked path ranges because we're not using the pixel eraser
             //each path range is a stroke?
             for point in path.interpolatedPoints(in: pathRange, by: .distance(0.009)) {   //adjusting the distance gives more accurate drawings, but requires more resources to save
+            for point in path.interpolatedPoints(in: pathRange, by: .distance(0.001)) {   //adjusting the distance gives more accurate drawings, but requires more resources to save
                 maxLineWidth = max(maxLineWidth, point.size.width)
                 maxLineHeight = max(maxLineHeight, point.size.height)
                 do {

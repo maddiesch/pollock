@@ -96,16 +96,21 @@ public struct PKDrawingExtractor {
     
     public static let pkPenScale: CGFloat = 0.54
     public static let pkHighlighterScale: CGFloat = 0.8
+    
+    public static let pkMinPenSize: CGFloat = 2.1
+    public static let pkMinPencilSize: CGFloat = 1
+    
+    static func minSize(forToolName toolName: String) -> CGFloat {
+        if toolName == ToolNames.pencil.rawValue {
+            return pkMinPencilSize  // Pencil Tool needs a smaller min size
+        }
+        return pkMinPenSize
+    }
 
     static func upscaleToolSize(withToolName toolName: String, fromLineWidth lineWidth: CGFloat, andSize size: CGSize) -> CGSize {
         let scale = scale(forToolName: toolName)
-        
+        let minSize = minSize(forToolName: toolName)
         let scaledLineSize = lineWidth * size.height * scale
-        var minSize: CGFloat = 2.1
-        // Pencil Tool needs a smaller min size
-        if toolName == ToolNames.pencil.rawValue {
-            minSize = 1
-        }
         if scaledLineSize < minSize {
             return CGSize(width: minSize, height: minSize)
         }
@@ -238,7 +243,7 @@ extension PKStroke {
         var maxLineHeight: CGFloat = 0
         for pathRange in maskedPathRanges {  //we wont have masked path ranges because we're not using the pixel eraser
             //each path range is a stroke?
-            for point in path.interpolatedPoints(in: pathRange, by: .distance(0.01)) {   //adjusting the distance gives more accurate drawings, but requires more resources to save
+            for point in path.interpolatedPoints(in: pathRange, by: .distance(0.009)) {   //adjusting the distance gives more accurate drawings, but requires more resources to save
                 maxLineWidth = max(maxLineWidth, point.size.width)
                 maxLineHeight = max(maxLineHeight, point.size.height)
                 do {

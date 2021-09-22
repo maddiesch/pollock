@@ -8,127 +8,6 @@
 import Foundation
 import PencilKit
 
-struct PKDrawingHelper {
-    static func dict(forColor color: UIColor) -> [String: Any] {
-        var red: CGFloat = 0
-        var green: CGFloat = 0
-        var blue: CGFloat = 0
-        var alpha: CGFloat = 0
-        color.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
-        
-        return [
-            "alpha" : Float(min(max(alpha, 0), 1)),            //0 - 1
-            "red" : Float(min(max(red * 255.0, 0), 255)),      //0 - 255
-            "blue" : Float(min(max(blue * 255.0, 0), 255)),    //0 - 255
-            "green" : Float(min(max(green * 255.0, 0), 255))   //0 - 255
-        ]
-    }
-    
-    static func color(forDict dict: [String: Any]) -> UIColor {
-        let red = dict["red"] as? Float ?? 0
-        let alpha = dict["alpha"] as? Float ?? 0
-        let blue = dict["blue"] as? Float ?? 0
-        let green = dict["green"] as? Float ?? 0
-        
-        return UIColor(red: CGFloat(red / 255.0), green: CGFloat(green / 255.0), blue: CGFloat(blue / 255.0), alpha: CGFloat(alpha))
-    }
-
-    static var isPencilKitAvailable: Bool {
-        if #available(iOS 14.0, *) {
-            return true
-        } else {
-            return false
-        }
-    }
-}
-
-@available(iOS 14.0, *)
-public struct PKDrawingExtractor {
-    @available(iOS 14.0, *)
-    public static func upscalePoints(ofDrawing drawing: PKDrawing, withSize size: CGSize) -> PKDrawing {
-        var newStrokes = [PKStroke]()
-        for var stroke in drawing.strokes {
-            var newPoints = [PKStrokePoint]()
-            let toolName = stroke.ink.pkToolName()
-            stroke.path.forEach { (point) in
-                let newLocation = CGPoint(x: point.location.x * size.width, y: point.location.y * size.height)
-                let maxSize = max(point.size.width, point.size.height)
-                let pointSize = PKDrawingExtractor.upscaleToolSize(withToolName: toolName, fromLineWidth: maxSize, andSize: size)
-                let newPoint = PKStrokePoint(location: newLocation,
-                                             timeOffset: point.timeOffset,
-                                             size: pointSize,
-                                             opacity: point.opacity, force: point.force,
-                                             azimuth: point.azimuth, altitude: point.altitude)
-                newPoints.append(newPoint)
-            }
-            let newPath = PKStrokePath(controlPoints: newPoints, creationDate: Date())
-            
-            stroke.path = newPath
-            newStrokes.append(stroke)
-        }
-        let newDrawing = PKDrawing(strokes: newStrokes)
-        return newDrawing
-    }
-    
-    @available(iOS 14.0, *)
-    public static func downscalePoints(ofDrawing drawing: PKDrawing, withSize size: CGSize) -> PKDrawing {
-        var newDrawingStrokes = [PKStroke]()
-        for var stroke in drawing.strokes {
-            var newPoints = [PKStrokePoint]()
-            let toolName = stroke.ink.pkToolName()
-            stroke.path.forEach { (point) in
-                let transformedPoint = point.location.applying(stroke.transform) //apply lasso transform
-                let newLocation = CGPoint(x: transformedPoint.x / size.width, y: transformedPoint.y / size.height)
-                let maxSize = max(point.size.width, point.size.height)
-                let pointSize = PKDrawingExtractor.downscaleToolSize(withToolName: toolName, fromLineWidth: maxSize, andSize: size)
-                let newPoint = PKStrokePoint(location: newLocation,
-                                             timeOffset: point.timeOffset,
-                                             size: pointSize,
-                                             opacity: point.opacity, force: point.force,
-                                             azimuth: point.azimuth, altitude: point.altitude)
-                newPoints.append(newPoint)
-            }
-            stroke.transform = .identity  //Reset the transform after we update the points with the transform
-            stroke.path = PKStrokePath(controlPoints: newPoints, creationDate: Date())
-            newDrawingStrokes.append(stroke)
-        }
-        return PKDrawing(strokes: newDrawingStrokes)
-    }
-    
-    public static let pkPenScale: CGFloat = 0.54
-    public static let pkHighlighterScale: CGFloat = 0.8
-    
-    public static let pkMinPenSize: CGFloat = 2.1
-    public static let pkMinPencilSize: CGFloat = 1
-    
-    static func minSize(forToolName toolName: String) -> CGFloat {
-        if toolName == ToolNames.pencil.rawValue {
-            return pkMinPencilSize  // Pencil Tool needs a smaller min size
-        }
-        return pkMinPenSize
-    }
-
-    static func upscaleToolSize(withToolName toolName: String, fromLineWidth lineWidth: CGFloat, andSize size: CGSize) -> CGSize {
-        let scale = scale(forToolName: toolName)
-        let minSize = minSize(forToolName: toolName)
-        let scaledLineSize = lineWidth * size.height * scale
-        if scaledLineSize < minSize {
-            return CGSize(width: minSize, height: minSize)
-        }
-        return CGSize(width: scaledLineSize, height: scaledLineSize)
-    }
-    
-    static func downscaleToolSize(withToolName toolName: String, fromLineWidth lineWidth: CGFloat, andSize size: CGSize) -> CGSize {
-        let scale = scale(forToolName: toolName)
-        let scaledLineSize = lineWidth / size.height / scale
-        return CGSize(width: scaledLineSize, height: scaledLineSize)
-    }
-    
-    static func scale(forToolName toolName: String) -> CGFloat {
-        return toolName == ToolNames.pen.rawValue ? PKDrawingExtractor.pkPenScale : PKDrawingExtractor.pkHighlighterScale
-    }
-}
-
 @available(iOS 13.0, *)
 extension PKDrawing {
     public func serialize() throws -> [[String : Any]] {
@@ -368,5 +247,127 @@ extension PKStrokePoint: Serializable {
             "yOffset": self.location.y
         ]
         ]
+    }
+}
+
+//Helpers
+struct PKDrawingHelper {
+    static func dict(forColor color: UIColor) -> [String: Any] {
+        var red: CGFloat = 0
+        var green: CGFloat = 0
+        var blue: CGFloat = 0
+        var alpha: CGFloat = 0
+        color.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
+        
+        return [
+            "alpha" : Float(min(max(alpha, 0), 1)),            //0 - 1
+            "red" : Float(min(max(red * 255.0, 0), 255)),      //0 - 255
+            "blue" : Float(min(max(blue * 255.0, 0), 255)),    //0 - 255
+            "green" : Float(min(max(green * 255.0, 0), 255))   //0 - 255
+        ]
+    }
+    
+    static func color(forDict dict: [String: Any]) -> UIColor {
+        let red = dict["red"] as? Float ?? 0
+        let alpha = dict["alpha"] as? Float ?? 0
+        let blue = dict["blue"] as? Float ?? 0
+        let green = dict["green"] as? Float ?? 0
+        
+        return UIColor(red: CGFloat(red / 255.0), green: CGFloat(green / 255.0), blue: CGFloat(blue / 255.0), alpha: CGFloat(alpha))
+    }
+
+    static var isPencilKitAvailable: Bool {
+        if #available(iOS 14.0, *) {
+            return true
+        } else {
+            return false
+        }
+    }
+}
+
+@available(iOS 14.0, *)
+public struct PKDrawingExtractor {
+    @available(iOS 14.0, *)
+    public static func upscalePoints(ofDrawing drawing: PKDrawing, withSize size: CGSize) -> PKDrawing {
+        var newStrokes = [PKStroke]()
+        for var stroke in drawing.strokes {
+            var newPoints = [PKStrokePoint]()
+            let toolName = stroke.ink.pkToolName()
+            stroke.path.forEach { (point) in
+                let newLocation = CGPoint(x: point.location.x * size.width, y: point.location.y * size.height)
+                let maxSize = max(point.size.width, point.size.height)
+                let pointSize = PKDrawingExtractor.upscaleToolSize(withToolName: toolName, fromLineWidth: maxSize, andSize: size)
+                let newPoint = PKStrokePoint(location: newLocation,
+                                             timeOffset: point.timeOffset,
+                                             size: pointSize,
+                                             opacity: point.opacity, force: point.force,
+                                             azimuth: point.azimuth, altitude: point.altitude)
+                newPoints.append(newPoint)
+            }
+            let newPath = PKStrokePath(controlPoints: newPoints, creationDate: Date())
+            
+            stroke.path = newPath
+            newStrokes.append(stroke)
+        }
+        let newDrawing = PKDrawing(strokes: newStrokes)
+        return newDrawing
+    }
+    
+    @available(iOS 14.0, *)
+    public static func downscalePoints(ofDrawing drawing: PKDrawing, withSize size: CGSize) -> PKDrawing {
+        var newDrawingStrokes = [PKStroke]()
+        for var stroke in drawing.strokes {
+            var newPoints = [PKStrokePoint]()
+            let toolName = stroke.ink.pkToolName()
+            stroke.path.forEach { (point) in
+                let transformedPoint = point.location.applying(stroke.transform) //apply lasso transform
+                let newLocation = CGPoint(x: transformedPoint.x / size.width, y: transformedPoint.y / size.height)
+                let maxSize = max(point.size.width, point.size.height)
+                let pointSize = PKDrawingExtractor.downscaleToolSize(withToolName: toolName, fromLineWidth: maxSize, andSize: size)
+                let newPoint = PKStrokePoint(location: newLocation,
+                                             timeOffset: point.timeOffset,
+                                             size: pointSize,
+                                             opacity: point.opacity, force: point.force,
+                                             azimuth: point.azimuth, altitude: point.altitude)
+                newPoints.append(newPoint)
+            }
+            stroke.transform = .identity  //Reset the transform after we update the points with the transform
+            stroke.path = PKStrokePath(controlPoints: newPoints, creationDate: Date())
+            newDrawingStrokes.append(stroke)
+        }
+        return PKDrawing(strokes: newDrawingStrokes)
+    }
+    
+    public static let pkPenScale: CGFloat = 0.54
+    public static let pkHighlighterScale: CGFloat = 0.8
+    
+    public static let pkMinPenSize: CGFloat = 2.1
+    public static let pkMinPencilSize: CGFloat = 1
+    
+    static func minSize(forToolName toolName: String) -> CGFloat {
+        if toolName == ToolNames.pencil.rawValue {
+            return pkMinPencilSize  // Pencil Tool needs a smaller min size
+        }
+        return pkMinPenSize
+    }
+
+    static func upscaleToolSize(withToolName toolName: String, fromLineWidth lineWidth: CGFloat, andSize size: CGSize) -> CGSize {
+        let scale = scale(forToolName: toolName)
+        let minSize = minSize(forToolName: toolName)
+        let scaledLineSize = lineWidth * size.height * scale
+        if scaledLineSize < minSize {
+            return CGSize(width: minSize, height: minSize)
+        }
+        return CGSize(width: scaledLineSize, height: scaledLineSize)
+    }
+    
+    static func downscaleToolSize(withToolName toolName: String, fromLineWidth lineWidth: CGFloat, andSize size: CGSize) -> CGSize {
+        let scale = scale(forToolName: toolName)
+        let scaledLineSize = lineWidth / size.height / scale
+        return CGSize(width: scaledLineSize, height: scaledLineSize)
+    }
+    
+    static func scale(forToolName toolName: String) -> CGFloat {
+        return toolName == ToolNames.pen.rawValue ? PKDrawingExtractor.pkPenScale : PKDrawingExtractor.pkHighlighterScale
     }
 }

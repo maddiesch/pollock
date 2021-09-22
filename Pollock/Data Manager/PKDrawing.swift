@@ -88,6 +88,7 @@ public struct PKDrawingExtractor {
                                              azimuth: point.azimuth, altitude: point.altitude)
                 newPoints.append(newPoint)
             }
+            stroke.transform = .identity  //Reset the transform after we update the points with the transform
             stroke.path = PKStrokePath(controlPoints: newPoints, creationDate: Date())
             newDrawingStrokes.append(stroke)
         }

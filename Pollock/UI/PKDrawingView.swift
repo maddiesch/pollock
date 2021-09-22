@@ -207,6 +207,11 @@ public final class PKDrawingView: UIView, PKCanvasViewDelegate, TextDrawingViewD
     
     
     public override func endEditing(_ force: Bool) -> Bool {
+        if #available(iOS 14.0, *) {
+            if isEnabled {
+                self.canvasView.resignFirstResponder()
+            }
+        }
         self.endTextEditing(false, commit: true)
         return super.endEditing(force)
     }

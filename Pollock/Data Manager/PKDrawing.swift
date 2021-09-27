@@ -117,16 +117,32 @@ extension PKStroke {
         self = PKStroke(ink: PKInk(.pen), path: PKStrokePath(controlPoints: [], creationDate: Date()))
     }
     
+    func CGPointDistanceSquared(from: CGPoint, to: CGPoint) -> CGFloat {
+        return (from.x - to.x) * (from.x - to.x) + (from.y - to.y) * (from.y - to.y)
+    }
+    
     public func serialize() throws -> [String : Any] {
         var points: [[String: Any]] = []
         var maxLineWidth: CGFloat = 0
         var maxLineHeight: CGFloat = 0
+        var previousPoint: CGPoint?
         for pathRange in maskedPathRanges {  //we wont have masked path ranges because we're not using the pixel eraser
             //each path range is a stroke?
             for point in path.interpolatedPoints(in: pathRange, by: .distance(0.001)) {   //adjusting the distance gives more accurate drawings, but requires more resources to save
                 maxLineWidth = max(maxLineWidth, point.size.width)
                 maxLineHeight = max(maxLineHeight, point.size.height)
                 do {
+                    if let prevPoint = previousPoint {
+                        let distance = CGPointDistanceSquared(from: prevPoint, to: point.location)
+                        let threashold: CGFloat = 0.00002
+                        if distance < threashold {
+                            continue
+                        } else {
+                            previousPoint = point.location
+                        }
+                    } else {
+                        previousPoint = point.location
+                    }
                     let dictPoint = try point.serialize()
                     if !point.location.x.isNaN && !point.location.y.isNaN {
                         points.append(dictPoint)

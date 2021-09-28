@@ -15,7 +15,6 @@ extension PKDrawing {
         if #available(iOS 14.0, *) {
             drawings = try self.strokes.map{ try $0.serialize() }
         }
-        
         return drawings
     }
     
@@ -132,10 +131,11 @@ extension PKStroke {
                 maxLineWidth = max(maxLineWidth, point.size.width)
                 maxLineHeight = max(maxLineHeight, point.size.height)
                 do {
+                    //Remove extra points.
                     if let prevPoint = previousPoint {
-                        let distance = CGPointDistanceSquared(from: prevPoint, to: point.location)
-                        let threashold: CGFloat = 0.00002
-                        if distance < threashold {
+                        let distance = prevPoint.distance(fromPoint: point.location)
+                        let threshold: CGFloat = 0.00002
+                        if distance < threshold {
                             continue
                         } else {
                             previousPoint = point.location
@@ -354,6 +354,8 @@ public struct PKDrawingExtractor {
         return PKDrawing(strokes: newDrawingStrokes)
     }
     
+   
+    
     public static let pkPenScale: CGFloat = 0.54
     public static let pkHighlighterScale: CGFloat = 0.8
     
@@ -366,21 +368,118 @@ public struct PKDrawingExtractor {
         }
         return pkMinPenSize
     }
-
+    
+    
+    // Pen Scales
+    // 0.001 input, should output 3.7
+    // 0.002 input, should output 2.6
+    // 0.003 input, should output 1.8
+    // 0.004 input, should output 1.45
+    // 0.005 input, should output 1.28
+    // 0.006 input, should output 1.2
+    // 0.007 input, should output 1.05
+    // 0.008 input, should output 1
+    // 0.009 input, should output 0.92
+    // 0.01 input, should output 0.8
+    // 0.02 input, should output 0.65
+    // 0.03 input, should output 0.6
+    // 0.04 input, should output 0.57
+    // 0.05 input, should output 0.0.566
+    // 0.06 input, should output 0.56
+    // 0.075 input, should output 0.54
+    static let lineWidthJSONKeys: [CGFloat] = [0.001, 0.002, 0.003, 0.004, 0.005, 0.006, 0.007, 0.008, 0.009, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.075]
+    static let lineWidthScaleValues: [CGFloat] = [3.7, 2.6, 1.8, 1.45, 1.28, 1.2, 1.05, 1, 0.92, 0.8, 0.65, 0.6, 0.57, 0.566, 0.56, 0.54]
+    
+    static func scale(forJSONLineWidth lineWidth: CGFloat) -> CGFloat {
+        if lineWidth <= lineWidthJSONKeys.first! {
+            return lineWidthScaleValues.first!
+        }
+        
+        if lineWidth >= lineWidthJSONKeys.last! {
+            return lineWidthScaleValues.last!
+        }
+        
+        var minKeyIndex = 0
+        var maxKeyIndex = 0
+        var currentIndex = 0
+        for key in lineWidthJSONKeys {
+            if lineWidth >= key {
+                currentIndex += 1
+                continue
+            } else {
+                maxKeyIndex = currentIndex
+                minKeyIndex = currentIndex - 1
+                break
+            }
+        }
+        
+        let minKey = lineWidthJSONKeys[minKeyIndex]
+        let maxKey = lineWidthJSONKeys[maxKeyIndex]
+        let minScale = lineWidthScaleValues[minKeyIndex]
+        let maxScale = lineWidthScaleValues[maxKeyIndex]
+        
+        return PKDrawingExtractor.normalized(value: lineWidth, minA: minKey, maxA: maxKey, minB: minScale, maxB: maxScale)
+    }
+    
+    static func scale(forPKLineWidth lineWidth: CGFloat, withKeys keys: [CGFloat]) -> CGFloat {
+        
+        if lineWidth <= keys.first! {
+            return lineWidthScaleValues.first!
+        }
+        
+        if lineWidth >= keys.last! {
+            return lineWidthScaleValues.last!
+        }
+        var minKeyIndex = 0
+        var maxKeyIndex = 0
+        var currentIndex = 0
+        for key in keys {
+            if lineWidth >= key {
+                currentIndex += 1
+                continue
+            } else {
+                maxKeyIndex = currentIndex
+                minKeyIndex = currentIndex - 1
+                break
+            }
+        }
+        
+        let minKey = keys[minKeyIndex]
+        let maxKey = keys[maxKeyIndex]
+        let minScale = lineWidthScaleValues[minKeyIndex]
+        let maxScale = lineWidthScaleValues[maxKeyIndex]
+        
+        return PKDrawingExtractor.normalized(value: lineWidth, minA: minKey, maxA: maxKey, minB: minScale, maxB: maxScale)
+    }
+    
+    static func normalized(value: CGFloat, minA: CGFloat, maxA: CGFloat, minB: CGFloat, maxB: CGFloat) -> CGFloat {
+            return minB + ((value - minA) * (maxB - minB)) / (maxA - minA)
+        }
+    
     static func upscaleToolSize(withToolName toolName: String, fromLineWidth lineWidth: CGFloat, andSize size: CGSize) -> CGSize {
         let scale = scale(forToolName: toolName)
-        let minSize = minSize(forToolName: toolName)
         let scaledLineSize = lineWidth * size.height * scale
-        if scaledLineSize < minSize {
-            return CGSize(width: minSize, height: minSize)
-        }
+        print("==== Upscaled ============= LineWidth Before: \(lineWidth) Scale Used: \(scale) and Size: \(size.height) = Upscaled size: \(scaledLineSize)")
         return CGSize(width: scaledLineSize, height: scaledLineSize)
     }
     
     static func downscaleToolSize(withToolName toolName: String, fromLineWidth lineWidth: CGFloat, andSize size: CGSize) -> CGSize {
         let scale = scale(forToolName: toolName)
         let scaledLineSize = lineWidth / size.height / scale
+        print("==== Downscaled ============= LineWidth Before: \(lineWidth) Scale Used: \(scale) and Size: \(size.height) = Downscaled size: \(scaledLineSize)")
         return CGSize(width: scaledLineSize, height: scaledLineSize)
+    }
+    
+    static func generatePKKeys(withSize size: CGSize) -> [CGFloat] {
+        var keys: [CGFloat] = []
+        var index = 0
+        for key in lineWidthJSONKeys {
+            let scale = lineWidthScaleValues[index]
+            let value = size.height * key * scale
+            keys.append(value)
+            index += 1
+        }
+        return keys
     }
     
     static func scale(forToolName toolName: String) -> CGFloat {

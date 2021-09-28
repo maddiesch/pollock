@@ -95,11 +95,9 @@ internal final class Canvas : Serializable, Hashable {
     func serializePK() throws -> [String : Any] {
         var drawings: [[String : Any]] = []
         if #available(iOS 14.0, *) {
-            if _pkdrawing != nil {
-                if let drawing = _pkdrawing as? PKDrawing, drawing.strokes.count > 0 {
-                    if let strokes = try? drawing.serialize() {
-                        drawings = strokes
-                    }
+            if let drawing = pkdrawing, drawing.strokes.count > 0 {
+                if let strokes = try? drawing.serialize() {
+                    drawings = strokes
                 }
             }
         }
@@ -119,8 +117,8 @@ internal final class Canvas : Serializable, Hashable {
         
         
         if #available(iOS 14.0, *) {
-            self._pkdrawing = try PKDrawing(payload)
-            self._pkDrawingOriginal = try PKDrawing(payload)
+            self._pkdrawing = try PKDrawing(payload)        
+            self._pkDrawingOriginal = _pkdrawing
         }
         
         let text = payload["text"] as? [[String: Any]] ?? []

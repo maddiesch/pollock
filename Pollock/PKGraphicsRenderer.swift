@@ -29,9 +29,9 @@ internal class PKGraphicsRenderer : GraphicsRenderer {
         let finalSettings = settings ?? RenderSettings.defaultSettings()
         if #available(iOS 14.0, *) {
             if let pkDrawing = canvas.pkdrawing {
-                let upscaledProject = PKDrawingExtractor.upscalePoints(ofDrawing: pkDrawing, withSize: rect.size)
+                let upscaledDrawing = PKDrawingExtractor.upscalePoints(ofDrawing: pkDrawing, withSize: rect.size)
                 let scale = UIScreen.main.scale
-                let image = upscaledProject.image(from: rect, scale: scale)
+                let image = upscaledDrawing.image(from: rect, scale: scale)
                 image.draw(in: rect, blendMode: .multiply, alpha: 1)
                 try drawText(canvas, ctx, rect, finalSettings)
             }

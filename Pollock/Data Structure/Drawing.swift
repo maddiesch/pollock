@@ -133,6 +133,17 @@ internal final class Drawing : Serializable {
                 point.draw(inContext: ctx, withSize: size, forDrawing: self)
             }
         }
+        
+        
+        //DEBUG for JSON points:
+//        ctx.setFillColor(UIColor.gray.cgColor)
+//        for point in points {
+//            var local = point.location.point(forSize: size)
+//            local.x -= 2
+//            local.y -= 2
+//            ctx.fillEllipse(in: CGRect(origin: local, size: CGSize(width: 4, height: 4)))
+//        }
+        
         return true
     }
 

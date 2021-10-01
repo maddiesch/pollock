@@ -20,11 +20,7 @@ extension PKDrawing {
     
     public init(_ payload: [String : Any]) throws {
         guard #available(iOS 14.0, *) else {
-            if #available(iOS 14.0, *) {
-                self.init(strokes: [])
-            } else {
-                self.init()
-            }
+            self.init()
             return
         }
         if let drawings = payload["drawings"] as? [[String: Any]] {
@@ -125,31 +121,30 @@ extension PKStroke {
         var maxLineWidth: CGFloat = 0
         var maxLineHeight: CGFloat = 0
         var previousPoint: CGPoint?
-        for pathRange in maskedPathRanges {  //we wont have masked path ranges because we're not using the pixel eraser
             //each path range is a stroke?
-            for point in path.interpolatedPoints(in: pathRange, by: .distance(0.001)) {   //adjusting the distance gives more accurate drawings, but requires more resources to save
-                maxLineWidth = max(maxLineWidth, point.size.width)
-                maxLineHeight = max(maxLineHeight, point.size.height)
-                do {
-                    //Remove extra points.
-                    if let prevPoint = previousPoint {
-                        let distance = prevPoint.distance(fromPoint: point.location)
-                        let threshold: CGFloat = 0.00002
-                        if distance < threshold {
-                            continue
-                        } else {
-                            previousPoint = point.location
-                        }
+        for point in path.interpolatedPoints(by: .distance(0.005)) {   //adjusting the distance gives more accurate drawings, but requires more resources to save
+            maxLineWidth = max(maxLineWidth, point.size.width)
+            maxLineHeight = max(maxLineHeight, point.size.height)
+            do {
+                //Remove extra points.
+                if let prevPoint = previousPoint {
+                    let distance = prevPoint.distance(fromPoint: point.location)
+                    let threshold: CGFloat = 0.001
+                    if distance < threshold {
+                        continue
                     } else {
                         previousPoint = point.location
                     }
-                    let dictPoint = try point.serialize()
-                    if !point.location.x.isNaN && !point.location.y.isNaN {
-                        points.append(dictPoint)
-                    }
-                } catch {
-                    print(error)
+                } else {
+                    previousPoint = point.location
                 }
+                let dictPoint = try point.serialize()
+                if !point.location.x.isNaN && !point.location.y.isNaN {
+                    print("=============== Point Added: \(dictPoint)")
+                    points.append(dictPoint)
+                }
+            } catch {
+                print(error)
             }
         }
         
@@ -235,7 +230,7 @@ extension PKStrokePoint: Serializable {
         let force = payload["force"] as? NSNumber ?? 0
         
         let timeOffset = payload["timeOffset"] as? NSNumber ?? 0
-        let azimuth = payload["azimuth"] as? NSNumber ?? 1
+        let azimuth = payload["azimuth"] as? NSNumber ?? 0
         let altitude = payload["altitude"] as? NSNumber ?? 0
         let opacity = payload["opacity"] as? NSNumber ?? 1
         
@@ -310,7 +305,7 @@ public struct PKDrawingExtractor {
             var newPoints = [PKStrokePoint]()
             let toolName = stroke.ink.pkToolName()
             stroke.path.forEach { (point) in
-                let newLocation = CGPoint(x: point.location.x * size.width, y: point.location.y * size.height)
+                let newLocation = point.location.point(forSize: size)
                 let maxSize = max(point.size.width, point.size.height)
                 let pointSize = PKDrawingExtractor.upscaleToolSize(withToolName: toolName, fromLineWidth: maxSize, andSize: size)
                 let newPoint = PKStrokePoint(location: newLocation,
@@ -458,14 +453,15 @@ public struct PKDrawingExtractor {
     
     static func upscaleToolSize(withToolName toolName: String, fromLineWidth lineWidth: CGFloat, andSize size: CGSize) -> CGSize {
         let scale = scale(forToolName: toolName)
-        let scaledLineSize = lineWidth * size.height * scale
+        let scaledLineSize = max(lineWidth * size.height, 2.1)
+        
         print("==== Upscaled ============= LineWidth Before: \(lineWidth) Scale Used: \(scale) and Size: \(size.height) = Upscaled size: \(scaledLineSize)")
         return CGSize(width: scaledLineSize, height: scaledLineSize)
     }
     
     static func downscaleToolSize(withToolName toolName: String, fromLineWidth lineWidth: CGFloat, andSize size: CGSize) -> CGSize {
         let scale = scale(forToolName: toolName)
-        let scaledLineSize = lineWidth / size.height / scale
+        let scaledLineSize = lineWidth / size.height
         print("==== Downscaled ============= LineWidth Before: \(lineWidth) Scale Used: \(scale) and Size: \(size.height) = Downscaled size: \(scaledLineSize)")
         return CGSize(width: scaledLineSize, height: scaledLineSize)
     }
@@ -484,5 +480,11 @@ public struct PKDrawingExtractor {
     
     static func scale(forToolName toolName: String) -> CGFloat {
         return toolName == ToolNames.pen.rawValue ? PKDrawingExtractor.pkPenScale : PKDrawingExtractor.pkHighlighterScale
+    }
+}
+
+extension CGPoint {
+    func point(forSize size: CGSize) -> CGPoint {
+        return CGPoint(x: self.x * size.width, y: self.y * size.height)
     }
 }

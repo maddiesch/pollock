@@ -129,9 +129,8 @@ public final class PKDrawingView: UIView, PKCanvasViewDelegate, TextDrawingViewD
     
     func updateCanvasView() {
         if #available(iOS 14.0, *) {
-            if let drawing = canvas.pkdrawing {
-                let upscaleDrawing = PKDrawingExtractor.upscalePoints(ofDrawing: drawing, withSize: canvas.canvasSize)
-                canvasView.drawing = upscaleDrawing
+            if let drawing = canvas._pkFullScaleDrawing as? PKDrawing {
+                canvasView.drawing = drawing
             }
         }
     }
@@ -175,10 +174,47 @@ public final class PKDrawingView: UIView, PKCanvasViewDelegate, TextDrawingViewD
     @available(iOS 13.0, *)
     public func canvasViewDrawingDidChange(_ canvasView: PKCanvasView) {
         if #available(iOS 14.0, *) {
-            let downscaledDrawing = PKDrawingExtractor.downscalePoints(ofDrawing: self.canvasView.drawing, withSize: canvas.canvasSize)
-            canvas._pkdrawing = downscaledDrawing
+            canvas._pkFullScaleDrawing = canvasView.drawing
+            
+            //DEBUG ONLY
+//            changeDrawingIfNeeded()
+            
         }
+        
         self.setNeedsDisplay()  //this runs draw(rect) for text
+    }
+    
+    
+    //DEBUG ONLY
+    var shouldChangeDrawing = true
+    func changeDrawingIfNeeded() {
+        if shouldChangeDrawing {
+            shouldChangeDrawing = false
+            if #available(iOS 14.0, *) {
+                canvasView.drawing = changeStrokes(forDrawing:canvasView.drawing)
+            }
+        } else {
+            shouldChangeDrawing = true
+        }
+    }
+    
+    
+    @available(iOS 14.0, *)
+    public func changeStrokes(forDrawing drawing: PKDrawing) -> PKDrawing {
+        var newStrokes: [PKStroke] = []
+        for stroke in drawing.strokes {
+            var newPoints: [PKStrokePoint] = []
+            for point in stroke.path {
+                let newSize = CGSize(width: 1, height: 1)
+                let newPoint = PKStrokePoint(location: point.location, timeOffset: point.timeOffset, size:newSize , opacity: point.opacity, force: point.force, azimuth: point.azimuth, altitude: point.altitude)
+                newPoints.append(newPoint)
+                let newPath = PKStrokePath(controlPoints: newPoints, creationDate: stroke.path.creationDate)
+                let newStroke = PKStroke(ink: stroke.ink, path: newPath)
+                newStrokes.append(newStroke)
+            }
+        }
+        let newDrawing = PKDrawing(strokes: newStrokes)
+        return newDrawing
     }
     
     public override func draw(_ rect: CGRect) {

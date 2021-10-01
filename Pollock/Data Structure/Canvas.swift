@@ -21,10 +21,24 @@ internal final class Canvas : Serializable, Hashable {
     var allDrawings: [Drawing] {
         return self.drawings
     }
-    
-    var canvasSize: CGSize = CGSize.zero
+    var canvasSize: CGSize = CGSize.zero {
+        didSet {
+            if #available(iOS 14.0, *) {
+                if canvasSize != .zero, let drawing = pkdrawing {
+                    _pkFullScaleDrawing = PKDrawingExtractor.upscalePoints(ofDrawing: drawing, withSize: canvasSize)
+                }
+            }
+        }
+    }
     var _pkDrawingOriginal: Any?
     var _pkdrawing: Any?
+    var _pkFullScaleDrawing: Any? {
+        didSet {
+            if #available(iOS 14.0, *) {
+                _pkdrawing = PKDrawingExtractor.downscalePoints(ofDrawing: _pkFullScaleDrawing as! PKDrawing, withSize: canvasSize)
+            }
+        }
+    }
     @available(iOS 14.0, *)
     var pkdrawing: PKDrawing? {
         if let drawing = _pkdrawing as? PKDrawing {

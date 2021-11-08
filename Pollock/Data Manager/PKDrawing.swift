@@ -365,87 +365,49 @@ public struct PKDrawingExtractor {
     }
     
     
-    // Pen Scales
-    // 0.001 input, should output 3.7
-    // 0.002 input, should output 2.6
-    // 0.003 input, should output 1.8
-    // 0.004 input, should output 1.45
-    // 0.005 input, should output 1.28
-    // 0.006 input, should output 1.2
-    // 0.007 input, should output 1.05
-    // 0.008 input, should output 1
-    // 0.009 input, should output 0.92
-    // 0.01 input, should output 0.8
-    // 0.02 input, should output 0.65
-    // 0.03 input, should output 0.6
-    // 0.04 input, should output 0.57
-    // 0.05 input, should output 0.0.566
-    // 0.06 input, should output 0.56
-    // 0.075 input, should output 0.54
-    static let lineWidthJSONKeys: [CGFloat] = [0.001, 0.002, 0.003, 0.004, 0.005, 0.006, 0.007, 0.008, 0.009, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.075]
-    static let lineWidthScaleValues: [CGFloat] = [3.7, 2.6, 1.8, 1.45, 1.28, 1.2, 1.05, 1, 0.92, 0.8, 0.65, 0.6, 0.57, 0.566, 0.56, 0.54]
+    //*********************************************************
+    //Newest scaling equation = Y = 0.514285 * X + 1.9
     
-    static func scale(forJSONLineWidth lineWidth: CGFloat) -> CGFloat {
-        if lineWidth <= lineWidthJSONKeys.first! {
-            return lineWidthScaleValues.first!
-        }
+    //    input 1.0 px output 2.4 pk pen size
+    //    input 1.5 output 2.6
+    //    input 2.0 output 3.0
+    //    input 2.5 output 3.3
+    //    input 3.0 output 3.4
+    //    input 3.5 output 3.6
+    //    input 4.0 output 4.0
+    //    input >4.0 output n * .87
         
-        if lineWidth >= lineWidthJSONKeys.last! {
-            return lineWidthScaleValues.last!
-        }
         
-        var minKeyIndex = 0
-        var maxKeyIndex = 0
-        var currentIndex = 0
-        for key in lineWidthJSONKeys {
-            if lineWidth >= key {
-                currentIndex += 1
-                continue
-            } else {
-                maxKeyIndex = currentIndex
-                minKeyIndex = currentIndex - 1
-                break
-            }
-        }
-        
-        let minKey = lineWidthJSONKeys[minKeyIndex]
-        let maxKey = lineWidthJSONKeys[maxKeyIndex]
-        let minScale = lineWidthScaleValues[minKeyIndex]
-        let maxScale = lineWidthScaleValues[maxKeyIndex]
-        
-        return PKDrawingExtractor.normalized(value: lineWidth, minA: minKey, maxA: maxKey, minB: minScale, maxB: maxScale)
-    }
+        //plotted the points above into the URL belo
+    //    https://www.geogebra.org/graphing?lang=en
+    // Used best estimate line to come up with this equation:
+    //    equation = Y = 0.514285 * X + 1.9
     
-    static func scale(forPKLineWidth lineWidth: CGFloat, withKeys keys: [CGFloat]) -> CGFloat {
-        
-        if lineWidth <= keys.first! {
-            return lineWidthScaleValues.first!
-        }
-        
-        if lineWidth >= keys.last! {
-            return lineWidthScaleValues.last!
-        }
-        var minKeyIndex = 0
-        var maxKeyIndex = 0
-        var currentIndex = 0
-        for key in keys {
-            if lineWidth >= key {
-                currentIndex += 1
-                continue
-            } else {
-                maxKeyIndex = currentIndex
-                minKeyIndex = currentIndex - 1
-                break
-            }
-        }
-        
-        let minKey = keys[minKeyIndex]
-        let maxKey = keys[maxKeyIndex]
-        let minScale = lineWidthScaleValues[minKeyIndex]
-        let maxScale = lineWidthScaleValues[maxKeyIndex]
-        
-        return PKDrawingExtractor.normalized(value: lineWidth, minA: minKey, maxA: maxKey, minB: minScale, maxB: maxScale)
-    }
+    
+//    let magicNumber: CGFloat = 0.514285
+//    let magicNumberTwo: CGFloat = 1.9
+//    func convertToPK(input: CGFloat) -> CGFloat {
+//        return magicNumber * input + magicNumberTwo
+//    }
+//
+//    func convertToPixel(input: CGFloat) -> CGFloat {
+//        return  (input - magicNumberTwo) / magicNumber
+//    }
+//    //An input of 0.001 will be 1 pixel, or 1.268 pixels
+//    //An input of 0.034 should be 3.4
+//    func convertToPK(input: CGFloat, withHeight height: CGFloat) -> CGFloat {
+//        let pixelValue = max(input * height, 1)  //lose data here :(
+//        return convertToPK(input: pixelValue)
+//    }
+//
+//    func convertToJSON(input: CGFloat, withHeight height: CGFloat) -> CGFloat {
+//        let pixelValue = convertToPixel(input: input)
+//        let jsonValue = max(0.001, pixelValue / height)
+//
+//        return jsonValue
+//    }
+    //*********************************************************
+    
     
     static func normalized(value: CGFloat, minA: CGFloat, maxA: CGFloat, minB: CGFloat, maxB: CGFloat) -> CGFloat {
             return minB + ((value - minA) * (maxB - minB)) / (maxA - minA)
@@ -455,28 +417,17 @@ public struct PKDrawingExtractor {
         let scale = scale(forToolName: toolName)
         let scaledLineSize = max(lineWidth * size.height, 2.1)
         
-        print("==== Upscaled ============= LineWidth Before: \(lineWidth) Scale Used: \(scale) and Size: \(size.height) = Upscaled size: \(scaledLineSize)")
+//        print("==== Upscaled ============= LineWidth Before: \(lineWidth) Scale Used: \(scale) and Size: \(size.height) = Upscaled size: \(scaledLineSize)")
         return CGSize(width: scaledLineSize, height: scaledLineSize)
     }
     
     static func downscaleToolSize(withToolName toolName: String, fromLineWidth lineWidth: CGFloat, andSize size: CGSize) -> CGSize {
         let scale = scale(forToolName: toolName)
         let scaledLineSize = lineWidth / size.height
-        print("==== Downscaled ============= LineWidth Before: \(lineWidth) Scale Used: \(scale) and Size: \(size.height) = Downscaled size: \(scaledLineSize)")
+//        print("==== Downscaled ============= LineWidth Before: \(lineWidth) Scale Used: \(scale) and Size: \(size.height) = Downscaled size: \(scaledLineSize)")
         return CGSize(width: scaledLineSize, height: scaledLineSize)
     }
     
-    static func generatePKKeys(withSize size: CGSize) -> [CGFloat] {
-        var keys: [CGFloat] = []
-        var index = 0
-        for key in lineWidthJSONKeys {
-            let scale = lineWidthScaleValues[index]
-            let value = size.height * key * scale
-            keys.append(value)
-            index += 1
-        }
-        return keys
-    }
     
     static func scale(forToolName toolName: String) -> CGFloat {
         return toolName == ToolNames.pen.rawValue ? PKDrawingExtractor.pkPenScale : PKDrawingExtractor.pkHighlighterScale

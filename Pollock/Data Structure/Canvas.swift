@@ -44,8 +44,7 @@ internal final class Canvas : Serializable, Hashable {
         if let drawing = _pkdrawing as? PKDrawing {
             return drawing
         }
-        _pkdrawing = PKDrawing()
-        return _pkdrawing as? PKDrawing
+        return nil
     }
 
     func addDrawing(_ drawing: Drawing) {
@@ -55,15 +54,7 @@ internal final class Canvas : Serializable, Hashable {
     func revertPK() {
         _pkdrawing = _pkDrawingOriginal
     }
-
-    @discardableResult
-    func removeDrawingWithID(_ id: UUID) -> Drawing? {
-        if let index = self.drawings.index(where: { $0.id == id }) {
-            return self.drawings.remove(at: index)
-        }
-        return nil
-    }
-
+    
     private var text: [Text] = []
 
     var allText: [Text] {

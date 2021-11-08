@@ -116,7 +116,13 @@ public final class Project : NSObject, Serializable {
             for drawing in canvasToMerge.allDrawings {
                 baseCanvas.addDrawing(drawing)
             }
-
+            if #available(iOS 14.0, *) {
+                if let baseDrawing = baseCanvas.pkdrawing, let mergeDrawing = canvasToMerge.pkdrawing {
+                    baseCanvas._pkdrawing = baseDrawing.appending(mergeDrawing)
+                    baseCanvas.canvasSize = canvasToMerge.canvasSize
+                }
+            }
+            
             for text in canvasToMerge.allText {
                 baseCanvas.addText(text)
             }

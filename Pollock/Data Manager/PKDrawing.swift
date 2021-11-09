@@ -140,7 +140,6 @@ extension PKStroke {
                 }
                 let dictPoint = try point.serialize()
                 if !point.location.x.isNaN && !point.location.y.isNaN {
-                    print("=============== Point Added: \(dictPoint)")
                     points.append(dictPoint)
                 }
             } catch {
@@ -349,88 +348,44 @@ public struct PKDrawingExtractor {
         return PKDrawing(strokes: newDrawingStrokes)
     }
     
-   
-    
-    public static let pkPenScale: CGFloat = 0.54
     public static let pkHighlighterScale: CGFloat = 0.8
     
-    public static let pkMinPenSize: CGFloat = 2.1
-    public static let pkMinPencilSize: CGFloat = 1
-    
-    static func minSize(forToolName toolName: String) -> CGFloat {
-        if toolName == ToolNames.pencil.rawValue {
-            return pkMinPencilSize  // Pencil Tool needs a smaller min size
-        }
-        return pkMinPenSize
-    }
-    
-    
-    //*********************************************************
-    //Newest scaling equation = Y = 0.514285 * X + 1.9
-    
-    //    input 1.0 px output 2.4 pk pen size
-    //    input 1.5 output 2.6
-    //    input 2.0 output 3.0
-    //    input 2.5 output 3.3
-    //    input 3.0 output 3.4
-    //    input 3.5 output 3.6
-    //    input 4.0 output 4.0
-    //    input >4.0 output n * .87
-        
-        
-        //plotted the points above into the URL belo
-    //    https://www.geogebra.org/graphing?lang=en
-    // Used best estimate line to come up with this equation:
-    //    equation = Y = 0.514285 * X + 1.9
-    
-    
-//    let magicNumber: CGFloat = 0.514285
-//    let magicNumberTwo: CGFloat = 1.9
-//    func convertToPK(input: CGFloat) -> CGFloat {
-//        return magicNumber * input + magicNumberTwo
-//    }
-//
-//    func convertToPixel(input: CGFloat) -> CGFloat {
-//        return  (input - magicNumberTwo) / magicNumber
-//    }
-//    //An input of 0.001 will be 1 pixel, or 1.268 pixels
-//    //An input of 0.034 should be 3.4
-//    func convertToPK(input: CGFloat, withHeight height: CGFloat) -> CGFloat {
-//        let pixelValue = max(input * height, 1)  //lose data here :(
-//        return convertToPK(input: pixelValue)
-//    }
-//
-//    func convertToJSON(input: CGFloat, withHeight height: CGFloat) -> CGFloat {
-//        let pixelValue = convertToPixel(input: input)
-//        let jsonValue = max(0.001, pixelValue / height)
-//
-//        return jsonValue
-//    }
-    //*********************************************************
-    
-    
-    static func normalized(value: CGFloat, minA: CGFloat, maxA: CGFloat, minB: CGFloat, maxB: CGFloat) -> CGFloat {
-            return minB + ((value - minA) * (maxB - minB)) / (maxA - minA)
-        }
     
     static func upscaleToolSize(withToolName toolName: String, fromLineWidth lineWidth: CGFloat, andSize size: CGSize) -> CGSize {
-        let scale = scale(forToolName: toolName)
-        let scaledLineSize = max(lineWidth * size.height, 2.1)
-        
-//        print("==== Upscaled ============= LineWidth Before: \(lineWidth) Scale Used: \(scale) and Size: \(size.height) = Upscaled size: \(scaledLineSize)")
-        return CGSize(width: scaledLineSize, height: scaledLineSize)
+        //JSON to pixel
+        let pixel = lineWidth * size.height
+        //pixel to PK
+        let converted = upscale(toolName: toolName, lineWidth: pixel)
+        return CGSize(width: converted, height: converted)
     }
+
     
     static func downscaleToolSize(withToolName toolName: String, fromLineWidth lineWidth: CGFloat, andSize size: CGSize) -> CGSize {
-        let scale = scale(forToolName: toolName)
-        let scaledLineSize = lineWidth / size.height
-//        print("==== Downscaled ============= LineWidth Before: \(lineWidth) Scale Used: \(scale) and Size: \(size.height) = Downscaled size: \(scaledLineSize)")
+        //PK to pixel
+        let pixels = downscale(toolName: toolName, lineWidth: lineWidth)
+        //pixel to JSON
+        let scaledLineSize = pixels / size.height
         return CGSize(width: scaledLineSize, height: scaledLineSize)
     }
     
+    static func upscale(toolName: String, lineWidth: CGFloat) -> CGFloat {
+        if toolName == ToolNames.highlighter.rawValue {
+            return lineWidth * pkHighlighterScale
+        }
+        if lineWidth > 4 {
+            return lineWidth * pkHighlighterScale
+        }
+        return DrawingUnitConverter.pixelToPK(pixelSize: lineWidth)
+    }
     
-    static func scale(forToolName toolName: String) -> CGFloat {
-        return toolName == ToolNames.pen.rawValue ? PKDrawingExtractor.pkPenScale : PKDrawingExtractor.pkHighlighterScale
+    static func downscale(toolName: String, lineWidth: CGFloat) -> CGFloat {
+        if toolName == ToolNames.highlighter.rawValue {
+            return lineWidth / pkHighlighterScale
+        }
+        if lineWidth > 4 {
+            return lineWidth / pkHighlighterScale
+        }
+        return DrawingUnitConverter.pkToPixel(pkSize: lineWidth)
     }
 }
 

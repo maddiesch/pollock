@@ -34,8 +34,8 @@ internal final class Canvas : Serializable, Hashable {
     var _pkdrawing: Any?
     var _pkFullScaleDrawing: Any? {
         didSet {
-            if #available(iOS 14.0, *) {
-                _pkdrawing = PKDrawingExtractor.downscalePoints(ofDrawing: _pkFullScaleDrawing as! PKDrawing, withSize: canvasSize)
+            if #available(iOS 14.0, *), let fullScaleDrawing = _pkFullScaleDrawing as? PKDrawing {
+                _pkdrawing = PKDrawingExtractor.downscalePoints(ofDrawing: fullScaleDrawing, withSize: canvasSize)
             }
         }
     }
@@ -81,6 +81,7 @@ internal final class Canvas : Serializable, Hashable {
 
     internal func clear() {
         _pkdrawing = nil
+        _pkFullScaleDrawing = nil
         self.drawings.removeAll()
         self.text.removeAll()
         let notification = Notification(name: .canvasDidClear, object: self)

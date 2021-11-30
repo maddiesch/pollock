@@ -331,8 +331,7 @@ public struct PKDrawingExtractor {
             stroke.path = newPath
             newStrokes.append(stroke)
         }
-        let newDrawing = PKDrawing(strokes: newStrokes)
-        return newDrawing
+        return PKDrawing(strokes: newStrokes)
     }
     
     @available(iOS 14.0, *)

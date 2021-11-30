@@ -25,7 +25,7 @@ extension PKDrawing {
         }
         if let drawings = payload["drawings"] as? [[String: Any]] {
             var pkStrokes = [PKStroke]()
-            drawings.forEach { (drawing) in
+            try drawings.forEach { (drawing) in
                 var toolSize = CGSize(width: 1, height: 1)
                 var toolForce: CGFloat = 1
                 var toolName = ""
@@ -38,37 +38,47 @@ extension PKDrawing {
                     toolType = PKDrawing.inkType(fromToolPayload: tool)
                 }
                 if toolName == "eraser" {
-                   //Remove Eraser Data from JSON
-                   return
-               }
+                    //Remove Eraser Data from JSON
+                    return
+                }
                 var inkColor = UIColor.black
                 if let color = drawing["color"] as? [String: Any] {
                     inkColor = PKDrawingHelper.color(forDict: color)
                 }
+                var ink = PKInk(toolType, color: inkColor)
+                if let inkPayload = drawing["pkInk"] as? [String: Any] {
+                    ink = try PKInk(inkPayload)
+                }
+                var pkPoints = [PKStrokePoint]()
                 
-                if let points = drawing["points"] as? [[String: Any]] {
-                    var pkPoints = [PKStrokePoint]()
-                    points.forEach { (pointJson) in
-                        do {
-                            let point = try PKStrokePoint(pointJson)
+                //Use for control points first for pixel perfect PKDrawing
+                if let controlPoints = drawing["pkControlPoints"] as? [[String: Any]] {
+                    try controlPoints.forEach { (pointJSON) in
+                        let point = try PKStrokePoint(pointJSON)
+                        pkPoints.append(point)
+                    }
+                } else {
+                    //Use JSON points as backup because PKStrokePath is expecting cubic B-spline control points, and
+                    //these are JSON points, not exact control points.
+                    if let points = drawing["points"] as? [[String: Any]] {
+                        try points.forEach { (pointJSON) in
+                            let point = try PKStrokePoint(pointJSON)
                             toolSize = point.size == CGSize.zero ? toolSize : point.size
                             let newPoint = PKStrokePoint(location: point.location, timeOffset: TimeInterval.init(), size: toolSize, opacity: point.opacity, force: toolForce, azimuth: point.azimuth, altitude: point.altitude)
                             pkPoints.append(newPoint)
-                        } catch {
-                            print(error)
                         }
                     }
-                    let strokePath = PKStrokePath(controlPoints: pkPoints, creationDate: Date())
-
-                    let stroke = PKStroke(ink: PKInk(toolType, color: inkColor), path: strokePath)
-                    pkStrokes.append(stroke)
                 }
+                let strokePath = PKStrokePath(controlPoints: pkPoints, creationDate: Date())
+                let stroke = PKStroke(ink: ink, path: strokePath)
+                pkStrokes.append(stroke)
             }
             self.init(strokes: pkStrokes)
             return
         }
         self.init(strokes: [])
     }
+    
     @available(iOS 14.0, *)
     public static func inkType(fromToolPayload payload: [String: Any]) -> PKInk.InkType {
         
@@ -92,7 +102,6 @@ extension PKDrawing {
                 return .marker
             }
         }
-        
         return .pen
     }
     
@@ -120,45 +129,31 @@ extension PKStroke {
         var points: [[String: Any]] = []
         var maxLineWidth: CGFloat = 0
         var maxLineHeight: CGFloat = 0
-        var previousPoint: CGPoint?
-            //each path range is a stroke?
-        for point in path.interpolatedPoints(by: .distance(0.005)) {   //adjusting the distance gives more accurate drawings, but requires more resources to save
+        for point in path.interpolatedPoints(by: .distance(0.01)) {   //adjusting the distance gives more accurate drawings, but requires more resources to save
             maxLineWidth = max(maxLineWidth, point.size.width)
             maxLineHeight = max(maxLineHeight, point.size.height)
-            do {
-                //Remove extra points.
-                if let prevPoint = previousPoint {
-                    let distance = prevPoint.distance(fromPoint: point.location)
-                    let threshold: CGFloat = 0.001
-                    if distance < threshold {
-                        continue
-                    } else {
-                        previousPoint = point.location
-                    }
-                } else {
-                    previousPoint = point.location
-                }
-                let dictPoint = try point.serialize()
-                if !point.location.x.isNaN && !point.location.y.isNaN {
-                    points.append(dictPoint)
-                }
-            } catch {
-                print(error)
+            let dictPoint = try point.serialize()
+            if !point.location.x.isNaN && !point.location.y.isNaN {
+                points.append(dictPoint)
             }
         }
         
         //To get the stroke color we pull it from the ink
         let color = PKDrawingHelper.dict(forColor: self.ink.color)
         
-        var tool = try self.ink.serialize()
+        var tool = try self.ink.serializeTool()
         let lineWidth = max(maxLineHeight, maxLineWidth)
         tool["lineWidth"] = round(1000 * lineWidth) / 1000
+        
+        let controlPoints: [[String: Any]] = try path.map { try $0.serialize() }
         
         return [
             "drawingID": UUID().uuidString,  //TODO need to set a uuid on the actual stroke somehow
             "version": 1,  //TODO: Same as above, but need to hold a version somewhere
             "tool": tool,
             "points": points,
+            "pkControlPoints": controlPoints,
+            "pkInk": try self.ink.serialize(),
             "isCulled": false,  //TODO: Figure out what is culled does
             "color": color,
             "isSmoothingEnabled": false, //Appears to always be true
@@ -177,10 +172,27 @@ enum ToolNames: String {
 @available(iOS 14.0, *)
 extension PKInk: Pollock.Serializable {
     public init(_ payload: [String : Any]) throws {
-        self.init(InkType.pen)
+        var inkColor = UIColor.black
+        if let color = payload["color"] as? [String: Any] {
+            inkColor = PKDrawingHelper.color(forDict: color)
+        }
+        var toolType = InkType.pen
+        if let toolTypeString = payload["toolType"] as? String {
+            toolType = PKInk.InkType(rawValue: toolTypeString) ?? .pen
+        }
+        self.init(toolType, color: inkColor)
     }
     
     public func serialize() throws -> [String : Any] {
+        return [
+            "_type" : "ink",
+            "color" : PKDrawingHelper.dict(forColor: self.color),
+            "toolType" : self.inkType.rawValue,
+            "version" : 1
+        ]
+    }
+    
+    public func serializeTool() throws -> [String : Any] {
         return [
             "_type" : "tool",
             "forceSensitivity" : 1,
@@ -241,21 +253,21 @@ extension PKStrokePoint: Serializable {
             "xOffset": self.location.x,
             "yOffset": self.location.y
         ],
-        "isPredictive": false,
-        "_type": "point",
-        "force": self.force,
-        "timeOffset": self.timeOffset,
-        "azimuth": self.azimuth,
-        "opacity": self.opacity,
-        "altitude": self.altitude,
-        "size": [
-            "width": self.size.width,
-            "height": self.size.height,
-        ],
-        "location": [
-            "xOffset": self.location.x,
-            "yOffset": self.location.y
-        ]
+                "isPredictive": false,
+                "_type": "point",
+                "force": self.force,
+                "timeOffset": self.timeOffset,
+                "azimuth": self.azimuth,
+                "opacity": self.opacity,
+                "altitude": self.altitude,
+                "size": [
+                    "width": self.size.width,
+                    "height": self.size.height,
+                ],
+                "location": [
+                    "xOffset": self.location.x,
+                    "yOffset": self.location.y
+                ]
         ]
     }
 }
@@ -285,7 +297,7 @@ struct PKDrawingHelper {
         
         return UIColor(red: CGFloat(red / 255.0), green: CGFloat(green / 255.0), blue: CGFloat(blue / 255.0), alpha: CGFloat(alpha))
     }
-
+    
     static var isPencilKitAvailable: Bool {
         if #available(iOS 14.0, *) {
             return true
@@ -350,7 +362,6 @@ public struct PKDrawingExtractor {
     
     public static let pkHighlighterScale: CGFloat = 0.8
     
-    
     static func upscaleToolSize(withToolName toolName: String, fromLineWidth lineWidth: CGFloat, andSize size: CGSize) -> CGSize {
         //JSON to pixel
         let pixel = lineWidth * size.height
@@ -358,7 +369,6 @@ public struct PKDrawingExtractor {
         let converted = upscale(toolName: toolName, lineWidth: pixel)
         return CGSize(width: converted, height: converted)
     }
-
     
     static func downscaleToolSize(withToolName toolName: String, fromLineWidth lineWidth: CGFloat, andSize size: CGSize) -> CGSize {
         //PK to pixel

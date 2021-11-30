@@ -131,6 +131,8 @@ public final class PKDrawingView: UIView, PKCanvasViewDelegate, TextDrawingViewD
         if #available(iOS 14.0, *) {
             if let drawing = canvas._pkFullScaleDrawing as? PKDrawing {
                 canvasView.drawing = drawing
+            } else {
+                canvasView.drawing = PKDrawing()
             }
         }
     }
@@ -198,6 +200,18 @@ public final class PKDrawingView: UIView, PKCanvasViewDelegate, TextDrawingViewD
                 ctx.setFillColor(UIColor(white: 0.6, alpha: 0.3).cgColor)
                 ctx.fill(rect)
             }
+            
+            //draw points in a PKStroke
+            //Leave for debuging
+//            if #available(iOS 14.0, *) {
+//                for stroke in self.canvasView.drawing.strokes {
+//                    for point in stroke.path {
+//                        let rect = CGRect(origin: point.location, size: CGSize(width: 10, height: 10))
+//                        ctx.setFillColor(UIColor.orange.cgColor)
+//                        ctx.fill(rect)
+//                    }
+//                }
+//            }
 
             
         } catch {
